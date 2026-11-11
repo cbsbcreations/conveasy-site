@@ -57,7 +57,7 @@ DATA = {
             "card": "Nimmt jeden Anruf an, auch zur Stoßzeit. Die Bestellung geht direkt in die Küche.",
             "features": [
                 ("24/7 erreichbar", "Keine verpassten Anrufe mehr zur Stoßzeit oder außerhalb der Öffnungszeiten."),
-                ("Mehrere Anrufe gleichzeitig", "Fünf Kunden rufen gleichzeitig an? Die KI nimmt jeden Anruf an."),
+                ("50+ Anrufe gleichzeitig", "Fünfzig Kunden rufen gleichzeitig an? Die KI spricht mit jedem von ihnen. Niemand hört das Besetztzeichen."),
                 ("60+ Sprachen", "Die KI spricht die Sprache des Anrufers."),
                 ("Kennt Ihre Speisekarte live", "Markieren Sie einen Artikel mit einem Tippen als ausverkauft. Die KI weiß es beim nächsten Anruf."),
                 ("Abholung und Lieferung", "Mit Ihren Wartezeiten, Liefergebieten und Mindestbestellwerten."),
@@ -65,6 +65,7 @@ DATA = {
             ],
             "faq": [
                 ("Klingt die KI natürlich?", "Die KI spricht in normalen Sätzen, versteht Fragen zu Ihrer Speisekarte und nimmt die Bestellung ruhig auf. Fragen Sie eine Demo an und hören Sie selbst."),
+                ("Wie viele Kunden können gleichzeitig anrufen?", "Mehr als 50. Die KI führt jedes Gespräch einzeln: Niemand wartet oder hört das Besetztzeichen, auch nicht in Ihren Stoßzeiten."),
                 ("Was bedeuten die Minuten im Preis?", "Das ist die Gesprächszeit, die die KI pro Monat mit Ihren Kunden telefoniert. Start hat 500 Minuten, Plus 1.000 und Pro 2.000."),
                 ("Wo kommt die Bestellung an?", "In Ihrem Conveasy-Dashboard und auf Ihrem Küchendrucker, genau wie eine Bestellung über WhatsApp oder den Webshop."),
                 ("Muss ich meine Kasse ersetzen?", "Nein. Conveasy funktioniert unabhängig von Ihrer Kasse."),
@@ -164,7 +165,7 @@ DATA = {
         "phone_h": "Telefon-KI", "phone_note": "Alle Pakete: 24/7, 60+ Sprachen, Bon in der Küche, Dashboard.",
         "tiers": [("Start", "249", "500 Minuten pro Monat", False), ("Plus", "449", "1.000 Minuten pro Monat", True), ("Pro", "799", "2.000 Minuten pro Monat", False)],
         "popular": "Beliebt", "setup": "Einmalige Einrichtungsgebühr: 299 €", "setup_other": "Einmalige Einrichtungsgebühr: 199 €",
-        "tier_feats": ["Nimmt jeden Anruf an, 24/7", "Mehrere Anrufe gleichzeitig", "60+ Sprachen", "Abholung und Lieferung"],
+        "tier_feats": ["Nimmt jeden Anruf an, 24/7", "50+ Anrufe gleichzeitig", "60+ Sprachen", "Abholung und Lieferung"],
         "text_h": "WhatsApp-KI und Webshop",
         "year": "pro Monat, keine Provision",
         "wa_feats": ["KI auf Ihrer eigenen WhatsApp-Nummer", "24/7, 60+ Sprachen", "Bestätigen mit einem Tippen", "Zahlungslink für Lieferungen"],

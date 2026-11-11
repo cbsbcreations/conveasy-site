@@ -1,7 +1,7 @@
 # Conveasy.be website: handoff
 
 New conveasy.be (replaces the Framer site). Static HTML, 5 languages (nl, fr, en, tr, de).
-Last update: 11 Nov 2026 (Marketing AI animation, kiosk animation, payment methods, photo library, kiosk hardware 1599, voice greeting per page language;
+Last update: 11 Nov 2026 (webshop phone animation, "50+ calls at once" on the phone AI page, Marketing AI animation, kiosk animation, payment methods, photo library, kiosk hardware 1599, voice greeting per page language;
 earlier that day: chat demo and voice demo connected, test address on GitHub Pages).
 
 ## Folders
@@ -56,6 +56,20 @@ earlier that day: chat demo and voice demo connected, test address on GitHub Pag
 ## Kiosk animation
 - kiosk_i() in build.py + ".kscene" in site.css: a figure orders at the kiosk (language choice, burger and fries, pay, ticket).
   Pure CSS, one 14 second loop; shown on the kiosk page (top) and on the home page ("In de app"). With reduced motion it stands still.
+
+## Webshop animation (the phone)
+- web_i() in build.py + ".wscene" in site.css. Shown on the webshop page (top), in the home page's top visual and in the home page's
+  "Zo ziet het eruit". A customer adds three products, fills in the address (the delivery cost appears), picks Bancontact and places
+  the order; then the order page: thank you, the minutes counting down (25, 17, 10), the steps Ontvangen > In de keuken > Onderweg >
+  Bezorgd, "Onderweg met Ali", a small map with the route, and "Smakelijk!". Pure CSS, one 16 second loop.
+- The words of the order page are the real webshop's own (repo conveasy-webshop, src/lib/i18n/dict: shop-status.ts, tracking.ts,
+  driver.ts); German is not in the webshop yet, so that translation is ours. Scene texts: WSCENE in build.py; the menu: OVX[lang]["web"].
+- With reduced motion it rests on the menu with a filled basket.
+
+## Phone AI: "50+ calls at the same time"
+- Feature tile, the three price tiers, a FAQ entry and llms.txt say this since 11 Nov 2026 (Sammy's wording).
+- Vapi limits the simultaneous calls per Vapi account (inbound too; 10 lines included on older accounts, more can be bought, see
+  docs.vapi.ai/calls/call-concurrency). Check in Vapi > Billing that the account really has 50+ lines; calls above the limit are not answered.
 
 ## Marketing AI animation
 - mkt_scene_i() in build.py + ".mscene" in site.css: Mario's Snackbar sends, lines run to three customer phones, a message lands on

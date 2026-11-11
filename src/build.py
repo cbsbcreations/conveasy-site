@@ -209,6 +209,13 @@ def dash_i(lang):
 KIOSK = {"nl": ("Kiosk · Kies je taal", ["Friet & snacks", "Burgers", "Dranken"], "Betalen met kaart"),
          "fr": ("Borne · Choisissez votre langue", ["Frites et snacks", "Burgers", "Boissons"], "Payer par carte"),
          "en": ("Kiosk · Choose your language", ["Fries & snacks", "Burgers", "Drinks"], "Pay by card")}
+# Line icons for the food in the kiosk scene and the webshop scene.
+FOOD_ICONS = {
+    "burger": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11a8 6 0 0 1 16 0z"/><path d="M3 14.5h18"/><path d="M5 18h14a1.5 1.5 0 0 1 0 3H5a1.5 1.5 0 0 1 0-3z"/></svg>',
+    "fries": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11l1.5 10h7L17 11z"/><path d="M9 11V4M12 11V3M15 11V5"/></svg>',
+    "drink": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l-1.2 13H8.2z"/><path d="M6 8h12M13 8l1.5-5H17"/></svg>',
+    "snack": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.4 18.6a3 3 0 0 1 0-4.2l9-9a3 3 0 0 1 4.2 4.2l-9 9a3 3 0 0 1-4.2 0z"/><path d="M11.5 9.5l1.5 1.5M9 12l1.5 1.5"/></svg>',
+}
 def kiosk_i(lang):
     """Animated scene: a figure orders at the kiosk. The screen switches language, adds a burger and fries, pays, and a ticket comes out.
     Pure CSS (see .kscene in site.css); the words on the screen are the same on every page because they show all five languages.
@@ -216,11 +223,7 @@ def kiosk_i(lang):
     def roll(words): return '<span class="ks-roll"><span>' + "".join(f"<em>{e(w)}</em>" for w in words) + "</span></span>"
     hello = "".join(f"<em>{e(w)}</em>" for w in ["Welkom", "Bienvenue", "Welcome", "Hoş geldin", "Willkommen"])
     chips = "".join(f"<i>{c}</i>" for c in ["NL", "FR", "EN", "TR", "DE"])
-    icons = {
-        "burger": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11a8 6 0 0 1 16 0z"/><path d="M3 14.5h18"/><path d="M5 18h14a1.5 1.5 0 0 1 0 3H5a1.5 1.5 0 0 1 0-3z"/></svg>',
-        "fries": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11l1.5 10h7L17 11z"/><path d="M9 11V4M12 11V3M15 11V5"/></svg>',
-        "drink": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l-1.2 13H8.2z"/><path d="M6 8h12M13 8l1.5-5H17"/></svg>',
-    }
+    icons = FOOD_ICONS
     rows = [("burger", ["Burger", "Burger", "Burger", "Burger", "Burger"], "9,00"),
             ("fries", ["Friet", "Frites", "Fries", "Patates", "Pommes"], "4,50"),
             ("drink", ["Drankje", "Boisson", "Drink", "İçecek", "Getränk"], "2,50")]
@@ -307,11 +310,88 @@ def resv_i(lang):
     r = "".join(f'<div class="row"><span class="r-time">{e(tm)}</span><b>{e(nm)} <small>· {e(pp)}</small></b><span class="chip">{e(ch)}</span></div>' for tm, pp, nm, ch in rows)
     return f'<div class="panel resv" role="img" aria-label="{e(UI[lang]["example"])}: {e(t)}"><div class="p-title">{e(t)}<span>{e(day)}</span></div>{r}<div class="row new"><span class="chip y">+</span><b>{e(foot)}</b><small></small></div></div>'
 
+# Webshop scene, per language. The words of the order page (thanks, eta, left, around, steps, driver, enjoy) are the real
+# webshop's own texts (src/lib/i18n/dict in the conveasy-webshop repo); German is not in the webshop yet, so that one is ours.
+WSCENE = {
+    "nl": {"checkout": "Afrekenen", "modes": ("Afhalen", "Levering"), "addr_label": "Bezorgadres", "addr": "Kerkstraat 12, Zolder",
+           "fee": "2,4 km · bezorgkost {fee}", "pay_label": "Betalen met", "cash": "Cash", "total": "Totaal", "place": "Bestelling plaatsen",
+           "thanks": ("Bedankt!", "Je bestelling is binnen"), "eta": "Verwachte bezorgtijd", "left": ("Nog ± ", " min"), "around": "Verwacht rond 19:57",
+           "steps": ["Ontvangen", "In de keuken", "Onderweg", "Bezorgd"], "driver": "Onderweg met Ali", "enjoy": "Smakelijk!",
+           "sub": "Subtotaal", "ship": "Bezorgkost", "delivered": "Afgeleverd om 19:55."},
+    "fr": {"checkout": "Paiement", "modes": ("À emporter", "Livraison"), "addr_label": "Adresse de livraison", "addr": "Rue de l'Église 12, Namur",
+           "fee": "2,4 km · livraison {fee}", "pay_label": "Payer avec", "cash": "Espèces", "total": "Total", "place": "Passer la commande",
+           "thanks": ("Merci !", "Votre commande a bien été reçue"), "eta": "Heure de livraison prévue", "left": ("Encore ± ", " min"), "around": "Prévu vers 19:57",
+           "steps": ["Reçu", "En cuisine", "En route", "Livrée"], "driver": "En route avec Ali", "enjoy": "Bon appétit !",
+           "sub": "Sous-total", "ship": "Frais de livraison", "delivered": "Livré à 19:55."},
+    "en": {"checkout": "Checkout", "modes": ("Pickup", "Delivery"), "addr_label": "Delivery address", "addr": "Kerkstraat 12, Zolder",
+           "fee": "2.4 km · delivery {fee}", "pay_label": "Pay with", "cash": "Cash", "total": "Total", "place": "Place order",
+           "thanks": ("Thank you!", "Your order is in"), "eta": "Expected delivery time", "left": ("About ", " min to go"), "around": "Expected around 19:57",
+           "steps": ["Received", "In the kitchen", "On the way", "Delivered"], "driver": "On the way with Ali", "enjoy": "Enjoy your meal!",
+           "sub": "Subtotal", "ship": "Delivery cost", "delivered": "Delivered at 19:55."},
+    "tr": {"checkout": "Ödeme", "modes": ("Gel al", "Paket servis"), "addr_label": "Teslimat adresi", "addr": "Kerkstraat 12, Zolder",
+           "fee": "2,4 km · teslimat {fee}", "pay_label": "Ödeme yöntemi", "cash": "Nakit", "total": "Toplam", "place": "Siparişi ver",
+           "thanks": ("Teşekkürler!", "Siparişin alındı"), "eta": "Tahmini teslimat saati", "left": ("Yaklaşık ", " dk kaldı"), "around": "Tahminen 19:57 civarında",
+           "steps": ["Alınan", "Mutfakta", "Yolda", "Teslim edildi"], "driver": "Ali ile yolda", "enjoy": "Afiyet olsun!",
+           "sub": "Ara toplam", "ship": "Teslimat ücreti", "delivered": "19:55 saatinde teslim edildi."},
+    "de": {"checkout": "Kasse", "modes": ("Abholung", "Lieferung"), "addr_label": "Lieferadresse", "addr": "Kerkstraat 12, Zolder",
+           "fee": "2,4 km · Lieferung {fee}", "pay_label": "Bezahlen mit", "cash": "Bar", "total": "Gesamt", "place": "Bestellung aufgeben",
+           "thanks": ("Danke!", "Ihre Bestellung ist eingegangen"), "eta": "Voraussichtliche Lieferzeit", "left": ("Noch ± ", " Min."), "around": "Voraussichtlich gegen 19:57",
+           "steps": ["Eingegangen", "In der Küche", "Unterwegs", "Geliefert"], "driver": "Unterwegs mit Ali", "enjoy": "Guten Appetit!",
+           "sub": "Zwischensumme", "ship": "Liefergebühr", "delivered": "Um 19:55 geliefert."},
+}
+WS_DELIVERY_CENTS = 250          # the delivery cost in the scene
+WS_MINUTES = ["25", "17", "10"]  # the countdown: received, in the kitchen, on the way
+
+def _cents(price):
+    m = re.search(r"(\d+)[.,](\d\d)", price)
+    return int(m.group(1)) * 100 + int(m.group(2))
+def _price_like(cents, like):
+    """An amount in the style of an existing price text: "€4,20", "4,20 €" or "€4.20"."""
+    m = re.match(r"^(\D*)\d+([.,])\d\d(\D*)$", like)
+    return f"{m.group(1)}{cents // 100}{m.group(2)}{cents % 100:02d}{m.group(3)}"
+
 def web_i(lang):
+    """Animated phone for the webshop: the customer adds three products, fills in the address (the delivery cost appears),
+    picks a way to pay and places the order; then the order page: thank you, the minutes counting down, the steps up to delivered.
+    Pure CSS (see .wscene in site.css). Menu texts come from OVX[lang]["web"], the rest from WSCENE; totals are worked out here."""
     shop, tag, cats, items, btn = OVX[lang]["web"]
+    w = WSCENE[lang]
+    money = lambda c: _price_like(c, items[0][1])
+    sums = [0]
+    for _, pr in items: sums.append(sums[-1] + _cents(pr))
+    roll = lambda words, cls: f'<span class="ws-roll {cls}"><span>' + "".join(f"<em>{e(x)}</em>" for x in words) + "</span></span>"
+    tap = '<u class="ws-tap"></u>'
+    check = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+    bike = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>'
     c = "".join(f'<span{" class=on" if i == 0 else ""}>{e(x)}</span>' for i, x in enumerate(cats))
-    it = "".join(f'<div class="w-item"><i aria-hidden="true"></i><b>{e(n)}<small>{e(pr)}</small></b><span class="w-add" aria-hidden="true">+</span></div>' for n, pr in items)
-    return f'<div class="phone" role="img" aria-label="{e(UI[lang]["example"])}: webshop"><div class="ph-screen"><div class="w-head"><b>{e(shop)}</b><small>{e(tag)}</small></div><div class="w-cats">{c}</div>{it}<div class="w-btn">{e(btn)}</div></div></div>'
+    it = "".join(f'<div class="ws-item ws-i{i}"><i>{FOOD_ICONS[ic]}</i><b>{e(n)}<small>{e(pr)}</small></b><span class="ws-add"><em>+</em>{check}{tap}</span></div>'
+                 for i, ((n, pr), ic) in enumerate(zip(items, ["fries", "burger", "snack"]), 1))
+    menu = (f'<div class="ws-view ws-menu"><div class="ws-head"><b>{e(shop)}</b><small>{e(tag)}</small></div><div class="ws-cats">{c}</div>{it}'
+            f'<div class="ws-btn ws-order">{e(btn.split(" · ")[0])} · {roll([money(x) for x in sums], "ws-tot")}{tap}</div></div>')
+    typed = "".join(f'<i style="--i:{k}">{e(ch)}</i>' for k, ch in enumerate(w["addr"]))
+    chips = f'<span class="ws-chip ws-sel">Bancontact{tap}</span><span class="ws-chip">Klarna</span><span class="ws-chip">{e(w["cash"])}</span>'
+    checkout = (f'<div class="ws-view ws-check"><b class="ws-title">{e(w["checkout"])}</b>'
+                f'<div class="ws-seg"><span>{e(w["modes"][0])}</span><span class="on">{e(w["modes"][1])}</span></div>'
+                f'<div class="ws-lab">{e(w["addr_label"])}</div><div class="ws-field"><span class="ws-type">{typed}</span></div>'
+                f'<div class="ws-fee">{check}{e(w["fee"].format(fee=money(WS_DELIVERY_CENTS)))}</div>'
+                f'<div class="ws-lab">{e(w["pay_label"])}</div><div class="ws-chips">{chips}</div>'
+                f'<div class="ws-sums"><div><span>{e(w["sub"])}</span><span>{money(sums[-1])}</span></div>'
+                f'<div><span>{e(w["ship"])}</span><span>{roll(["–", money(WS_DELIVERY_CENTS)], "ws-tot2")}</span></div>'
+                f'<div class="ws-sum"><span>{e(w["total"])}</span><b>{roll([money(sums[-1]), money(sums[-1] + WS_DELIVERY_CENTS)], "ws-tot2")}</b></div></div>'
+                f'<div class="ws-btn ws-place">{e(w["place"])}{tap}</div></div>')
+    steps = "".join(f'<li class="ws-s{i}"><i></i>{e(x)}</li>' for i, x in enumerate(w["steps"], 1))
+    route = "M12 21C24 21 22 8 36 8S52 20 64 20 76 9 88 8"   # from the restaurant (left) to the customer (right)
+    route_map = ('<div class="ws-map"><svg viewBox="0 0 100 28" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+                 '<path class="ws-road" d="M-2 14H102M26-2V30M58-2V30M84-2V30M-2 3H102M-2 25H102"/>'
+                 f'<path class="ws-route" d="{route}"/><path class="ws-ride" pathLength="100" d="{route}"/>'
+                 '<circle class="ws-from" cx="12" cy="21" r="2.4"/><circle class="ws-to" cx="88" cy="8" r="2.4"/></svg></div>')
+    done = (f'<div class="ws-view ws-done"><span class="ws-okc">{check}</span>'
+            f'<div class="ws-thx"><b>{e(w["thanks"][0])}</b><small>{e(w["thanks"][1])}</small></div>'
+            f'<div class="ws-eta"><small>{e(w["eta"])}</small><div class="ws-big"><b class="ws-count">{e(w["left"][0])}{roll(WS_MINUTES, "ws-min")}{e(w["left"][1])}</b>'
+            f'<b class="ws-enjoy">{e(w["enjoy"])}</b></div><div class="ws-subs"><span class="ws-count">{e(w["around"])}</span><span class="ws-enjoy">{e(w["delivered"])}</span></div>'
+            f'<span class="ws-drv">{bike}{e(w["driver"])}</span></div>'
+            f'<ol class="ws-steps">{steps}</ol>{route_map}</div>')
+    return f'<div class="phone wscene" role="img" aria-label="{e(UI[lang]["example"])}: webshop"><div class="ph-screen ws">{menu}{checkout}{done}</div></div>'
 
 SHOT_FN = {"dash": dash_i, "kds": kds_i, "resv": resv_i, "web": web_i, "kiosk": kiosk_i, "chat": chat_i,
            "ticket": lambda l: ticket_i(l, HOME_TICKET[l]["ticket"], *TICKET_META[l])}
@@ -727,7 +807,7 @@ def llms():
     L = ["# Conveasy", "",
          "> Conveasy is AI ordering software for restaurants in Belgium and the Benelux. An AI takes orders and table reservations by phone and on WhatsApp, 24/7 and in 60+ languages. Restaurants also get a commission-free webshop with QR ordering, a self-order kiosk (card and online payments only) and Marketing AI, which includes a digital stamp card in Google Wallet and Apple Wallet. All orders and reservations land in one dashboard, on the kitchen screen and on the kitchen printer.", "",
          "Key facts:",
-         "- Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes).",
+         "- Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes). Handles 50+ calls at the same time.",
          "- WhatsApp AI: €99/month, on the restaurant's own WhatsApp number.",
          "- Webshop + QR ordering: €79/month, 0% commission on orders.",
          "- Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €1,599 one-time (payable in 3 instalments), other models on request.",

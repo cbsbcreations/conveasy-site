@@ -122,7 +122,7 @@ P["phone"] = {
         "card": "Neemt elke oproep op, ook tijdens de drukte. Bestelling gaat rechtstreeks naar de keuken.",
         "features": [
             ("24/7 bereikbaar", "Geen gemiste oproepen meer tijdens de drukte of buiten de openingsuren."),
-            ("Meerdere oproepen tegelijk", "Vijf klanten tegelijk aan de lijn? De AI neemt ze allemaal op."),
+            ("50+ oproepen tegelijk", "Vijftig klanten tegelijk aan de lijn? De AI praat met elk van hen. Niemand krijgt de bezettoon."),
             ("60+ talen", "De AI praat in de taal van de beller."),
             ("Kent je menu live", "Uitverkocht zet je met één tik af. De AI weet het meteen bij de volgende oproep."),
             ("Afhalen en levering", "Met jouw wachttijden, bezorgzones en minimumbedragen."),
@@ -130,6 +130,7 @@ P["phone"] = {
         ],
         "faq": [
             ("Klinkt de AI natuurlijk?", "De AI praat in gewone zinnen, begrijpt vragen over je menu en neemt de bestelling rustig aan. Vraag een demo aan en hoor het zelf."),
+            ("Hoeveel klanten kunnen tegelijk bellen?", "Meer dan 50. De AI voert elk gesprek apart, dus niemand moet wachten of krijgt de bezettoon, ook niet tijdens je drukste uren."),
             ("Wat betekenen de minuten in de prijs?", "Dat is de gesprekstijd die de AI per maand aan de telefoon is met je klanten. Start heeft 500 minuten, Plus 1.000 en Pro 2.000."),
             ("Waar komt de bestelling binnen?", "In je Conveasy-dashboard en op je keukenprinter, net als een bestelling via WhatsApp of je webshop."),
             ("Moet ik mijn kassa vervangen?", "Nee. Conveasy werkt los van je kassa."),
@@ -144,7 +145,7 @@ P["phone"] = {
         "card": "Répond à chaque appel, même pendant le rush. La commande part directement en cuisine.",
         "features": [
             ("Joignable 24h/24", "Plus d'appels manqués pendant le rush ou en dehors des heures d'ouverture."),
-            ("Plusieurs appels en même temps", "Cinq clients en ligne en même temps ? L'IA répond à tous."),
+            ("50+ appels en même temps", "Cinquante clients en ligne en même temps ? L'IA parle avec chacun d'eux. Personne ne tombe sur une ligne occupée."),
             ("Plus de 60 langues", "L'IA parle la langue de la personne qui appelle."),
             ("Votre carte en temps réel", "Un produit épuisé se désactive en un geste. L'IA le sait dès l'appel suivant."),
             ("À emporter et livraison", "Avec vos délais, zones de livraison et montants minimums."),
@@ -152,6 +153,7 @@ P["phone"] = {
         ],
         "faq": [
             ("L'IA a-t-elle l'air naturelle ?", "L'IA parle avec des phrases normales, comprend les questions sur votre carte et prend la commande calmement. Demandez une démo pour l'entendre."),
+            ("Combien de clients peuvent appeler en même temps ?", "Plus de 50. L'IA mène chaque conversation séparément : personne n'attend ni ne tombe sur une ligne occupée, même aux heures les plus chargées."),
             ("Que signifient les minutes dans le prix ?", "C'est le temps de conversation de l'IA avec vos clients par mois. Start comprend 500 minutes, Plus 1 000 et Pro 2 000."),
             ("Où arrive la commande ?", "Dans votre tableau de bord Conveasy et sur votre imprimante de cuisine, comme une commande WhatsApp ou en ligne."),
             ("Dois-je remplacer ma caisse ?", "Non. Conveasy fonctionne indépendamment de votre caisse."),
@@ -166,7 +168,7 @@ P["phone"] = {
         "card": "Answers every call, even during the rush. The order goes straight to the kitchen.",
         "features": [
             ("Open 24/7", "No more missed calls during the rush or outside opening hours."),
-            ("Several calls at once", "Five customers calling at the same time? The AI picks up every one."),
+            ("50+ calls at once", "Fifty customers calling at the same time? The AI talks to every one of them. Nobody gets a busy tone."),
             ("60+ languages", "The AI speaks the caller's language."),
             ("Knows your menu live", "Mark an item sold out with one tap. The AI knows on the next call."),
             ("Pickup and delivery", "With your waiting times, delivery zones and minimum amounts."),
@@ -174,6 +176,7 @@ P["phone"] = {
         ],
         "faq": [
             ("Does the AI sound natural?", "The AI talks in normal sentences, understands questions about your menu and takes the order calmly. Book a demo and hear it yourself."),
+            ("How many customers can call at the same time?", "More than 50. The AI handles every call separately, so nobody waits or gets a busy tone, even during your busiest hours."),
             ("What do the minutes in the price mean?", "That's the talk time the AI spends on the phone with your customers each month. Start has 500 minutes, Plus 1,000 and Pro 2,000."),
             ("Where does the order arrive?", "In your Conveasy dashboard and on your kitchen printer, just like a WhatsApp or webshop order."),
             ("Do I need to replace my till?", "No. Conveasy works separately from your till."),
@@ -451,7 +454,7 @@ PRICING = {
         "phone_h": "Telefoon AI", "phone_note": "Alle pakketten: 24/7, 60+ talen, ticket in de keuken, dashboard.",
         "tiers": [("Start", "249", "500 minuten per maand", False), ("Plus", "449", "1.000 minuten per maand", True), ("Pro", "799", "2.000 minuten per maand", False)],
         "popular": "Populair", "setup": "Eenmalige opstartkost: €299", "setup_other": "Eenmalige opstartkost: €199",
-        "tier_feats": ["Neemt elke oproep op, 24/7", "Meerdere oproepen tegelijk", "60+ talen", "Afhalen en levering"],
+        "tier_feats": ["Neemt elke oproep op, 24/7", "50+ oproepen tegelijk", "60+ talen", "Afhalen en levering"],
         "text_h": "WhatsApp AI en webshop",
         "year": "per maand, geen commissie",
         "wa_feats": ["AI op je eigen WhatsApp-nummer", "24/7, 60+ talen", "Bevestigen met één tik", "Betaallink voor leveringen"],
@@ -478,7 +481,7 @@ PRICING = {
         "phone_h": "Téléphone IA", "phone_note": "Toutes les formules : 24h/24, plus de 60 langues, ticket en cuisine, tableau de bord.",
         "tiers": [("Start", "249", "500 minutes par mois", False), ("Plus", "449", "1 000 minutes par mois", True), ("Pro", "799", "2 000 minutes par mois", False)],
         "popular": "Populaire", "setup": "Frais de mise en service uniques : 299 €", "setup_other": "Frais de mise en service uniques : 199 €",
-        "tier_feats": ["Répond à chaque appel, 24h/24", "Plusieurs appels en même temps", "Plus de 60 langues", "À emporter et livraison"],
+        "tier_feats": ["Répond à chaque appel, 24h/24", "50+ appels en même temps", "Plus de 60 langues", "À emporter et livraison"],
         "text_h": "WhatsApp IA et boutique en ligne",
         "year": "par mois, sans commission",
         "wa_feats": ["IA sur votre propre numéro WhatsApp", "24h/24, plus de 60 langues", "Confirmation en un geste", "Lien de paiement pour les livraisons"],
@@ -505,7 +508,7 @@ PRICING = {
         "phone_h": "Phone AI", "phone_note": "Every plan: 24/7, 60+ languages, ticket in the kitchen, dashboard.",
         "tiers": [("Start", "249", "500 minutes a month", False), ("Plus", "449", "1,000 minutes a month", True), ("Pro", "799", "2,000 minutes a month", False)],
         "popular": "Popular", "setup": "One-time setup fee: €299", "setup_other": "One-time setup fee: €199",
-        "tier_feats": ["Answers every call, 24/7", "Several calls at once", "60+ languages", "Pickup and delivery"],
+        "tier_feats": ["Answers every call, 24/7", "50+ calls at once", "60+ languages", "Pickup and delivery"],
         "text_h": "WhatsApp AI and webshop",
         "year": "a month, no commission",
         "wa_feats": ["AI on your own WhatsApp number", "24/7, 60+ languages", "One-tap confirmation", "Payment link for deliveries"],

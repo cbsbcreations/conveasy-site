@@ -55,7 +55,7 @@ DATA = {
             "card": "Yoğun saatlerde bile her aramayı açar. Sipariş doğrudan mutfağa gider.",
             "features": [
                 ("7/24 açık", "Yoğun saatlerde ya da kapanıştan sonra artık cevapsız arama yok."),
-                ("Aynı anda birden fazla arama", "Aynı anda beş müşteri mi arıyor? Yapay zekâ hepsini açar."),
+                ("Aynı anda 50+ arama", "Aynı anda elli müşteri mi arıyor? Yapay zekâ hepsiyle ayrı ayrı konuşur. Kimse meşgul sesi duymaz."),
                 ("60'tan fazla dil", "Yapay zekâ arayan kişinin dilinde konuşur."),
                 ("Menünü anlık bilir", "Biten bir ürünü tek dokunuşla kapat. Yapay zekâ bir sonraki aramada bunu bilir."),
                 ("Gel al ve paket servis", "Senin bekleme sürelerin, teslimat bölgelerin ve minimum tutarlarınla."),
@@ -63,6 +63,7 @@ DATA = {
             ],
             "faq": [
                 ("Yapay zekâ doğal konuşuyor mu?", "Yapay zekâ normal cümlelerle konuşur, menünle ilgili soruları anlar ve siparişi sakin bir şekilde alır. Demo iste, kendin dinle."),
+                ("Aynı anda kaç müşteri arayabilir?", "50'den fazla. Yapay zekâ her görüşmeyi ayrı yürütür; en yoğun saatlerinde bile kimse beklemez, kimse meşgul sesi duymaz."),
                 ("Fiyattaki dakikalar ne anlama geliyor?", "Bu, yapay zekânın her ay müşterilerinle telefonda konuştuğu süredir. Start paketinde 500 dakika, Plus'ta 1.000 ve Pro'da 2.000 dakika var."),
                 ("Sipariş nereye geliyor?", "Conveasy panona ve mutfak yazıcına, tıpkı bir WhatsApp ya da online sipariş gibi."),
                 ("Kasamı değiştirmem gerekiyor mu?", "Hayır. Conveasy kasandan bağımsız çalışır."),
@@ -161,7 +162,7 @@ DATA = {
         "phone_h": "Telefon YZ", "phone_note": "Tüm paketlerde: 7/24, 60'tan fazla dil, fiş mutfakta, pano.",
         "tiers": [("Start", "249", "Ayda 500 dakika", False), ("Plus", "449", "Ayda 1.000 dakika", True), ("Pro", "799", "Ayda 2.000 dakika", False)],
         "popular": "Popüler", "setup": "Bir kerelik kurulum ücreti: 299 €", "setup_other": "Bir kerelik kurulum ücreti: 199 €",
-        "tier_feats": ["Her aramayı açar, 7/24", "Aynı anda birden fazla arama", "60'tan fazla dil", "Gel al ve paket servis"],
+        "tier_feats": ["Her aramayı açar, 7/24", "Aynı anda 50+ arama", "60'tan fazla dil", "Gel al ve paket servis"],
         "text_h": "WhatsApp YZ ve online sipariş",
         "year": "aylık, komisyonsuz",
         "wa_feats": ["Kendi WhatsApp numaranda yapay zekâ", "7/24, 60'tan fazla dil", "Tek dokunuşla onay", "Paket servis için ödeme linki"],
