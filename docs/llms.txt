@@ -10,7 +10,7 @@ Key facts:
 - Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €1,599 one-time (payable in 3 instalments), other models on request.
 - One-time setup fee: €299 for phone AI, €199 for each other channel, €399 for phone AI + WhatsApp AI + webshop + kiosk together.
 - Works separately from the restaurant's till (POS); each channel can be bought on its own.
-- Typical customers: frituren (Belgian fry shops), snack bars, pizzerias, burger restaurants.
+- Works for every kind of restaurant: it uses the restaurant's own menu. Pages for frituren (Belgian fry shops), sushi restaurants, pizzerias, burger restaurants, kebab shops and all other restaurants.
 - Table reservations 24/7 through the phone AI and the WhatsApp AI; each reservation (name, date, time, party size) lands in the dashboard. Included in the phone AI and WhatsApp AI price at no extra cost.
 - Marketing AI: €69/month. Announcements to customers on all channels, Google review links, automatic emails for a second order and for unfinished orders, prepaid cards, and a digital stamp card in Google Wallet and Apple Wallet with notifications.
 - Contact: WhatsApp +32 456 56 47 47, https://conveasy.be/en/contact
@@ -24,9 +24,11 @@ Key facts:
 
 ## Restaurant types (English)
 - [Fry shops](https://conveasy.be/en/frituur): Friday night, the fryer is full and the phone keeps ringing. Conveasy takes every order on the phone and WhatsApp, with every sauce and size, and prints the ticket in the kitchen.
-- [Snack bars](https://conveasy.be/en/snack-bar): Snacks, sandwiches, platters and drinks, until late at night. Conveasy takes orders on the phone and WhatsApp, and customers order themselves through your webshop or kiosk.
+- [Sushi restaurants](https://conveasy.be/en/sushi): Boxes, rolls, no cucumber, extra wasabi, soy sauce on the side: sushi orders have a lot of details. Conveasy takes them on the phone and WhatsApp, gets everything right on the ticket and takes your table reservations too.
 - [Pizzerias](https://conveasy.be/en/pizzeria): Size, extra toppings, no onion, delivery or pickup: pizza orders have a lot of details. Conveasy takes them on the phone and WhatsApp and gets everything right on the ticket.
 - [Burger restaurants](https://conveasy.be/en/burger): Meals, extra cheese, no pickles, fries and a drink. Conveasy takes burger orders on the phone and WhatsApp, and with a kiosk customers order themselves at the counter.
+- [Kebab shops](https://conveasy.be/en/kebab): Pitta or dürüm, chicken or veal, with everything or no onion, which sauce: kebab orders have a lot of choices. Conveasy takes them on the phone and WhatsApp, even late at night, and gets everything right on the ticket.
+- [All restaurants](https://conveasy.be/en/all-restaurants): Whatever you serve, the AI works with your own menu, with your sizes, choices and extras. Pickup, delivery or at the table: orders and reservations come in by phone, WhatsApp, your webshop and your kiosk.
 
 ## Other pages
 - [Pricing](https://conveasy.be/en/pricing)
