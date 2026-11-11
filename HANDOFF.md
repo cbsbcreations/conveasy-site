@@ -1,7 +1,8 @@
 # Conveasy.be website: handoff
 
 New conveasy.be (replaces the Framer site). Static HTML, 5 languages (nl, fr, en, tr, de).
-Last update: 11 Nov 2026 (chat demo and voice demo connected; test address on GitHub Pages).
+Last update: 11 Nov 2026 (kiosk animation, payment methods, photo library, kiosk hardware 1599, voice greeting per page language;
+earlier that day: chat demo and voice demo connected, test address on GitHub Pages).
 
 ## Folders
 - src/ : source. build.py builds the site from content.py, lang_de.py, lang_tr.py, overrides.py, answers.py, legal/, site.css, site.js.
