@@ -1,0 +1,4 @@
+# built for the Claude preview only; rebuild with: python3 src/build.py
+preview/
+__pycache__/
+*.pyc
