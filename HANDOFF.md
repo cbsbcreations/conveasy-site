@@ -46,7 +46,7 @@ Last update: 11 Nov 2026 (chat demo and voice demo connected; test address on Gi
 - Phone and WhatsApp AI are 24/7, reservations included. Webshop: own domain or we provide one.
 - Online payment methods on the webshop and QR ordering (webshop page, PAY in build.py): Bancontact, iDEAL, Klarna, Riverty, PayPal,
   meal vouchers, Visa, Mastercard, Apple Pay, Google Pay.
-- Restaurants can pick product photos from our library of high-quality dish photos (webshop page).
+- Restaurants can pick product photos from our library of high-quality dish photos (webshop page and kiosk page).
 - Demo requests go to conveasyai@gmail.com (form opens email app).
 - Legal pages copied from the Framer site and translated (not checked by a lawyer).
 

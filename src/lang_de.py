@@ -124,7 +124,7 @@ DATA = {
             "card": "Kunden bestellen und bezahlen selbst am Kiosk. Kürzere Schlangen an der Theke.",
             "features": [
                 ("Karte oder online bezahlen", "Der Kiosk ist bargeldlos. Keine Kassendifferenzen."),
-                ("Speisekarte mit Fotos", "Kunden sehen, was sie bestellen, mit Größen und Extras."),
+                ("Speisekarte mit Fotos", "Kunden sehen, was sie bestellen, mit Größen und Extras. Keine eigenen Fotos? Wählen Sie sie aus unserer Bibliothek mit hochwertigen Gerichtefotos."),
                 ("Mehrere Sprachen", "Kunden wählen ihre Sprache selbst am Bildschirm."),
                 ("Direkt in die Küche", "Der Bon wird gedruckt und erscheint in Ihrem Dashboard."),
             ],

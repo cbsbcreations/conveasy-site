@@ -122,7 +122,7 @@ DATA = {
             "card": "Müşteriler kioskta kendileri sipariş verip öder. Tezgâhta daha kısa kuyruk.",
             "features": [
                 ("Kart ya da online ödeme", "Kiosk nakitsiz çalışır. Kasa farkı yok."),
-                ("Fotoğraflı menü", "Müşteriler ne sipariş ettiğini boy ve ekstralarıyla görür."),
+                ("Fotoğraflı menü", "Müşteriler ne sipariş ettiğini boy ve ekstralarıyla görür. Kendi fotoğrafın yok mu? Yüksek kaliteli yemek fotoğrafı kütüphanemizden seç."),
                 ("Birden fazla dil", "Müşteriler ekranda kendi dilini seçer."),
                 ("Doğrudan mutfağa", "Fiş yazdırılır ve panonda görünür."),
             ],
