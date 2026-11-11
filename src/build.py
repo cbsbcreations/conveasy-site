@@ -235,13 +235,49 @@ def mkt_i(lang):
     r = "".join(f'<div class="row"><span class="chip">{e(c)}</span><b>{e(x)}</b><small></small></div>' for c, x in rows)
     return f'''<div class="panel" role="img" aria-label="{e(UI[lang]["example"])}: marketing"><div class="p-title">{e(t)}<span>{e(P["marketing"][lang]["name"])}</span></div>{r}</div>'''
 
+# Marketing scene, per language: word for "orders", name of the e-mail channel, and the message each customer gets
+# (WhatsApp announcement, e-mail about an unfinished order, Wallet stamp card). Keep each message under about 30 characters.
+MSCENE = {
+    "nl": ("Bestellingen", "E-mail", ["Nieuw: Double Smash Burger", "Je mandje staat nog klaar", "Stempel 8\u00a0van\u00a010 gespaard"]),
+    "fr": ("Commandes", "E-mail", ["Nouveau\u00a0: Double Smash Burger", "Votre panier vous attend", "Tampon 8\u00a0sur\u00a010 ajouté"]),
+    "en": ("Orders", "Email", ["New: Double Smash Burger", "Your basket is still waiting", "Stamp 8\u00a0of\u00a010 collected"]),
+    "tr": ("Sipariş", "E-posta", ["Yeni: Double Smash Burger", "Sepetin seni bekliyor", "10\u00a0damgadan 8'i tamam"]),
+    "de": ("Bestellungen", "E-Mail", ["Neu: Double Smash Burger", "Ihr Warenkorb wartet noch", "Stempel 8\u00a0von\u00a010 gesammelt"]),
+}  # \u00a0 is a no-break space: it keeps "8 van 10" (and the French " :") on one line
+def mkt_scene_i(lang):
+    """Animated scene for Marketing AI: the restaurant sends, lines run to three customer phones, a message arrives on each
+    (WhatsApp, e-mail, Wallet) and orders come back. Pure CSS (see .mscene in site.css).
+    The channel icons are plain shapes on purpose (speech bubble, envelope, card), not the logos of those services."""
+    orders, mail, texts = MSCENE[lang]
+    icons = {
+        "wa": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16A1.5 1.5 0 0 1 21.5 7v9a1.5 1.5 0 0 1-1.5 1.5h-8L7.5 21v-3.5H4A1.5 1.5 0 0 1 2.5 16V7A1.5 1.5 0 0 1 4 5.5z"/></svg>',
+        "mail": '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 7l9 6.5L21 7"/></svg>',
+        "wal": '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M6.5 14.5h3"/></svg>',
+    }
+    wires = ["M200 86C200 160 68 150 68 226", "M200 86V226", "M200 86C200 160 332 150 332 226"]
+    lines = ("".join(f'<path class="ms-wire" d="{d}"/>' for d in wires)
+             + "".join(f'<path class="ms-go ms-g{i}" pathLength="100" d="{d}"/>' for i, d in enumerate(wires, 1))
+             + "".join(f'<path class="ms-back ms-b{i}" pathLength="100" d="{d}"/>' for i, d in enumerate(wires, 1)))
+    phones = "".join(f'<div class="ms-phone ms-p{i}"><div class="ms-scr"><b>19:48</b></div></div>' for i in (1, 2, 3))
+    chans = [("wa", "WhatsApp"), ("mail", mail), ("wal", "Wallet")]
+    notes = "".join(f'<div class="ms-note ms-n{i}"><span class="ms-ch ms-{k}">{icons[k]}{e(name)}</span><p>{e(txt)}</p></div>'
+                    for i, ((k, name), txt) in enumerate(zip(chans, texts), 1))
+    return f'''<div class="mscene" role="img" aria-label="{e(UI[lang]["example"])}: marketing">
+<svg class="ms-lines" viewBox="0 0 400 360" preserveAspectRatio="none" aria-hidden="true">{lines}</svg>
+<div class="ms-name">Mario's Snackbar<small>{e(P["marketing"][lang]["name"])}</small></div>
+<div class="ms-shop"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="ms-awn" d="M10 8h28l5 11a4.75 4.75 0 0 1-9.5 0 4.75 4.75 0 0 1-9.5 0 4.75 4.75 0 0 1-9.5 0 4.75 4.75 0 0 1-9.5 0z"/><path d="M9 27v13h30V27M20 40v-8h8v8"/></svg></div>
+<div class="ms-pill"><span>{e(orders)} <span class="ms-count"><span><em>+1</em><em>+2</em><em>+3</em></span></span></span></div>
+<div class="ms-phones">{phones}</div>
+{notes}
+</div>'''
+
 def framed(lang, inner):
     return f'<div>{inner}<p class="mock-label">{e(UI[lang]["example"])}</p></div>'
 def ticket(lang, *a): return framed(lang, ticket_i(lang, *a))
 def chat(lang): return framed(lang, chat_i(lang))
 def dash(lang): return framed(lang, dash_i(lang))
 def kiosk(lang): return framed(lang, kiosk_i(lang))
-def mkt(lang): return framed(lang, mkt_i(lang))
+def mkt(lang): return framed(lang, mkt_scene_i(lang))  # the hero of the Marketing AI page; mkt_i (the "this week" list) is no longer shown
 
 # ---------------- App visuals: sample data, swap by dropping src/shots/<id>.png (or .jpg/.webp) ----------------
 SHOT_DIR = os.path.join(HERE, "shots")

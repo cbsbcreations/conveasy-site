@@ -1,7 +1,7 @@
 # Conveasy.be website: handoff
 
 New conveasy.be (replaces the Framer site). Static HTML, 5 languages (nl, fr, en, tr, de).
-Last update: 11 Nov 2026 (kiosk animation, payment methods, photo library, kiosk hardware 1599, voice greeting per page language;
+Last update: 11 Nov 2026 (Marketing AI animation, kiosk animation, payment methods, photo library, kiosk hardware 1599, voice greeting per page language;
 earlier that day: chat demo and voice demo connected, test address on GitHub Pages).
 
 ## Folders
@@ -54,6 +54,13 @@ earlier that day: chat demo and voice demo connected, test address on GitHub Pag
 ## Kiosk animation
 - kiosk_i() in build.py + ".kscene" in site.css: a figure orders at the kiosk (language choice, burger and fries, pay, ticket).
   Pure CSS, one 14 second loop; shown on the kiosk page (top) and on the home page ("In de app"). With reduced motion it stands still.
+
+## Marketing AI animation
+- mkt_scene_i() in build.py + ".mscene" in site.css: Mario's Snackbar sends, lines run to three customer phones, a message lands on
+  each (WhatsApp, e-mail, Wallet), then orders come back ("Bestellingen +3"). Pure CSS, one 12 second loop; shown at the top of the
+  Marketing AI page. With reduced motion it stands still with everything shown. The words per language are in MSCENE in build.py.
+- It replaced the "Deze week" list at the top of that page (mkt_i in build.py, no longer shown).
+- The channel icons are plain shapes (speech bubble, envelope, card), not the logos of WhatsApp or the wallets.
 
 ## Rules
 - Call it "Marketing AI". Never mention Eatpoint on the site. No auto ads/ad testing promised. No kassa/POS page.
