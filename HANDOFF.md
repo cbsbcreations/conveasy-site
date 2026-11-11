@@ -35,15 +35,24 @@ Last update: 11 Nov 2026 (chat demo and voice demo connected; test address on Gi
 - Never put the account's general public key (works everywhere, with every assistant) or a private key in the site.
 - A call is cut off after 3 minutes (MAX_SECONDS in site.js, sent to Vapi as maxDurationSeconds).
 - The Vapi SDK is loaded from jsDelivr on the first click (@vapi-ai/web 3.0.1).
+- The assistant greets in the language of the page: VOICE_FIRST in build.py, sent to Vapi as firstMessage when the call starts.
+- The assistant "TEST Conveasy" runs on GPT-6 Luna since 11 Nov 2026 (was GPT-5.6 Luna).
 
 ## Business facts used on the site
 - Company: Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, NM 87110 (Albuquerque). Email conveasyai@gmail.com.
 - Prices/month: WhatsApp AI 99, webshop 79, kiosk 89, Marketing AI 69 (includes Google/Apple Wallet stamp card).
-- Setup: voice AI 299, others 199, bundle voice+WhatsApp+webshop+kiosk 399. Kiosk hardware 899 (21.5" table stand).
+- Setup: voice AI 299, others 199, bundle voice+WhatsApp+webshop+kiosk 399. Kiosk hardware 1599 (21.5" table stand), payable in 3 instalments.
 - 1 week free trial. Over the limit = upgrade to a bigger plan. Live within max 10 days.
 - Phone and WhatsApp AI are 24/7, reservations included. Webshop: own domain or we provide one.
+- Online payment methods on the webshop and QR ordering (webshop page, PAY in build.py): Bancontact, iDEAL, Klarna, Riverty, PayPal,
+  meal vouchers, Visa, Mastercard, Apple Pay, Google Pay.
+- Restaurants can pick product photos from our library of high-quality dish photos (webshop page).
 - Demo requests go to conveasyai@gmail.com (form opens email app).
 - Legal pages copied from the Framer site and translated (not checked by a lawyer).
+
+## Kiosk animation
+- kiosk_i() in build.py + ".kscene" in site.css: a figure orders at the kiosk (language choice, burger and fries, pay, ticket).
+  Pure CSS, one 14 second loop; shown on the kiosk page (top) and on the home page ("In de app"). With reduced motion it stands still.
 
 ## Rules
 - Call it "Marketing AI". Never mention Eatpoint on the site. No auto ads/ad testing promised. No kassa/POS page.

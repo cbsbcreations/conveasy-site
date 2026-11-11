@@ -549,3 +549,78 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 @keyframes wa-dot { 0%, 60%, 100% { opacity: .35; transform: none; } 30% { opacity: 1; transform: translateY(-3px); } }
 @media (max-width: 480px) { .wa { height: 480px; border-radius: 18px; } }
 @media (prefers-reduced-motion: reduce) { .wa-msg, .wa-typing span { animation: none; } }
+
+/* Payment methods on the webshop page */
+.pay-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.pay-list li { padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font: 600 .95rem/1.2 var(--font-body); }
+
+/* Kiosk scene: a figure orders at the kiosk. Pure CSS, one 14 s loop; without motion it rests on the menu screen. */
+.kscene { --t: 14s; position: relative; width: min(100%, 400px); aspect-ratio: 10 / 9; margin-inline: auto; container-type: inline-size; font-size: 12px; text-align: left; }
+.kscene *, .kscene *::before, .kscene *::after { box-sizing: border-box; }
+.ks-floor { position: absolute; left: 2%; right: 2%; bottom: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--line-2) 15%, var(--line-2) 85%, transparent); }
+.ks-kiosk { position: absolute; left: 6%; bottom: 0; width: 40%; height: 97%; }
+.ks-frame { position: absolute; inset: 0 0 auto 0; height: 70%; padding: 5%; border-radius: 9% / 6%; background: linear-gradient(160deg, #1B1B21, var(--surface)); border: 1px solid var(--line-2); box-shadow: 0 18px 40px -18px rgb(0 0 0 / .9); z-index: 2; }
+.ks-screen { position: relative; height: 100%; border-radius: 6% / 4%; background: #050506; overflow: hidden; font-size: 3.1cqi; line-height: 1.25; color: var(--ink); }
+.ks-view { position: absolute; inset: 0; padding: 9% 8%; display: grid; gap: 5%; align-content: start; opacity: 0; animation: var(--t) linear infinite; }
+.ks-lang { align-content: center; justify-items: center; gap: 12%; animation-name: ks-v-lang; }
+.ks-menu { opacity: 1; animation-name: ks-v-menu; }
+.ks-pay { align-content: center; justify-items: center; gap: 10%; animation-name: ks-v-pay; }
+.ks-hello, .ks-roll { display: inline-block; height: 1.25em; overflow: hidden; vertical-align: bottom; }
+.ks-hello { font: 700 1.5em/1.25 var(--font-display); text-align: center; }
+.ks-hello > span, .ks-roll > span { display: block; animation: ks-words var(--t) var(--ease) infinite; }
+.ks-hello > span { animation-name: ks-hello; }
+.ks-hello em, .ks-roll em { display: block; height: 1.25em; font-style: normal; white-space: nowrap; }
+.ks-chips { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4%; width: 100%; }
+.ks-chips i { font: 700 .72em/1 var(--font-mono); font-style: normal; text-align: center; padding: .6em 0; border-radius: .5em; border: 1px solid var(--line-2); color: var(--ink); }
+.ks-chips::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 16.8%; border-radius: .5em; background: var(--brand-soft); box-shadow: inset 0 0 0 1.5px var(--accent); animation: ks-chip var(--t) var(--ease) infinite; }
+.ks-top { display: flex; justify-content: space-between; align-items: center; font: 700 1.05em/1.25 var(--font-display); }
+.ks-cart { display: block; width: 1.9em; height: 1.9em; border-radius: 50%; overflow: hidden; background: var(--accent); color: var(--accent-ink); font: 700 .8em/1 var(--font-mono); }
+.ks-cart > span { display: block; transform: translateY(-66.666%); animation: ks-cart var(--t) var(--ease) infinite; }
+.ks-cart em { display: block; height: 1.9em; line-height: 1.9em; text-align: center; font-style: normal; }
+.ks-item { display: grid; grid-template-columns: 1.7em minmax(0, 1fr) 1.5em; align-items: center; gap: .45em; padding: .4em .5em; border-radius: .7em; border: 1px solid var(--line); background: var(--surface); }
+.ks-n { display: grid; min-width: 0; gap: .1em; }
+.ks-item svg { width: 1.7em; height: 1.7em; fill: none; stroke: var(--brand); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.ks-item b { font-weight: 600; min-width: 0; line-height: 1.25; }
+.ks-item small { font: 500 .76em/1 var(--font-mono); color: var(--muted); }
+.ks-item u { text-decoration: none; display: grid; place-items: center; width: 1.5em; height: 1.5em; border-radius: 50%; border: 1px solid var(--line-2); font-weight: 700; line-height: 1; }
+.ks-burger { animation: ks-tap1 var(--t) linear infinite; } .ks-burger u { animation: ks-plus1 var(--t) linear infinite; }
+.ks-fries { animation: ks-tap2 var(--t) linear infinite; } .ks-fries u { animation: ks-plus2 var(--t) linear infinite; }
+.ks-go { text-align: center; padding: .55em; border-radius: .7em; background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.ks-pay b { font: 700 1.6em/1 var(--font-display); }
+.ks-card { position: relative; width: 46%; aspect-ratio: 1.58; border-radius: .5em; background: linear-gradient(135deg, var(--brand), var(--accent-2)); opacity: 0; animation: ks-card var(--t) var(--ease) infinite; }
+.ks-card::after { content: ""; position: absolute; left: 12%; top: 30%; width: 22%; height: 26%; border-radius: .2em; background: rgb(0 0 0 / .28); }
+.ks-ok { position: absolute; left: 50%; top: 60%; width: 3.4em; height: 3.4em; margin: -1.7em 0 0 -1.7em; border-radius: 50%; background: var(--ok); transform: scale(0); animation: ks-ok var(--t) var(--ease) infinite; }
+.ks-ok::after { content: ""; position: absolute; left: 36%; top: 20%; width: 30%; height: 52%; border: solid #04130C; border-width: 0 .32em .32em 0; transform: rotate(45deg); }
+.ks-slot { position: absolute; left: 30%; right: 30%; top: 70%; height: 11%; overflow: hidden; z-index: 3; }
+.ks-ticket { position: absolute; inset: 0 6% 16% 6%; display: grid; place-items: center; background: var(--paper); color: var(--paper-ink); font: 700 2.6cqi/1 var(--font-mono); border-radius: 0 0 .25em .25em; transform: translateY(-110%); animation: ks-ticket var(--t) var(--ease) infinite; }
+.ks-stand { position: absolute; left: 39%; right: 39%; top: 69%; bottom: 3%; background: linear-gradient(90deg, #15151A, #26262E, #15151A); }
+.ks-base { position: absolute; left: 14%; right: 14%; bottom: 0; height: 3.4%; border-radius: 40% 40% 0 0 / 100% 100% 0 0; background: #26262E; border: 1px solid var(--line-2); border-bottom: 0; }
+.ks-man { position: absolute; left: 36%; bottom: 0; width: 48%; height: 96%; overflow: visible; fill: none; stroke: var(--ink); stroke-width: 4.4; stroke-linecap: round; stroke-linejoin: round; z-index: 4; }
+.ks-man > circle { fill: var(--bg); }
+.ks-arm { transform-box: view-box; transform-origin: 52px 52px; transform: rotate(86deg); animation: ks-arm var(--t) ease-in-out infinite; }
+.ks-arm circle { fill: var(--accent); stroke: none; }
+@keyframes ks-v-lang { 0%, 27% { opacity: 1; } 31%, 93% { opacity: 0; } 97%, 100% { opacity: 1; } }
+@keyframes ks-v-menu { 0%, 29% { opacity: 0; } 33%, 67% { opacity: 1; } 71%, 100% { opacity: 0; } }
+@keyframes ks-v-pay { 0%, 69% { opacity: 0; } 73%, 91% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes ks-hello { 0%, 4% { transform: translateY(0); } 6%, 10% { transform: translateY(-20%); } 12%, 16% { transform: translateY(-40%); } 18%, 22% { transform: translateY(-60%); } 24%, 34% { transform: translateY(-80%); } 36%, 100% { transform: translateY(0); } }
+@keyframes ks-chip { 0%, 4% { transform: translateX(0); } 6%, 10% { transform: translateX(123.81%); } 12%, 16% { transform: translateX(247.62%); } 18%, 22% { transform: translateX(371.43%); } 24%, 34% { transform: translateX(495.24%); } 36%, 100% { transform: translateX(0); } }
+@keyframes ks-words { 0%, 37% { transform: translateY(0); } 39%, 44% { transform: translateY(-20%); } 46%, 51% { transform: translateY(-40%); } 53%, 58% { transform: translateY(-60%); } 60%, 74% { transform: translateY(-80%); } 76%, 100% { transform: translateY(0); } }
+@keyframes ks-cart { 0%, 41% { transform: translateY(0); } 42.5%, 53% { transform: translateY(-33.333%); } 54.5%, 74% { transform: translateY(-66.666%); } 76%, 100% { transform: translateY(0); } }
+@keyframes ks-tap1 { 0%, 40.5%, 46%, 100% { border-color: var(--line); background: var(--surface); } 41.5%, 44% { border-color: var(--accent); background: var(--brand-soft); } }
+@keyframes ks-plus1 { 0%, 40.5%, 46%, 100% { background: transparent; color: var(--ink); } 41.5%, 44% { background: var(--accent); color: var(--accent-ink); } }
+@keyframes ks-tap2 { 0%, 52%, 57.5%, 100% { border-color: var(--line); background: var(--surface); } 53%, 55.5% { border-color: var(--accent); background: var(--brand-soft); } }
+@keyframes ks-plus2 { 0%, 52%, 57.5%, 100% { background: transparent; color: var(--ink); } 53%, 55.5% { background: var(--accent); color: var(--accent-ink); } }
+@keyframes ks-card { 0%, 72% { opacity: 0; transform: translateY(40%); } 76%, 79% { opacity: 1; transform: translateY(0); } 81.5%, 100% { opacity: 0; transform: translateY(0); } }
+@keyframes ks-ok { 0%, 80% { transform: scale(0); } 83%, 93% { transform: scale(1); } 95%, 100% { transform: scale(0); } }
+@keyframes ks-ticket { 0%, 83% { transform: translateY(-110%); opacity: 1; } 89%, 95% { transform: translateY(0); opacity: 1; } 98%, 100% { transform: translateY(0); opacity: 0; } }
+@keyframes ks-arm {
+  0%, 6% { transform: rotate(14deg); }
+  11%, 25% { transform: rotate(59deg); } 26.2% { transform: translate(-4px, 0) rotate(59deg); } 27.4%, 31% { transform: rotate(59deg); }
+  36%, 40% { transform: rotate(109deg); } 41.2% { transform: translate(-4px, 0) rotate(109deg); } 42.4%, 47% { transform: rotate(109deg); }
+  50%, 51.6% { transform: rotate(86deg); } 52.8% { transform: translate(-4px, 0) rotate(86deg); } 54%, 66% { transform: rotate(86deg); }
+  72%, 75% { transform: rotate(70deg); } 76.2% { transform: translate(-4px, 0) rotate(70deg); } 77.4%, 82% { transform: rotate(70deg); }
+  88%, 94% { transform: rotate(35deg); } 100% { transform: rotate(14deg); }
+}
+.stage .kscene { animation: rise 1s .15s var(--ease) both; }
+.shot-frame > .kscene { max-width: 360px; }
+@media (prefers-reduced-motion: reduce) { .kscene *, .kscene *::before { animation: none !important; } }

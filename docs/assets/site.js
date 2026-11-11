@@ -208,7 +208,10 @@ var CHAT_DEMO_ENDPOINT = 'https://balloz.app.n8n.cloud/webhook/conveasy-site-wa-
         if (state !== 'idle') { if (active === b) { try { vapi && vapi.stop(); } catch (e) {} end('ended'); } return; }
         if (!VAPI_PUBLIC_KEY || VAPI_PUBLIC_KEY === 'VAPI_PUBLIC_KEY') { say(b, 'notset'); return; }
         active = b; setState(b, 'connecting'); say(b, '');
-        load().then(function (v) { return v.start(b.getAttribute('data-vapi'), { maxDurationSeconds: MAX_SECONDS }); })
+        // The assistant greets in the language of this page (data-first); after that it follows the language the caller speaks
+        var opts = { maxDurationSeconds: MAX_SECONDS }, first = b.getAttribute('data-first');
+        if (first) opts.firstMessage = first;
+        load().then(function (v) { return v.start(b.getAttribute('data-vapi'), opts); })
           .then(function (call) { if (!call && state === 'connecting') end(failKey); })
           .catch(function () { sdk = null; end(failKey); });
       });
