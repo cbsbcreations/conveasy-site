@@ -80,7 +80,7 @@ DATA = {
                 ("Yapay zekâ, 7/24", "Mesajlara cevap vermek için personele gerek yok. Yapay zekâ her siparişi alır."),
                 ("Kendi numaran", "Müşteriler dükkânının WhatsApp numarasına yazar."),
                 ("Tek dokunuşla onay", "Müşteri toplam tutarı görür ve bir butonla onaylar."),
-                ("Online ödeme", "Paket servis için ödeme linki gönder. Sipariş ancak ödendikten sonra mutfağa gider."),
+                ("Online ödeme", "Paket servis için ödeme linki gönder; Klarna ve yemek çekleriyle de ödenir. Sipariş ancak ödendikten sonra mutfağa gider; ödenmeyen link 20 dakika sonra iptal olur."),
                 ("Kapalı mısın? Ön sipariş", "Açılış saatleri dışında yapay zekâ ne zaman açacağını söyler ve siparişi sonrası için alır."),
                 ("60'tan fazla dil", "Yapay zekâ müşterinin dilinde cevap verir."),
             ],

@@ -4,8 +4,9 @@
 
 Key facts:
 - Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes). Handles 50+ calls at the same time.
-- WhatsApp AI: €99/month, on the restaurant's own WhatsApp number.
-- Webshop + QR ordering: €79/month, 0% commission on orders.
+- Phone AI also: recognises returning callers (name, address, last order), checks the delivery address against the street list and delivery zones, transfers to staff when the caller asks, takes add-ons in the same call, answers outside opening hours to say when the restaurant opens again, and sends callers who hung up without ordering a WhatsApp message to order after all.
+- WhatsApp AI: €99/month, on the restaurant's own WhatsApp number. Payment link for deliveries (Klarna and meal vouchers included, an unpaid link expires after 20 minutes); delivery cost, minimum order and free delivery worked out per address; table reservations can be booked, changed and cancelled in the chat; prepaid cards accepted.
+- Webshop + QR ordering: €79/month, 0% commission on orders. Live order tracking with a countdown and a map, one-tap reorder, promotions (2-for-1, discount codes, free delivery, menu deals), five designs, the 14 allergens per product, an app for the restaurant's own drivers, analytics and Z-reports.
 - Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €1,599 one-time (payable in 3 instalments), other models on request.
 - One-time setup fee: €299 for phone AI, €199 for each other channel, €399 for phone AI + WhatsApp AI + webshop + kiosk together.
 - Works separately from the restaurant's till (POS); each channel can be bought on its own.
