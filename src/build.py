@@ -203,10 +203,28 @@ KIOSK = {"nl": ("Kiosk · Kies je taal", ["Friet & snacks", "Burgers", "Dranken"
          "fr": ("Borne · Choisissez votre langue", ["Frites et snacks", "Burgers", "Boissons"], "Payer par carte"),
          "en": ("Kiosk · Choose your language", ["Fries & snacks", "Burgers", "Drinks"], "Pay by card")}
 def kiosk_i(lang):
-    t, cats, pay = KIOSK[lang]
-    r = "".join(f'<div class="row"><span class="chip">{i+1}</span><b>{e(c)}</b><small>›</small></div>' for i, c in enumerate(cats))
-    return f'''<div class="panel" role="img" aria-label="{e(UI[lang]["example"])}: kiosk"><div class="p-title">{e(t)}<span>NL · FR · EN · TR · DE</span></div>{r}
-<div class="row"><span class="chip y">€</span><b>{e(pay)}</b><small></small></div></div>'''
+    """Animated scene: a figure orders at the kiosk. The screen switches language, adds a burger and fries, pays, and a ticket comes out.
+    Pure CSS (see .kscene in site.css); the words on the screen are the same on every page because they show all five languages."""
+    def roll(words): return '<span class="ks-roll"><span>' + "".join(f"<em>{e(w)}</em>" for w in words) + "</span></span>"
+    hello = "".join(f"<em>{e(w)}</em>" for w in ["Welkom", "Bienvenue", "Welcome", "Hoş geldin", "Willkommen"])
+    chips = "".join(f"<i>{c}</i>" for c in ["NL", "FR", "EN", "TR", "DE"])
+    icons = {
+        "burger": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11a8 6 0 0 1 16 0z"/><path d="M3 14.5h18"/><path d="M5 18h14a1.5 1.5 0 0 1 0 3H5a1.5 1.5 0 0 1 0-3z"/></svg>',
+        "fries": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11l1.5 10h7L17 11z"/><path d="M9 11V4M12 11V3M15 11V5"/></svg>',
+        "drink": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l-1.2 13H8.2z"/><path d="M6 8h12M13 8l1.5-5H17"/></svg>',
+    }
+    rows = [("burger", ["Burger", "Burger", "Burger", "Burger", "Burger"], "9,00"),
+            ("fries", ["Friet", "Frites", "Fries", "Patates", "Pommes"], "4,50"),
+            ("drink", ["Drankje", "Boisson", "Drink", "İçecek", "Getränk"], "2,50")]
+    items = "".join(f'<div class="ks-item ks-{k}">{icons[k]}<span class="ks-n"><b>{roll(w)}</b><small>€{pr}</small></span><u>+</u></div>' for k, w, pr in rows)
+    return f'''<div class="kscene" role="img" aria-label="{e(UI[lang]["example"])}: kiosk">
+<div class="ks-kiosk"><div class="ks-frame"><div class="ks-screen">
+<div class="ks-view ks-lang"><span class="ks-hello"><span>{hello}</span></span><div class="ks-chips">{chips}</div></div>
+<div class="ks-view ks-menu"><div class="ks-top">{roll(["Menu", "Carte", "Menu", "Menü", "Speisekarte"])}<span class="ks-cart"><span><em>0</em><em>1</em><em>2</em></span></span></div>{items}<div class="ks-go">{roll(["Bestellen", "Commander", "Order", "Sipariş ver", "Bestellen"])}</div></div>
+<div class="ks-view ks-pay"><b>€13,50</b><span class="ks-card"></span><span class="ks-ok"></span></div>
+</div></div><div class="ks-slot"><span class="ks-ticket">#47</span></div><div class="ks-stand"></div><div class="ks-base"></div></div>
+<svg class="ks-man" viewBox="0 0 100 180" aria-hidden="true"><circle cx="52" cy="22" r="13"/><path d="M52 35v68M52 103l-15 73M52 103l15 73M52 52l15 44"/><g class="ks-arm"><path d="M52 52v46"/><circle cx="52" cy="99" r="3.2"/></g></svg>
+<div class="ks-floor"></div></div>'''
 
 MKT = {"nl": ("Deze week", [("Instagram", "Reel: friet in 15 seconden"), ("Facebook", "Advertentie A/B-test"), ("Google", "Openingsuren en menu bijgewerkt"), ("AI-zoeken", "Menu leesbaar voor ChatGPT")]),
        "fr": ("Cette semaine", [("Instagram", "Reel : la frite en 15 secondes"), ("Facebook", "Test A/B de publicité"), ("Google", "Horaires et carte à jour"), ("Recherche IA", "Carte lisible par ChatGPT")]),
@@ -443,12 +461,21 @@ PREVIEW_NOTE = {
     "de": "Die Live-Demo funktioniert in dieser Vorschau nicht. Auf der echten Website funktioniert sie.",
 }
 
+# The voice demo greets in the language of the page: sent to Vapi as the first message when the call starts.
+VOICE_FIRST = {
+    "nl": "Hallo, met Sara van Mario's Snackbar.",
+    "fr": "Bonjour, ici Sara de Mario's Snackbar.",
+    "en": "Hello, this is Sara from Mario's Snackbar.",
+    "tr": "Merhaba, Mario's Snackbar'dan Sara.",
+    "de": "Hallo, hier ist Sara von Mario's Snackbar.",
+}
+
 def demo_band(lang):
     eb, h2, txt, start, stop, wait, live, ended, err, notset, note = DEMO[lang]
     return (f'<section class="band demo-band" id="demo"><div class="wrap"><div class="demo">'
             f'<div class="demo-copy"><span class="eyebrow">{e(eb)}</span><h2>{e(h2)}</h2><p>{e(txt)}</p><p class="demo-note">{e(note)}</p></div>'
             f'<div class="demo-ctl"><div class="demo-orb" aria-hidden="true"><i></i><i></i><i></i></div>'
-            f'<button type="button" class="btn btn-primary demo-btn" data-vapi="{VAPI_ASSISTANT_ID}" data-state="idle" '
+            f'<button type="button" class="btn btn-primary demo-btn" data-vapi="{VAPI_ASSISTANT_ID}" data-first="{e(VOICE_FIRST[lang])}" data-state="idle" '
             f'data-l-start="{e(start)}" data-l-stop="{e(stop)}" data-l-wait="{e(wait)}" data-m-live="{e(live)}" data-m-ended="{e(ended)}" data-m-error="{e(err)}" data-m-notset="{e(notset)}" data-m-preview="{e(PREVIEW_NOTE[lang])}">'
             f'<span class="mic" aria-hidden="true"></span><span class="demo-label">{e(start)}</span></button>'
             f'<p class="demo-state" role="status" aria-live="polite"></p></div></div></div></section>')
@@ -511,6 +538,20 @@ def page_home(lang, prefix):
     body += faq_band(lang, d["faq"], pg) + cta_band(lang, prefix)
     return body, d["faq"], []
 
+# Online payment methods, shown on the webshop and QR page
+PAY = {
+    "nl": ("Online betalen", "Alle betaalmethodes op je webshop en bij QR-bestellen", "Je klanten betalen zoals zij dat willen.", "Maaltijdcheques"),
+    "fr": ("Paiement en ligne", "Tous les moyens de paiement sur votre boutique et en commande par QR", "Vos clients paient comme ils le souhaitent.", "Titres-repas"),
+    "en": ("Online payment", "Every payment method on your webshop and QR ordering", "Your customers pay the way they want.", "Meal vouchers"),
+    "tr": ("Online ödeme", "Online siparişte ve QR siparişte tüm ödeme yöntemleri", "Müşterilerin istediği gibi öder.", "Yemek çekleri"),
+    "de": ("Online bezahlen", "Alle Zahlungsarten im Webshop und bei der QR-Bestellung", "Ihre Kunden zahlen so, wie sie möchten.", "Essensgutscheine"),
+}
+def pay_band(lang):
+    eb, title, text, vouchers = PAY[lang]
+    names = ["Bancontact", "iDEAL", "Klarna", "Riverty", "PayPal", vouchers, "Visa", "Mastercard", "Apple Pay", "Google Pay"]
+    lis = "".join(f"<li>{e(n)}</li>" for n in names)
+    return f'<section class="band" id="betalen"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(eb)}</span><h2>{e(title)}</h2><p>{e(text)}</p></div><ul class="pay-list">{lis}</ul></div></section>'
+
 def page_product(lang, pid, prefix):
     d, u = P[pid][lang], UI[lang]
     pg = f"{lang}/{pid}"
@@ -522,6 +563,8 @@ def page_product(lang, pid, prefix):
     if pid == "whatsapp":
         body += wa_demo_band(lang)
     body += f'<section class="band"><div class="wrap"><div class="grid">{feats}</div></div></section>'
+    if pid == "webshop":
+        body += pay_band(lang)
     if pid in ("phone", "whatsapp"):
         body += resv_band(lang, prefix)
     if pid in PAGE_SHOTS:
@@ -643,7 +686,7 @@ def llms():
          "- Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes).",
          "- WhatsApp AI: €99/month, on the restaurant's own WhatsApp number.",
          "- Webshop + QR ordering: €79/month, 0% commission on orders.",
-         "- Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €899 one-time, other models on request.",
+         "- Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €1,599 one-time (payable in 3 instalments), other models on request.",
          "- One-time setup fee: €299 for phone AI, €199 for each other channel, €399 for phone AI + WhatsApp AI + webshop + kiosk together.",
          "- Works separately from the restaurant's till (POS); each channel can be bought on its own.",
          "- Typical customers: frituren (Belgian fry shops), snack bars, pizzerias, burger restaurants.",
