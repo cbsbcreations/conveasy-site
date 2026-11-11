@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 from overrides import OV as OVX, apply as apply_overrides
 import answers
+import extras
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal"))
 import legal_nl, legal_fr, legal_en, legal_tr, legal_de
 LEGAL_DOCS = {"nl": legal_nl, "fr": legal_fr, "en": legal_en, "tr": legal_tr, "de": legal_de}
@@ -187,13 +188,27 @@ CHAT = {
     "fr": ("Votre établissement", "WhatsApp · l'IA répond", "Bonjour ! 1 grande frite andalouse et un bicky burger, en livraison svp", "C'est noté. Votre commande : 1x grande frite (andalouse), 1x bicky burger. Livraison à votre adresse. Vous confirmez ?", "Confirmer", "Modifier"),
     "en": ("Your restaurant", "WhatsApp · AI replies", "Hi! 1 large fries with andalouse and a bicky burger, delivery please", "Got it. Your order: 1x large fries (andalouse), 1x bicky burger. Delivery to your address. Confirm?", "Confirm", "Change"),
 }
+# The AI's last message in the chat scene, after the customer tapped the confirm button.
+CHAT_DONE = {
+    "nl": "Top! Je bestelling staat in de keuken. Levering rond 19:55.",
+    "fr": "Parfait ! Votre commande est en cuisine. Livraison vers 19:55.",
+    "en": "Great! Your order is in the kitchen. Delivery around 19:55.",
+    "tr": "Harika! Siparişin mutfakta. Teslimat 19:55 civarında.",
+    "de": "Super! Ihre Bestellung ist in der Küche. Lieferung gegen 19:55.",
+}
 def chat_i(lang):
+    """Animated WhatsApp chat: the customer types and sends an order, the AI answers with the order and two buttons,
+    the customer taps the confirm button, the AI confirms. Pure CSS (see .wchat in site.css); without motion every message is shown."""
     n, s, cin, ai, b1, b2 = CHAT[lang]
-    return f'''<div class="chat" role="img" aria-label="{e(UI[lang]["example"])}: WhatsApp">
+    dots = '<span class="wc-dots" aria-hidden="true"><i></i><i></i><i></i></span>'
+    return f'''<div class="chat wchat" role="img" aria-label="{e(UI[lang]["example"])}: WhatsApp"><div class="wc">
 <div class="c-top"><i aria-hidden="true"></i><span>{e(n)}<small>{e(s)}</small></span></div>
-<div class="bubble in">{e(cin)}</div><div class="bubble ai">{e(ai)}</div>
-<div class="chat-btns"><span>{e(b1)}</span><span>{e(b2)}</span></div>
-</div>'''
+<div class="wc-row wc-r1">{dots}<div class="bubble in">{e(cin)}</div></div>
+<div class="wc-row wc-r2">{dots}<div class="bubble ai">{e(ai)}</div></div>
+<div class="chat-btns"><span class="wc-yes">{e(b1)}<u class="wc-tap"></u></span><span>{e(b2)}</span></div>
+<div class="wc-row wc-r3"><div class="bubble in">{e(b1)}</div></div>
+<div class="wc-row wc-r4">{dots}<div class="bubble ai">{e(CHAT_DONE[lang])}</div></div>
+</div></div>'''
 
 DASH = {
     "nl": ("Live bestellingen", "Open", [("Telefoon", "#1042 · Levering", "19:55"), ("WhatsApp", "#1043 · Afhalen", "20:05"), ("Webshop", "#1044 · Betaald online", "20:10"), ("Kiosk", "#1045 · Ter plaatse", "nu")], "Uitverkocht: Stoofvleessaus"),
@@ -417,7 +432,7 @@ PAGE_SHOTS = {"phone": ["kds", "dash"], "whatsapp": ["dash", "kds"], "webshop": 
 
 def mock_for(lang, pid):
     meta = TICKET_META[lang]
-    if pid == "phone": return ticket(lang, HOME_TICKET[lang]["ticket"], *meta)
+    if pid == "phone": return framed(lang, phone_scene_i(lang))
     if pid == "whatsapp": return chat(lang)
     if pid == "webshop": return framed(lang, web_i(lang))
     if pid == "kiosk": return kiosk(lang)
@@ -494,13 +509,66 @@ def product_price_band(lang, pid, prefix, page):
 # ---------------- round 4: home stage, marquee, order flow ----------------
 CALL = {"nl": ("Inkomende oproep", "AI neemt op"), "fr": ("Appel entrant", "L'IA répond"), "en": ("Incoming call", "AI answering"),
         "tr": ("Gelen arama", "YZ cevaplıyor"), "de": ("Eingehender Anruf", "KI nimmt an")}
-def home_stage(lang):
-    k = kds_i(lang).replace('<div class="k-card">', '<div class="k-card k-new">', 1)
-    c1, c2 = CALL[lang]
-    call = f'<div class="call" role="img" aria-label="{e(UI[lang]["example"])}: {e(c1)}"><span class="call-dot" aria-hidden="true"></span><span><b>{e(c1)}</b><small>{e(c2)} · 00:42</small></span><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>'
-    return (f'<div class="stage-home"><div class="layer l-kds">{k}</div>'
-            f'<div class="layer l-ticket">{ticket_i(lang, HOME_TICKET[lang]["ticket"], *TICKET_META[lang])}</div>'
-            f'<div class="layer l-phone">{web_i(lang)}</div><div class="layer l-call">{call}</div></div>'
+# Phone AI scene: what the caller says and what the AI answers.
+PSCENE = {
+    "nl": ("Hallo, 2 grote friet en een bicky burger om af te halen.", "Genoteerd! Klaar over 15 minuten."),
+    "fr": ("Bonjour, 2 grandes frites et un bicky burger à emporter.", "C'est noté ! Prêt dans 15 minutes."),
+    "en": ("Hi, 2 large fries and a bicky burger for pickup.", "Got it! Ready in 15 minutes."),
+    "tr": ("Merhaba, 2 büyük patates ve bir bicky burger, gel al.", "Not aldım! 15 dakikada hazır."),
+    "de": ("Hallo, 2 große Pommes und einen Bicky Burger zum Abholen.", "Notiert! In 15 Minuten fertig."),
+}
+def phone_scene_i(lang):
+    """Animated scene for the phone AI: a customer calls while the counter is busy (a queue, the phone on the counter rings),
+    the AI answers and takes the order, the kitchen printer prints the ticket, the cook takes it and starts.
+    Pure CSS (see .pscene in site.css). Everything is drawn on a 400 x 360 grid; the floor is at y = 336, the figures are 109 high.
+    The cook's shoulder (324, 259.1) and the staff's (160, 259.1) are also in site.css, as the points their arms turn around."""
+    said, answer = PSCENE[lang]
+    ring, picked = CALL[lang]
+    F, S = 336, 0.62                                   # floor, size of the figures
+    n = lambda v: f"{round(v, 1):g}"
+    head_y, neck, hip, sh = F - 154 * S, F - 141 * S, F - 73 * S, F - 124 * S
+    def fig(cx, cls, arms, extra=""):
+        """A stick figure standing at x = cx. arms: where each hand is, relative to the shoulder, in figure units."""
+        a = "".join(f"M{n(cx)} {n(sh)}L{n(cx + dx * S)} {n(sh + dy * S)}" for dx, dy in arms)
+        return (f'<g class="{cls}"><path d="M{n(cx)} {n(neck)}V{n(hip)}M{n(cx)} {n(hip)}L{n(cx - 15 * S)} {F}M{n(cx)} {n(hip)}L{n(cx + 15 * S)} {F}{a}"/>'
+                f'<circle cx="{n(cx)}" cy="{n(head_y)}" r="{n(13 * S)}"/>{extra}</g>')
+    queue = fig(16, "ps-cust ps-far", [(-10, 44), (12, 43)]) + fig(50, "ps-cust", [(-11, 44), (13, 42)]) + fig(84, "ps-cust", [(-12, 44), (30, 34)])
+    staff = fig(160, "ps-staff", [(16, 40)], f'<path class="ps-serve" d="M160 {n(sh)}L132.5 {n(sh + 13)}"/>')
+    desk = '<rect x="186" y="276" width="20" height="8" rx="2"/><rect x="183.5" y="270" width="25" height="5" rx="2.5"/>'
+    cook = fig(324, "ps-cookfig", [(30, 36)],
+               f'<path class="ps-hat" d="M316 236.5v-8a8 7 0 0 1 16 0v8z"/><path class="ps-cook" d="M324 {n(sh)}H295.5"/>')
+    ticket = '<rect width="24" height="38" rx="1.5"/><path d="M4 7h16M4 13h11M4 19h14M4 25h9M4 31h16"/>'
+    return f'''<div class="pscene" role="img" aria-label="{e(UI[lang]["example"])}: {e(ring)}">
+<svg class="ps-art" viewBox="0 0 400 360" aria-hidden="true">
+<path class="ps-floor" d="M6 {F}H394"/><path class="ps-wall" d="M230 196V{F}"/>
+<g class="ps-caller"><rect x="16" y="8" width="44" height="74" rx="9"/><rect class="ps-cscr" x="19.5" y="11.5" width="37" height="67" rx="6.5"/><circle class="ps-cbtn" cx="38" cy="45" r="11"/><path class="ps-cglyph" d="M33 41.5q5 7.5 10.3 6.8"/></g>
+<g class="ps-ring"><path class="ps-arc" d="M67 37a11 11 0 0 1 0 16"/><path class="ps-arc ps-arc2" d="M73 31a19 19 0 0 1 0 28"/></g>
+<path class="ps-line" d="M84 45H204"/><g class="ps-talk"><path class="ps-pulse" pathLength="100" d="M84 45H204"/><path class="ps-pulse ps-pulse2" pathLength="100" d="M84 45H204"/></g>
+{queue}{staff}
+<rect class="ps-counter" x="106" y="290" width="102" height="{F - 290}" rx="2"/><rect class="ps-slab" x="100" y="284" width="114" height="7" rx="3"/>
+<g class="ps-desk ps-still">{desk}</g><g class="ps-ring"><g class="ps-desk ps-shake">{desk}</g><path class="ps-arc" d="M213 265a9 9 0 0 1 0 13"/><path class="ps-arc" d="M179 265a9 9 0 0 0 0 13"/></g>
+<circle class="ps-led" cx="196" cy="280" r="2"/>
+<path class="ps-table" d="M244 300H302M250 300V{F}M296 300V{F}"/><rect class="ps-printer" x="252" y="278" width="40" height="22" rx="3"/><path class="ps-slot" d="M258 279.5H286"/>
+<svg x="259" y="238" width="28" height="41" overflow="hidden"><g class="ps-ticket ps-print">{ticket}</g></svg>
+<rect class="ps-stove" x="348" y="300" width="46" height="{F - 300}" rx="2"/><path class="ps-pan" d="M354 288.5h32l-3.5 11.5h-25z"/><path class="ps-handle" d="M354 291l-9-3"/>
+<g class="ps-work"><path class="ps-steam" d="M362 284q-3.5-5 0-10t0-10"/><path class="ps-steam ps-steam2" d="M370 284q-3.5-5 0-10t0-10"/><path class="ps-steam ps-steam3" d="M378 284q-3.5-5 0-10t0-10"/></g>
+{cook}
+<g class="ps-ticket ps-take">{ticket}</g>
+</svg>
+<div class="ps-pill"><span class="ps-dot"></span><span class="ps-txt"><b class="ps-pa">{e(ring)}</b><b class="ps-pb">{e(picked)}</b></span><span class="wave ps-pb"><i></i><i></i><i></i><i></i><i></i></span></div>
+<div class="ps-say ps-b1">{e(said)}</div><div class="ps-say ps-b2">{e(answer)}</div>
+<div class="ps-tag">{e(WSCENE[lang]["steps"][1])}</div>
+</div>'''
+
+def home_stage(lang, prefix):
+    """Top visual of the home page: the three ways customers order, each as a small animation with a link to its page
+    (phone AI, WhatsApp AI, webshop), and the kitchen ticket as a small accent. On phones the three become a row to swipe."""
+    def tile(cls, inner, pid):
+        return (f'<figure class="hs-item {cls}">{inner}<figcaption><a href="{prefix + path_of(lang, pid)}">{e(P[pid][lang]["name"])}'
+                f' <span aria-hidden="true">→</span></a></figcaption></figure>')
+    row = tile("hs-phone", phone_scene_i(lang), "phone") + tile("hs-chat", chat_i(lang), "whatsapp") + tile("hs-web", web_i(lang), "webshop")
+    return (f'<div class="stage-home"><div class="hs-row">{row}</div>'
+            f'<div class="layer l-ticket" aria-hidden="true">{ticket_i(lang, HOME_TICKET[lang]["ticket"], *TICKET_META[lang])}</div></div>'
             f'<p class="mock-label">{e(UI[lang]["example"])}</p>')
 
 GREET = ["Goeiedag", "Bonjour", "Hello", "Merhaba", "Guten Tag", "Hola", "Ciao", "مرحبا", "Olá", "Dzień dobry", "Salam", "Hallo"]
@@ -645,7 +713,7 @@ def page_home(lang, prefix):
     pg = f"{lang}/home"
     sec_cards = "".join(f'<a class="card" href="{prefix + path_of(lang, s)}"><h3>{e(S[s][lang]["name"])}</h3><p>{e(S[s][lang]["pains"][0][1])}</p><span class="more">{e(u["more"])} →</span></a>' for s in SECTORS)
     dash_feats = "".join(f'<div class="feature"><h3>{e(t)}</h3><p>{e(x)}</p></div>' for t, x in d["dash_feats"])
-    body = hero(lang, prefix, d["h1"], d["lead"] + " " + d["made_by"], home_stage(lang), pg, badge=d["badge"], facts=d["facts"])
+    body = hero(lang, prefix, d["h1"], d["lead"] + " " + d["made_by"], home_stage(lang, prefix), pg, badge=d["badge"], facts=d["facts"])
     body = body.replace('<section class="hero">', '<section class="hero hero-home">', 1)
     body += demo_band(lang) + wa_demo_band(lang) + marquee(lang) + flow_band(lang)
     body += f'''<section class="band" id="producten"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(d["products_eyebrow"])}</span><h2>{e(d["products_title"])}</h2><p>{e(d["products_text"])}</p></div>
@@ -676,6 +744,12 @@ def pay_band(lang):
     lis = "".join(f"<li>{e(n)}</li>" for n in names)
     return f'<section class="band" id="betalen"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(eb)}</span><h2>{e(title)}</h2><p>{e(text)}</p></div><ul class="pay-list">{lis}</ul></div></section>'
 
+def more_band(lang, pid):
+    """The list under the feature tiles: more that the real systems do (texts in extras.py)."""
+    label, title, rows = extras.MORE[pid][lang]
+    lis = "".join(f"<li><b>{e(t)}</b><span>{e(x)}</span></li>" for t, x in rows)
+    return f'<section class="band"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(label)}</span><h2>{e(title)}</h2></div><ul class="also">{lis}</ul></div></section>'
+
 def page_product(lang, pid, prefix):
     d, u = P[pid][lang], UI[lang]
     pg = f"{lang}/{pid}"
@@ -687,6 +761,8 @@ def page_product(lang, pid, prefix):
     if pid == "whatsapp":
         body += wa_demo_band(lang)
     body += f'<section class="band"><div class="wrap"><div class="grid">{feats}</div></div></section>'
+    if pid in extras.MORE:
+        body += more_band(lang, pid)
     if pid == "webshop":
         body += pay_band(lang)
     if pid in ("phone", "whatsapp"):
@@ -808,8 +884,9 @@ def llms():
          "> Conveasy is AI ordering software for restaurants in Belgium and the Benelux. An AI takes orders and table reservations by phone and on WhatsApp, 24/7 and in 60+ languages. Restaurants also get a commission-free webshop with QR ordering, a self-order kiosk (card and online payments only) and Marketing AI, which includes a digital stamp card in Google Wallet and Apple Wallet. All orders and reservations land in one dashboard, on the kitchen screen and on the kitchen printer.", "",
          "Key facts:",
          "- Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes). Handles 50+ calls at the same time.",
-         "- WhatsApp AI: €99/month, on the restaurant's own WhatsApp number.",
-         "- Webshop + QR ordering: €79/month, 0% commission on orders.",
+         "- Phone AI also: recognises returning callers (name, address, last order), checks the delivery address against the street list and delivery zones, transfers to staff when the caller asks, takes add-ons in the same call, answers outside opening hours to say when the restaurant opens again, and sends callers who hung up without ordering a WhatsApp message to order after all.",
+         "- WhatsApp AI: €99/month, on the restaurant's own WhatsApp number. Payment link for deliveries (Klarna and meal vouchers included, an unpaid link expires after 20 minutes); delivery cost, minimum order and free delivery worked out per address; table reservations can be booked, changed and cancelled in the chat; prepaid cards accepted.",
+         "- Webshop + QR ordering: €79/month, 0% commission on orders. Live order tracking with a countdown and a map, one-tap reorder, promotions (2-for-1, discount codes, free delivery, menu deals), five designs, the 14 allergens per product, an app for the restaurant's own drivers, analytics and Z-reports.",
          "- Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €1,599 one-time (payable in 3 instalments), other models on request.",
          "- One-time setup fee: €299 for phone AI, €199 for each other channel, €399 for phone AI + WhatsApp AI + webshop + kiosk together.",
          "- Works separately from the restaurant's till (POS); each channel can be bought on its own.",

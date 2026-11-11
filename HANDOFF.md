@@ -1,11 +1,13 @@
 # Conveasy.be website: handoff
 
 New conveasy.be (replaces the Framer site). Static HTML, 5 languages (nl, fr, en, tr, de).
-Last update: 11 Nov 2026 (webshop phone animation, "50+ calls at once" on the phone AI page, Marketing AI animation, kiosk animation, payment methods, photo library, kiosk hardware 1599, voice greeting per page language;
-earlier that day: chat demo and voice demo connected, test address on GitHub Pages).
+Last update: 11 Nov 2026 (phone AI animation, WhatsApp animation, both at the top of the home page, "En verder" lists with what the
+systems also do; earlier that day: webshop phone animation, "50+ calls at once", Marketing AI animation, kiosk animation, payment
+methods, photo library, kiosk hardware 1599, voice greeting per page language, chat demo and voice demo connected, test address on
+GitHub Pages).
 
 ## Folders
-- src/ : source. build.py builds the site from content.py, lang_de.py, lang_tr.py, overrides.py, answers.py, legal/, site.css, site.js.
+- src/ : source. build.py builds the site from content.py, lang_de.py, lang_tr.py, overrides.py, answers.py, extras.py, legal/, site.css, site.js.
   Run: `python3 src/build.py` (from this folder) to rebuild docs/ and preview/.
 - docs/ : the finished website (index.html, nl/, fr/, en/, tr/, de/, assets/, sitemap.xml, robots.txt, llms.txt).
   GitHub Pages serves this folder from the repo cbsbcreations/conveasy-site (branch main).
@@ -77,6 +79,46 @@ earlier that day: chat demo and voice demo connected, test address on GitHub Pag
   Marketing AI page. With reduced motion it stands still with everything shown. The words per language are in MSCENE in build.py.
 - It replaced the "Deze week" list at the top of that page (mkt_i in build.py, no longer shown).
 - The channel icons are plain shapes (speech bubble, envelope, card), not the logos of WhatsApp or the wallets.
+
+## Phone AI animation
+- phone_scene_i() in build.py + ".pscene" in site.css. Shown at the top of the phone AI page and as the first tile of the home page's
+  top visual. A busy counter (a queue, the staff serving), a customer calls, the phone on the counter rings, "AI neemt op", the
+  customer's order and the AI's answer, the ticket comes out of the kitchen printer, the cook takes it and starts ("In de keuken").
+  Pure CSS, one 17 second loop. With reduced motion it stands still on the end: AI answered, ticket in the cook's hand.
+- The two sentences per language are in PSCENE in build.py; the pill uses CALL, the tag uses WSCENE[lang]["steps"][1].
+- It replaced the paper ticket at the top of the phone AI page.
+
+## WhatsApp animation
+- chat_i() in build.py + ".wchat" in site.css. The customer types and sends the order, the AI types and answers with the order and two
+  buttons, the customer taps "Bevestigen", the AI confirms ("Top! Je bestelling staat in de keuken. Levering rond 19:55.").
+  Pure CSS, one 15 second loop. With reduced motion every message is shown.
+- Shown at the top of the WhatsApp AI page, as the second tile of the home page's top visual and in "Zo loopt een bestelling" (home).
+  The chat's text scales with its width, so it also gets taller when wider; in "Zo loopt een bestelling" its width follows the height of
+  the sticky stage (.fs > .wchat in site.css).
+- The opening texts are in CHAT, the confirmation in CHAT_DONE (build.py).
+
+## Home page, top visual
+- home_stage() in build.py + ".stage-home", ".hs-row", ".hs-item" in site.css: three scenes in a row, each with its product name as a link
+  under it: phone AI, WhatsApp AI, webshop phone. Under 860px the row becomes a strip to swipe (the next scene peeks in from the right).
+- The paper ticket is a small accent behind the right-hand corner (.l-ticket, scaled to 62%), hidden under 1180px.
+- The kitchen screen and the "incoming call" pill are no longer in this visual; the kitchen screen is still in "Zo loopt een bestelling" and
+  "Zo ziet het eruit".
+- The visual moves up a little while scrolling (px-up in site.css). Where the text sits above the visual (phones, and the home page at
+  every width) the travel is short (--px-up: -12px), so the visual never rides up against the buttons.
+
+## "En verder" lists (what the systems also do)
+- src/extras.py, shown by more_band() in build.py under the feature tiles of the phone AI, WhatsApp AI and webshop pages (".also" in site.css).
+- Phone AI: knows regulars, WhatsApp after a call without an order, address check (streets per postcode, zones, minimum), transfer to the
+  team, adding to the order in the same call, answering outside opening hours, the safety net (order still reaches the kitchen when the
+  customer hangs up early; an AI checks every ticket after the call).
+- WhatsApp AI: change or cancel a reservation, delivery cost per address, asks when it does not recognise a product, voordeelkaarten.
+  The "Online betalen" tile now also says: Klarna and meal vouchers, the order only goes to the kitchen once paid, an unpaid link expires
+  after 20 minutes.
+- Webshop: live order tracking, reorder in one tap, promotions, five designs, 14 allergens per product, the drivers' app, numbers and
+  Z-reports with export to Excel (all from the README of the repo conveasy-webshop).
+- Source: the live n8n phone and WhatsApp flows and the webshop repo, read on 11 Nov 2026. The phone safety-net flows carry the name Eatpoint
+  in n8n: check that they also run for Conveasy's client restaurants, since the site now says so.
+- llms.txt carries the same points in English.
 
 ## Rules
 - Call it "Marketing AI". Never mention Eatpoint on the site. No auto ads/ad testing promised. No kassa/POS page.

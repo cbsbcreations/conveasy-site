@@ -82,7 +82,7 @@ DATA = {
                 ("KI, 24/7", "Kein Personal nötig, um Nachrichten zu beantworten. Die KI nimmt jede Bestellung auf."),
                 ("Ihre eigene Nummer", "Kunden schreiben an die WhatsApp-Nummer Ihres Restaurants."),
                 ("Bestätigen mit einem Tippen", "Der Kunde sieht den Gesamtbetrag und bestätigt mit einem Button."),
-                ("Online bezahlen", "Senden Sie einen Zahlungslink für Lieferungen. Die Bestellung geht erst in die Küche, wenn sie bezahlt ist."),
+                ("Online bezahlen", "Senden Sie einen Zahlungslink für Lieferungen, auch mit Klarna und Essensgutscheinen. Die Bestellung geht erst in die Küche, wenn sie bezahlt ist; ein unbezahlter Link verfällt nach 20 Minuten."),
                 ("Geschlossen? Vorbestellung", "Außerhalb der Öffnungszeiten sagt die KI, wann Sie öffnen, und nimmt die Bestellung für später auf."),
                 ("60+ Sprachen", "Die KI antwortet in der Sprache des Kunden."),
             ],

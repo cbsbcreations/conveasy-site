@@ -1,0 +1,133 @@
+# -*- coding: utf-8 -*-
+"""More that the systems do, shown as a list under the feature tiles of the phone AI, WhatsApp AI and webshop pages.
+Sammy, 11 Nov 2026: taken from what the real flows do (n8n phone and WhatsApp flows, the conveasy-webshop repo).
+Per page and language: (small label, heading, [(title, text), ...])."""
+
+MORE = {
+    "phone": {
+        "nl": ("En verder", "Wat de AI nog voor je doet", [
+            ("Herkent vaste klanten", "Belt een klant opnieuw, dan kent de AI zijn naam, adres en vorige bestelling."),
+            ("Tweede kans na een oproep zonder bestelling", "Hangt iemand op zonder te bestellen? Dan krijgt hij een WhatsApp om alsnog te bestellen."),
+            ("Controleert het adres", "De AI kent de straten per postcode, je bezorgzones en het minimumbedrag."),
+            ("Verbindt door naar je team", "Wil de beller een medewerker spreken, dan verbindt de AI door en krijg je een melding."),
+            ("Bijbestellen in hetzelfde gesprek", "Is de klant iets vergeten? De keuken krijgt een apart ticket met wat erbij komt."),
+            ("Antwoordapparaat buiten de openingsuren", "Ben je gesloten, dan neemt de AI toch op en zegt wanneer je weer open bent."),
+            ("Vangnet voor elke bestelling", "Hangt de klant te vroeg op, dan gaat de bestelling toch naar de keuken. Na elk gesprek controleert een AI of het ticket volledig is."),
+        ]),
+        "fr": ("Et aussi", "Ce que l'IA fait encore pour vous", [
+            ("Reconnaît vos habitués", "Quand un client rappelle, l'IA connaît son nom, son adresse et sa dernière commande."),
+            ("Une seconde chance après un appel sans commande", "Quelqu'un raccroche sans commander ? Il reçoit un WhatsApp pour commander quand même."),
+            ("Vérifie l'adresse", "L'IA connaît les rues par code postal, vos zones de livraison et le montant minimum."),
+            ("Transfère vers votre équipe", "Si l'appelant veut parler à quelqu'un, l'IA transfère l'appel et vous recevez une alerte."),
+            ("Ajouter à la commande pendant l'appel", "Le client a oublié quelque chose ? La cuisine reçoit un ticket séparé avec ce qui s'ajoute."),
+            ("Répondeur en dehors des heures d'ouverture", "Fermé ? L'IA décroche quand même et dit quand vous rouvrez."),
+            ("Un filet de sécurité pour chaque commande", "Si le client raccroche trop tôt, la commande part quand même en cuisine. Après chaque appel, une IA vérifie que le ticket est complet."),
+        ]),
+        "en": ("And more", "What else the AI does for you", [
+            ("Knows your regulars", "When a customer calls again, the AI knows their name, address and last order."),
+            ("A second chance after a call without an order", "Someone hangs up without ordering? They get a WhatsApp message to order after all."),
+            ("Checks the address", "The AI knows the streets per postcode, your delivery zones and the minimum order."),
+            ("Transfers to your team", "If the caller wants to speak to someone, the AI puts them through and you get an alert."),
+            ("Add to the order in the same call", "Customer forgot something? The kitchen gets a separate ticket with what was added."),
+            ("Answering machine outside opening hours", "Closed? The AI still picks up and says when you open again."),
+            ("A safety net for every order", "If the customer hangs up too early, the order still goes to the kitchen. After each call an AI checks that the ticket is complete."),
+        ]),
+        "tr": ("Dahası da var", "Yapay zekâ senin için başka neler yapar", [
+            ("Müdavimlerini tanır", "Bir müşteri tekrar aradığında yapay zekâ adını, adresini ve son siparişini bilir."),
+            ("Siparişsiz biten aramaya ikinci şans", "Biri sipariş vermeden kapatırsa, yine de sipariş verebilmesi için bir WhatsApp mesajı alır."),
+            ("Adresi kontrol eder", "Yapay zekâ posta koduna göre sokakları, paket servis bölgelerini ve minimum tutarı bilir."),
+            ("Ekibine aktarır", "Arayan biriyle konuşmak isterse yapay zekâ aramayı aktarır ve sana bildirim gelir."),
+            ("Aynı aramada siparişe ekleme", "Müşteri bir şey mi unuttu? Mutfağa, eklenenlerle ayrı bir fiş gider."),
+            ("Çalışma saatleri dışında telesekreter", "Kapalı mısın? Yapay zekâ telefonu yine açar ve tekrar ne zaman açık olacağını söyler."),
+            ("Her sipariş için güvenlik ağı", "Müşteri erken kapatsa bile sipariş mutfağa gider. Her aramadan sonra bir yapay zekâ fişin eksiksiz olduğunu kontrol eder."),
+        ]),
+        "de": ("Außerdem", "Was die KI noch für Sie tut", [
+            ("Erkennt Ihre Stammkunden", "Ruft ein Kunde erneut an, kennt die KI seinen Namen, seine Adresse und seine letzte Bestellung."),
+            ("Zweite Chance nach einem Anruf ohne Bestellung", "Jemand legt auf, ohne zu bestellen? Er bekommt eine WhatsApp-Nachricht, um doch noch zu bestellen."),
+            ("Prüft die Adresse", "Die KI kennt die Straßen je Postleitzahl, Ihre Lieferzonen und den Mindestbestellwert."),
+            ("Verbindet mit Ihrem Team", "Möchte der Anrufer mit jemandem sprechen, stellt die KI durch und Sie erhalten eine Meldung."),
+            ("Nachbestellen im selben Anruf", "Hat der Kunde etwas vergessen? Die Küche bekommt einen eigenen Bon mit dem, was dazukommt."),
+            ("Anrufbeantworter außerhalb der Öffnungszeiten", "Geschlossen? Die KI nimmt trotzdem ab und sagt, wann Sie wieder öffnen."),
+            ("Sicherheitsnetz für jede Bestellung", "Legt der Kunde zu früh auf, geht die Bestellung trotzdem in die Küche. Nach jedem Anruf prüft eine KI, ob der Bon vollständig ist."),
+        ]),
+    },
+    "whatsapp": {
+        "nl": ("En verder", "Wat de AI nog voor je doet", [
+            ("Reservaties wijzigen of annuleren", "Klanten boeken, verplaatsen of annuleren hun tafel gewoon in de chat."),
+            ("Bezorgkost per adres", "Leveringskost, minimumbedrag en gratis levering worden voor elk adres automatisch berekend."),
+            ("Vraagt na in plaats van te gokken", "Herkent de AI een product niet? Dan vraagt de AI wat de klant bedoelt."),
+            ("Voordeelkaarten", "Klanten betalen met hun voordeelkaart, op WhatsApp en aan de telefoon."),
+        ]),
+        "fr": ("Et aussi", "Ce que l'IA fait encore pour vous", [
+            ("Modifier ou annuler une réservation", "Vos clients réservent, déplacent ou annulent leur table directement dans la conversation."),
+            ("Frais de livraison par adresse", "Frais de livraison, montant minimum et livraison gratuite sont calculés automatiquement pour chaque adresse."),
+            ("Demande au lieu de deviner", "Si l'IA ne reconnaît pas un produit, elle demande au client ce qu'il veut dire."),
+            ("Cartes avantage", "Vos clients paient avec leur carte avantage, sur WhatsApp comme au téléphone."),
+        ]),
+        "en": ("And more", "What else the AI does for you", [
+            ("Change or cancel a reservation", "Customers book, move or cancel their table right in the chat."),
+            ("Delivery cost per address", "Delivery cost, minimum order and free delivery are worked out automatically for each address."),
+            ("Asks instead of guessing", "If the AI doesn't recognise a product, it asks the customer what they mean."),
+            ("Prepaid cards", "Customers pay with their prepaid card, on WhatsApp and on the phone."),
+        ]),
+        "tr": ("Dahası da var", "Yapay zekâ senin için başka neler yapar", [
+            ("Rezervasyonu değiştir veya iptal et", "Müşteriler masalarını sohbet içinde ayırtır, değiştirir veya iptal eder."),
+            ("Adrese göre paket servis ücreti", "Servis ücreti, minimum tutar ve ücretsiz paket servis her adres için otomatik hesaplanır."),
+            ("Tahmin etmez, sorar", "Yapay zekâ bir ürünü tanımazsa müşteriye ne demek istediğini sorar."),
+            ("Avantaj kartları", "Müşteriler avantaj kartlarıyla öder; WhatsApp'ta da telefonda da."),
+        ]),
+        "de": ("Außerdem", "Was die KI noch für Sie tut", [
+            ("Reservierung ändern oder stornieren", "Gäste buchen, verschieben oder stornieren ihren Tisch direkt im Chat."),
+            ("Lieferkosten je Adresse", "Lieferkosten, Mindestbestellwert und Gratislieferung werden für jede Adresse automatisch berechnet."),
+            ("Fragt nach, statt zu raten", "Erkennt die KI ein Produkt nicht, fragt sie den Kunden, was er meint."),
+            ("Vorteilskarten", "Kunden bezahlen mit ihrer Vorteilskarte, auf WhatsApp und am Telefon."),
+        ]),
+    },
+    "webshop": {
+        "nl": ("En verder", "Wat er nog in je webshop zit", [
+            ("Bestelling live volgen", "Na het bestellen ziet je klant de minuten aftellen, de stappen tot aan de deur en de route op de kaart."),
+            ("Opnieuw bestellen met één tik", "Vaste klanten zetten hun vorige bestelling met één tik terug in het mandje."),
+            ("Promoties", "1 + 1 gratis, kortingscodes, gratis levering en menu deals. Jij kiest de dagen en de uren."),
+            ("Vijf designs", "Kies de look van je webshop en je eigen kleur. Je ziet het resultaat meteen."),
+            ("Allergenen per product", "Je duidt de 14 allergenen per product aan; je klanten zien ze bij het product."),
+            ("App voor je bezorgers", "Je bezorgers zien hun ritten op hun gsm. De klant volgt de bezorger live op de kaart."),
+            ("Cijfers en Z-rapporten", "Bestverkochte producten, drukste uren en omzet per kanaal, met Z-rapport en export naar Excel."),
+        ]),
+        "fr": ("Et aussi", "Ce que votre boutique en ligne offre encore", [
+            ("Suivi de commande en direct", "Après la commande, votre client voit les minutes défiler, les étapes jusqu'à sa porte et le trajet sur la carte."),
+            ("Commander à nouveau en un clic", "Vos habitués remettent leur dernière commande dans le panier en un clic."),
+            ("Promotions", "1 + 1 gratuit, codes de réduction, livraison gratuite et menus. Vous choisissez les jours et les heures."),
+            ("Cinq designs", "Choisissez le style de votre boutique et votre couleur. Vous voyez le résultat tout de suite."),
+            ("Allergènes par produit", "Vous indiquez les 14 allergènes par produit ; vos clients les voient sur la fiche du produit."),
+            ("Application pour vos livreurs", "Vos livreurs voient leurs courses sur leur téléphone. Le client suit le livreur en direct sur la carte."),
+            ("Chiffres et rapports Z", "Produits les plus vendus, heures de pointe et chiffre d'affaires par canal, avec rapport Z et export vers Excel."),
+        ]),
+        "en": ("And more", "What else is in your webshop", [
+            ("Live order tracking", "After ordering, your customer sees the minutes count down, the steps up to their door and the route on the map."),
+            ("Reorder in one tap", "Regulars put their last order back in the basket with one tap."),
+            ("Promotions", "Buy one get one free, discount codes, free delivery and menu deals. You pick the days and the hours."),
+            ("Five designs", "Pick the look of your webshop and your own colour. You see the result right away."),
+            ("Allergens per product", "You mark the 14 allergens per product; your customers see them on the product."),
+            ("App for your drivers", "Your drivers see their runs on their phone. The customer follows the driver live on the map."),
+            ("Numbers and Z-reports", "Best sellers, busiest hours and revenue per channel, with a Z-report and export to Excel."),
+        ]),
+        "tr": ("Dahası da var", "Online sipariş sitende başka neler var", [
+            ("Canlı sipariş takibi", "Siparişten sonra müşterin dakikaların geri sayımını, kapıya kadar adımları ve haritada rotayı görür."),
+            ("Tek dokunuşla tekrar sipariş", "Müdavimler son siparişlerini tek dokunuşla sepete geri koyar."),
+            ("Kampanyalar", "1 alana 1 bedava, indirim kodları, ücretsiz paket servis ve menü fırsatları. Günleri ve saatleri sen seçersin."),
+            ("Beş tasarım", "Online sipariş sitenin görünümünü ve kendi rengini seç. Sonucu hemen görürsün."),
+            ("Ürün bazında alerjenler", "14 alerjeni ürün bazında işaretlersin; müşterilerin ürünün yanında görür."),
+            ("Kuryelerin için uygulama", "Kuryelerin teslimatlarını telefonlarında görür. Müşteri kuryeyi haritada canlı takip eder."),
+            ("Rakamlar ve Z raporları", "En çok satanlar, en yoğun saatler ve kanal başına ciro; Z raporu ve Excel'e aktarma ile."),
+        ]),
+        "de": ("Außerdem", "Was Ihr Webshop noch kann", [
+            ("Bestellung live verfolgen", "Nach der Bestellung sieht Ihr Kunde die Minuten herunterzählen, die Schritte bis zur Haustür und die Route auf der Karte."),
+            ("Mit einem Tipp erneut bestellen", "Stammkunden legen ihre letzte Bestellung mit einem Tipp wieder in den Warenkorb."),
+            ("Aktionen", "1 + 1 gratis, Rabattcodes, Gratislieferung und Menü-Deals. Sie wählen die Tage und die Uhrzeiten."),
+            ("Fünf Designs", "Wählen Sie den Look Ihres Webshops und Ihre eigene Farbe. Das Ergebnis sehen Sie sofort."),
+            ("Allergene je Produkt", "Sie kennzeichnen die 14 Allergene je Produkt; Ihre Kunden sehen sie beim Produkt."),
+            ("App für Ihre Fahrer", "Ihre Fahrer sehen ihre Touren auf dem Handy. Der Kunde verfolgt den Fahrer live auf der Karte."),
+            ("Zahlen und Z-Berichte", "Bestseller, Stoßzeiten und Umsatz je Kanal, mit Z-Bericht und Export nach Excel."),
+        ]),
+    },
+}
