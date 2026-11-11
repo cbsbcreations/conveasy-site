@@ -204,7 +204,8 @@ KIOSK = {"nl": ("Kiosk · Kies je taal", ["Friet & snacks", "Burgers", "Dranken"
          "en": ("Kiosk · Choose your language", ["Fries & snacks", "Burgers", "Drinks"], "Pay by card")}
 def kiosk_i(lang):
     """Animated scene: a figure orders at the kiosk. The screen switches language, adds a burger and fries, pays, and a ticket comes out.
-    Pure CSS (see .kscene in site.css); the words on the screen are the same on every page because they show all five languages."""
+    Pure CSS (see .kscene in site.css); the words on the screen are the same on every page because they show all five languages.
+    --ks-i is the place of the page language in those lists: without motion the screen rests on the menu in that language."""
     def roll(words): return '<span class="ks-roll"><span>' + "".join(f"<em>{e(w)}</em>" for w in words) + "</span></span>"
     hello = "".join(f"<em>{e(w)}</em>" for w in ["Welkom", "Bienvenue", "Welcome", "Hoş geldin", "Willkommen"])
     chips = "".join(f"<i>{c}</i>" for c in ["NL", "FR", "EN", "TR", "DE"])
@@ -217,7 +218,7 @@ def kiosk_i(lang):
             ("fries", ["Friet", "Frites", "Fries", "Patates", "Pommes"], "4,50"),
             ("drink", ["Drankje", "Boisson", "Drink", "İçecek", "Getränk"], "2,50")]
     items = "".join(f'<div class="ks-item ks-{k}">{icons[k]}<span class="ks-n"><b>{roll(w)}</b><small>€{pr}</small></span><u>+</u></div>' for k, w, pr in rows)
-    return f'''<div class="kscene" role="img" aria-label="{e(UI[lang]["example"])}: kiosk">
+    return f'''<div class="kscene" style="--ks-i: {["nl", "fr", "en", "tr", "de"].index(lang)}" role="img" aria-label="{e(UI[lang]["example"])}: kiosk">
 <div class="ks-kiosk"><div class="ks-frame"><div class="ks-screen">
 <div class="ks-view ks-lang"><span class="ks-hello"><span>{hello}</span></span><div class="ks-chips">{chips}</div></div>
 <div class="ks-view ks-menu"><div class="ks-top">{roll(["Menu", "Carte", "Menu", "Menü", "Speisekarte"])}<span class="ks-cart"><span><em>0</em><em>1</em><em>2</em></span></span></div>{items}<div class="ks-go">{roll(["Bestellen", "Commander", "Order", "Sipariş ver", "Bestellen"])}</div></div>

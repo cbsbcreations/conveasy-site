@@ -623,4 +623,4 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 }
 .stage .kscene { animation: rise 1s .15s var(--ease) both; }
 .shot-frame > .kscene { max-width: 360px; }
-@media (prefers-reduced-motion: reduce) { .kscene *, .kscene *::before { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .kscene *, .kscene *::before { animation: none !important; } .ks-roll > span { transform: translateY(calc(var(--ks-i, 0) * -20%)); } }
