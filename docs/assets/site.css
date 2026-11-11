@@ -551,7 +551,7 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 @media (prefers-reduced-motion: reduce) { .wa-msg, .wa-typing span { animation: none; } }
 
 /* Payment methods on the webshop page */
-.pay-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.pay-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .pay-list li { padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font: 600 .95rem/1.2 var(--font-body); }
 
 /* Kiosk scene: a figure orders at the kiosk. Pure CSS, one 14 s loop; without motion it rests on the menu screen. */

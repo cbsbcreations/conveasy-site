@@ -329,7 +329,7 @@ P["kiosk"] = {
         "card": "Klanten bestellen en betalen zelf aan de zuil. Minder wachtrij aan de toog.",
         "features": [
             ("Kaart of online betalen", "De kiosk werkt zonder cash. Geen kassaverschillen."),
-            ("Menu met foto's", "Je klanten zien wat ze bestellen, met maten en extra's."),
+            ("Menu met foto's", "Je klanten zien wat ze bestellen, met maten en extra's. Geen eigen foto's? Kies ze uit onze bibliotheek met gerechten in hoge kwaliteit."),
             ("Meerdere talen", "Klanten kiezen zelf hun taal op het scherm."),
             ("Rechtstreeks naar de keuken", "Het ticket wordt geprint en staat in je dashboard."),
         ],
@@ -348,7 +348,7 @@ P["kiosk"] = {
         "card": "Les clients commandent et paient eux-mêmes à la borne. Moins de file au comptoir.",
         "features": [
             ("Carte ou paiement en ligne", "La borne fonctionne sans espèces. Pas d'écarts de caisse."),
-            ("Carte avec photos", "Vos clients voient ce qu'ils commandent, avec tailles et suppléments."),
+            ("Carte avec photos", "Vos clients voient ce qu'ils commandent, avec tailles et suppléments. Pas de photos ? Choisissez-les dans notre bibliothèque de plats en haute qualité."),
             ("Plusieurs langues", "Les clients choisissent leur langue à l'écran."),
             ("Directement en cuisine", "Le ticket s'imprime et apparaît dans votre tableau de bord."),
         ],
@@ -367,7 +367,7 @@ P["kiosk"] = {
         "card": "Customers order and pay at the kiosk themselves. Shorter queues at the counter.",
         "features": [
             ("Card or online payment", "The kiosk is cashless. No till differences."),
-            ("Menu with photos", "Customers see what they order, with sizes and extras."),
+            ("Menu with photos", "Customers see what they order, with sizes and extras. No photos of your own? Pick them from our library of high-quality dish photos."),
             ("Several languages", "Customers pick their own language on screen."),
             ("Straight to the kitchen", "The ticket prints and shows up in your dashboard."),
         ],
