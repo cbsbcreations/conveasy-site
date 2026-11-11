@@ -465,7 +465,7 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .foot-mark { font: 700 clamp(4.5rem, 19vw, 16rem)/.8 var(--font-display); letter-spacing: -.06em; background: linear-gradient(180deg, rgb(255 255 255 / .16), rgb(255 255 255 / 0)); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; text-align: center; margin-bottom: -.1em; user-select: none; pointer-events: none; }
 
 /* Headline words blur in, one by one */
-.w { display: inline-block; white-space: pre; }
+.w { display: inline-block; max-width: 100%; overflow-wrap: anywhere; } /* a word wider than the screen (German compounds on a small phone) breaks instead of widening the page */
 .split-ready .w { opacity: 0; filter: blur(10px); transform: translateY(12px); }
 .split-ready.in .w { animation: word .9s var(--ease) both; animation-delay: calc(var(--i) * 55ms); }
 @keyframes word { to { opacity: 1; filter: none; transform: none; } }
