@@ -843,88 +843,132 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 @keyframes wc-m4 { 0%, 58% { opacity: 0; transform: translateY(18%) scale(.94); } 60%, 94% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .wchat *, .wchat *::before, .wchat *::after { animation: none !important; } }
 
-/* Phone AI scene: a customer calls while the counter is busy; the phone on the counter rings, the AI answers and takes the order;
-   the kitchen printer prints the ticket, the cook takes it and starts. Pure CSS, one 17 s loop; without motion it shows the call
-   answered, both sentences and the ticket in the cook's hand. The drawing is one SVG on a 400 x 360 grid (floor at y = 336);
-   the pill, the two sentences and the tag are HTML on top, sized in cqi. */
-.pscene { --t: 17s; position: relative; width: min(100%, 460px); aspect-ratio: 10 / 9; margin-inline: auto; container-type: inline-size; text-align: left; }
+/* Phone AI scene (Sammy, 11 Nov 2026, evening: no stick figures). Three parts in one 17 s loop:
+   1) the restaurant counter: the desk phone rings, the handset clicks up and the view zooms into the call (SVG, 400 x 360 grid);
+   2) the call: the AI's voice orb, what the caller says, the AI's answer, "order confirmed";
+   3) the result: a notification and the new order on the dashboard (a laptop), the ticket comes out of the printer.
+   The pill on top names the stage. The HTML parts are sized in cqi of the scene. Without motion it rests on part 2, all shown. */
+.pscene { --t: 17s; position: relative; width: min(100%, 460px); aspect-ratio: 10 / 9; margin-inline: auto; container-type: inline-size; text-align: left; color: var(--ink); }
 .pscene *, .pscene *::before, .pscene *::after { box-sizing: border-box; }
-.ps-art { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-.ps-floor { stroke: var(--line-2); stroke-width: 1.5; }
-.ps-wall { stroke: var(--line-2); stroke-width: 1.2; stroke-dasharray: 2 6; }
-.ps-caller rect { fill: #17171C; stroke: var(--line-2); stroke-width: 1.5; }
-.ps-caller .ps-cscr { fill: #050506; stroke: none; }
-.ps-cbtn { fill: #25D366; stroke: none; }
-.ps-cglyph { stroke: #fff; stroke-width: 3.2; }
-.ps-arc { stroke: var(--accent); stroke-width: 2.2; animation: ps-blink .7s ease-in-out infinite; }
+.ps-act { position: absolute; inset: 0; }
+.pscene svg:not(.ps-art) { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* the pill on top: incoming call, AI answering, in the kitchen */
+.ps-pill { position: absolute; left: 50%; top: 3.5cqi; transform: translateX(-50%); display: grid; z-index: 3; }
+.ps-p { grid-area: 1 / 1; justify-self: center; display: inline-flex; align-items: center; gap: 1.9cqi; white-space: nowrap; font: 600 3.3cqi/1.2 var(--font-body); padding: 1.5cqi 3.2cqi 1.5cqi 1.5cqi; border-radius: 999px; background: rgb(18 18 22 / .92); border: 1px solid var(--line-2); box-shadow: 0 2cqi 6cqi -2cqi rgb(0 0 0 / .7); opacity: 0; animation: var(--t) var(--ease) infinite both; }
+.ps-p1 { animation-name: ps-p1; }
+.ps-p2 { opacity: 1; animation-name: ps-p2; }
+.ps-p3 { animation-name: ps-p3; }
+.ps-dot { position: relative; flex: none; width: 5.6cqi; height: 5.6cqi; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
+.ps-p1 .ps-dot::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--accent); animation: ring 1.4s infinite; }
+.ps-p1 .ps-dot::after { content: ""; width: 2.1cqi; height: 2.1cqi; border-radius: .5cqi .5cqi 1.1cqi 1.1cqi; background: #fff; transform: rotate(-30deg); }
+.ps-ai::after { content: ""; width: 2cqi; height: 2cqi; border-radius: 50%; background: #fff; box-shadow: 0 0 1.2cqi #fff; }
+.ps-go { width: 2.6cqi; height: 2.6cqi; margin-left: 1.3cqi; background: var(--ok); box-shadow: 0 0 0 1cqi rgb(52 211 153 / .18); }
+.ps-pill .wave { height: 3.8cqi; gap: .55cqi; margin-left: .3cqi; }
+.ps-pill .wave i { width: .55cqi; }
+
+/* 1: the counter; the ringing phone is a second, shaking copy of the handset that is only shown while it rings */
+/* the zoom into the phone moves the drawing inside the part, which clips it, so nothing reaches past the scene */
+.ps-a1 { overflow: hidden; opacity: 0; animation: ps-a1 var(--t) var(--ease) infinite both; }
+.ps-art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; fill: none; stroke: none; transform-origin: 50% 54%; animation: ps-zoom var(--t) var(--ease) infinite both; }
+.ps-hs-s { transform-box: fill-box; transform-origin: 50% 50%; animation: ps-hs var(--t) var(--ease) infinite both; }
+.ps-ringing { opacity: 0; animation: ps-ring var(--t) linear infinite both; }
+.ps-hs-r { transform-box: fill-box; transform-origin: 50% 100%; animation: ps-shake .16s linear infinite; }
+.ps-arc { animation: ps-blink .7s ease-in-out infinite; }
 .ps-arc2 { animation-delay: -.35s; }
-.ps-line { stroke: var(--line-2); stroke-width: 1.5; stroke-dasharray: 1 6; }
-.ps-pulse { stroke: var(--accent); stroke-width: 3.4; stroke-dasharray: 8 200; stroke-dashoffset: 12; animation: ps-pulse 1.2s linear infinite; }
-.ps-pulse2 { animation-delay: -.6s; }
-.ps-art circle { fill: var(--bg); }
-.ps-cust { stroke: rgb(255 255 255 / .5); animation: ps-wait 1.7s ease-in-out infinite alternate; }
-.ps-cust + .ps-cust { animation-delay: -.6s; } .ps-cust + .ps-cust + .ps-cust { animation-delay: -1.1s; }
-.ps-far { opacity: .5; }
-.ps-serve { transform-box: view-box; transform-origin: 160px 259.1px; animation: ps-serve 1.9s ease-in-out infinite alternate; }
-.ps-counter { fill: #141419; stroke: var(--line-2); stroke-width: 1.5; }
-.ps-slab { fill: #2A2A33; stroke: none; }
-.ps-desk rect { fill: #0B0B0D; stroke: var(--ink); stroke-width: 1.8; }
-.ps-shake { transform-box: fill-box; transform-origin: 50% 100%; animation: ps-shake .16s linear infinite; }
-.ps-art .ps-led { fill: var(--accent); stroke: none; animation: ps-led var(--t) linear infinite; }
-.ps-table { stroke: var(--line-2); stroke-width: 1.5; }
-.ps-printer { fill: #1B1B21; stroke: var(--line-2); stroke-width: 1.5; }
-.ps-slot { stroke: #000; stroke-width: 2; }
-.ps-ticket rect { fill: var(--paper); stroke: none; }
-.ps-ticket path { stroke: #B5AE9C; stroke-width: 1.6; }
-.ps-print { transform: translate(2px, 41px); animation: ps-print var(--t) var(--ease) infinite; }
-.ps-take { transform-box: fill-box; transform-origin: 50% 50%; transform: translate(279px, 224px) rotate(8deg); animation: ps-take var(--t) var(--ease) infinite; }
-.ps-stove { fill: #141419; stroke: var(--line-2); stroke-width: 1.5; }
-.ps-pan { fill: #2A2A33; stroke: var(--ink); stroke-width: 1.8; }
-.ps-handle { stroke-width: 2.2; }
-.ps-steam { stroke: rgb(255 255 255 / .6); stroke-width: 1.8; animation: ps-steam 1.8s ease-out infinite; }
-.ps-steam2 { animation-delay: -.6s; } .ps-steam3 { animation-delay: -1.2s; }
-.ps-hat { fill: var(--ink); stroke: none; }
-.ps-cook { transform-box: view-box; transform-origin: 324px 259.1px; transform: rotate(35deg); animation: ps-cook var(--t) var(--ease) infinite; }
-.ps-ring { opacity: 0; animation: ps-ringing var(--t) linear infinite; }
-.ps-still { animation: ps-quiet var(--t) linear infinite; }
-.ps-talk { opacity: 0; animation: ps-talking var(--t) linear infinite; }
-.ps-work { animation: ps-work var(--t) var(--ease) infinite; }
-.ps-pill { position: absolute; right: 1.5%; top: 7%; display: flex; align-items: center; gap: 2.2cqi; padding: 1.6cqi 3.2cqi 1.6cqi 1.6cqi; border-radius: 999px; background: rgb(18 18 22 / .92); border: 1px solid var(--line-2); box-shadow: 0 2.5cqi 6cqi -2cqi rgb(0 0 0 / .8); color: var(--ink); white-space: nowrap; animation: ps-pill var(--t) var(--ease) infinite; }
-.ps-dot { position: relative; flex: none; width: 6.6cqi; height: 6.6cqi; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
-.ps-dot::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--accent); animation: ring 1.8s infinite; }
-.ps-dot::after { content: ""; width: 2.3cqi; height: 2.3cqi; border-radius: .6cqi .6cqi 1.2cqi 1.2cqi; background: #fff; transform: rotate(-30deg); }
-.ps-txt { display: grid; }
-.ps-txt b { grid-area: 1 / 1; font: 600 3.3cqi/1.2 var(--font-body); }
-.ps-pa { opacity: 0; animation: ps-a var(--t) linear infinite; }
-.ps-pb { animation: ps-b var(--t) linear infinite; }
-.ps-pill .wave { height: 4.4cqi; gap: .6cqi; }
-.ps-pill .wave i { width: .6cqi; }
-.ps-say { position: absolute; max-width: 64%; padding: 2.2cqi 3cqi; border-radius: 3.6cqi; font: 400 3.15cqi/1.4 var(--font-body); animation: var(--t) var(--ease) infinite; }
-.ps-b1 { left: 2%; top: 24.5%; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--ink); border-top-left-radius: 1cqi; transform-origin: 0 0; animation-name: ps-b1; }
-.ps-b2 { right: 2%; top: 40%; background: linear-gradient(135deg, #FF8A2A, #FFB24D); color: var(--accent-ink); font-weight: 500; border-top-right-radius: 1cqi; transform-origin: 100% 0; animation-name: ps-b2; }
-.ps-tag { position: absolute; right: 2%; top: 52.5%; display: inline-flex; align-items: center; gap: 1.4cqi; padding: 1.3cqi 2.6cqi; border-radius: 999px; background: rgb(52 211 153 / .12); border: 1px solid rgb(52 211 153 / .45); color: var(--ok); font: 600 2.9cqi/1.2 var(--font-body); white-space: nowrap; animation: ps-work var(--t) var(--ease) infinite; }
-.ps-tag::before { content: ""; width: 1.5cqi; height: 1.5cqi; border-radius: 50%; background: var(--ok); }
-/* The loop: it rings 5-24%, the AI answers at 24%, the two sentences come at 28% and 41%, the ticket prints 60-67%, the cook takes it 70-77%
-   and works until 94%; then everything clears for the next call. */
-@keyframes ps-wait { from { transform: translateY(0); } to { transform: translateY(-1.6px); } }
+.ps-ripple { opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; animation: ps-ripple var(--t) ease-out infinite both; }
+.ps-burst { opacity: 0; transform-box: view-box; transform-origin: 200px 150px; animation: ps-burst var(--t) ease-out infinite both; }
+
+/* 2: the call */
+.ps-a2 { display: grid; align-content: start; gap: 2cqi; padding: 15cqi 3cqi 0; animation: ps-a2 var(--t) var(--ease) infinite both; }
+.ps-a2 p { margin: 0; }
+.ps-orb { position: relative; justify-self: center; width: 17cqi; height: 17cqi; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 34% 28%, #FFE0B8 0%, #FFA24A 34%, #FF7A1A 62%, #B9480A 100%); box-shadow: 0 0 8cqi rgb(255 122 26 / .45), inset 0 -1.6cqi 3cqi rgb(0 0 0 / .22); }
+.ps-orb::before, .ps-orb::after { content: ""; position: absolute; inset: -1.2cqi; border-radius: 50%; border: .45cqi solid rgb(255 160 80 / .6); animation: ps-orb 2.4s ease-out infinite; }
+.ps-orb::after { animation-delay: -1.2s; }
+.ps-wv { display: flex; align-items: center; gap: .85cqi; height: 8cqi; animation: ps-amp var(--t) var(--ease) infinite both; }
+.ps-wv i { width: 1.1cqi; height: 100%; border-radius: 1cqi; background: #fff; animation: wave 1.1s ease-in-out infinite; }
+.ps-wv i:nth-child(2) { animation-delay: -.85s; } .ps-wv i:nth-child(3) { animation-delay: -.5s; } .ps-wv i:nth-child(4) { animation-delay: -.2s; }
+.ps-wv i:nth-child(5) { animation-delay: -.7s; } .ps-wv i:nth-child(6) { animation-delay: -.35s; } .ps-wv i:nth-child(7) { animation-delay: -.95s; }
+/* without motion the bars stand at different heights, like a still of a voice */
+.ps-wv i:nth-child(1), .ps-pill .wave i:nth-child(1) { transform: scaleY(.4); } .ps-wv i:nth-child(2), .ps-pill .wave i:nth-child(2) { transform: scaleY(.75); }
+.ps-wv i:nth-child(3), .ps-pill .wave i:nth-child(3) { transform: scaleY(.5); } .ps-wv i:nth-child(4), .ps-pill .wave i:nth-child(4) { transform: scaleY(1); }
+.ps-wv i:nth-child(5), .ps-pill .wave i:nth-child(5) { transform: scaleY(.6); } .ps-wv i:nth-child(6) { transform: scaleY(.85); } .ps-wv i:nth-child(7) { transform: scaleY(.45); }
+.ps-who { justify-self: center; display: flex; align-items: center; gap: 1.2cqi; margin-top: -.4cqi !important; font: 500 3cqi/1.2 var(--font-body); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ps-time { display: inline-block; height: 1.2em; overflow: hidden; color: var(--ink); }
+.ps-time > span { display: grid; transform: translateY(-80%); animation: ps-time var(--t) linear infinite both; }
+.ps-time em { font-style: normal; height: 1.2em; }
+.ps-say { max-width: 80%; padding: 2.2cqi 3.2cqi; border-radius: 3.6cqi; font: 400 3.6cqi/1.42 var(--font-body); animation: var(--t) var(--ease) infinite both; }
+.ps-s1 { justify-self: start; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line-2); border-top-left-radius: 1cqi; transform-origin: 0 0; animation-name: ps-s1; }
+.ps-s2 { justify-self: end; color: var(--accent-ink); background: linear-gradient(135deg, #FF8A2A, #FFB24D); font-weight: 500; border-top-right-radius: 1cqi; transform-origin: 100% 0; animation-name: ps-s2; }
+.ps-ok { justify-self: center; display: inline-flex; align-items: center; gap: 1.2cqi; margin-top: .6cqi !important; padding: 1.3cqi 2.8cqi 1.3cqi 2cqi; border-radius: 999px; font: 600 3cqi/1.2 var(--font-body); color: var(--ok); background: rgb(52 211 153 / .1); border: 1px solid rgb(52 211 153 / .3); animation: ps-ok var(--t) var(--ease) infinite both; }
+.ps-ok svg { width: 3.4cqi; height: 3.4cqi; }
+
+/* 3: the laptop with the dashboard, and the printer */
+.ps-a3 { opacity: 0; animation: ps-a3 var(--t) var(--ease) infinite both; }
+.ps-scr { position: absolute; left: 2cqi; top: 19cqi; width: 64cqi; height: 43cqi; border: .9cqi solid #2B2B33; border-bottom-width: 1.4cqi; border-radius: 2.4cqi 2.4cqi .6cqi .6cqi; background: #08080A; overflow: hidden; box-shadow: 0 3cqi 8cqi -3cqi rgb(0 0 0 / .8); }
+.ps-base { position: absolute; left: 0; top: 62cqi; width: 68cqi; height: 2.6cqi; border-radius: .4cqi .4cqi 2cqi 2cqi; background: linear-gradient(#3A3A44, #1D1D23); }
+.ps-base::before { content: ""; position: absolute; left: 50%; top: 0; width: 11cqi; height: .9cqi; transform: translateX(-50%); border-radius: 0 0 .9cqi .9cqi; background: #1A1A20; }
+.ps-bar { display: flex; align-items: center; justify-content: space-between; gap: 2cqi; height: 6.2cqi; padding: 0 2.2cqi; border-bottom: 1px solid var(--line); font: 600 2.6cqi/1 var(--font-body); white-space: nowrap; }
+.ps-bar b { display: inline-flex; align-items: center; gap: 1.2cqi; }
+.ps-bar b::before { content: ""; width: 1.5cqi; height: 1.5cqi; border-radius: 50%; background: var(--ok); }
+.ps-bar span { font-weight: 400; font-size: 2.3cqi; color: var(--muted); }
+.ps-list { position: absolute; left: 0; right: 0; top: 6.2cqi; bottom: 0; overflow: hidden; padding: 1.6cqi 1.8cqi; }
+.ps-rows { display: grid; gap: 1.4cqi; animation: ps-rows var(--t) var(--ease) infinite both; }
+.ps-row { height: 9.6cqi; display: grid; align-content: center; gap: .8cqi; padding: 0 2cqi; border-radius: 1.4cqi; background: var(--surface-2); border: 1px solid var(--line); min-width: 0; }
+.ps-row div { display: flex; align-items: center; gap: 1.4cqi; font: 600 2.5cqi/1 var(--font-body); }
+.ps-row span { font: 500 2cqi/1 var(--font-body); padding: .5cqi 1.2cqi; border-radius: 999px; background: rgb(255 255 255 / .07); color: var(--muted); }
+.ps-row small { margin-left: auto; font: 400 2.2cqi/1 var(--font-body); color: var(--muted); }
+.ps-row p { margin: 0; font: 400 2.2cqi/1.2 var(--font-body); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ps-new { border-color: rgb(255 122 26 / .55); background: rgb(255 122 26 / .1); animation: ps-new var(--t) var(--ease) infinite both; }
+.ps-new span { background: var(--accent); color: var(--accent-ink); }
+.ps-new p { color: var(--ink); }
+.ps-toast { position: absolute; right: 1.8cqi; top: 7.6cqi; width: 37cqi; display: flex; align-items: center; gap: 1.6cqi; padding: 1.6cqi 2cqi; border-radius: 1.8cqi; background: rgb(32 32 38 / .97); border: 1px solid var(--line-2); box-shadow: 0 2cqi 5cqi rgb(0 0 0 / .65); opacity: 0; transform: translateX(calc(100% + 4cqi)); animation: ps-toast var(--t) var(--ease) infinite both; }
+.ps-toast i { flex: none; width: 5.2cqi; height: 5.2cqi; border-radius: 1.4cqi; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; }
+.pscene .ps-toast svg { width: 3.4cqi; height: 3.4cqi; stroke-width: 2.2; }
+.ps-toast span { display: grid; gap: .6cqi; min-width: 0; }
+.ps-toast b { font: 600 2.5cqi/1.1 var(--font-body); white-space: nowrap; }
+.ps-toast small { font: 400 2.1cqi/1.1 var(--font-body); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ps-box { position: absolute; left: 71cqi; top: 49cqi; width: 27cqi; height: 15.6cqi; border-radius: 2.2cqi 2.2cqi 1.4cqi 1.4cqi; background: linear-gradient(#2A2A32, #18181D); border: 1px solid var(--line-2); box-shadow: 0 3cqi 6cqi -3cqi rgb(0 0 0 / .8); }
+.ps-box::before { content: ""; position: absolute; left: 2.5cqi; right: 2.5cqi; top: 2.4cqi; height: 1cqi; border-radius: .5cqi; background: #000; }
+.ps-led { position: absolute; right: 2.6cqi; bottom: 2.6cqi; width: 1.8cqi; height: 1.8cqi; border-radius: 50%; background: var(--ok); box-shadow: 0 0 1.4cqi var(--ok); animation: ps-led var(--t) linear infinite both; }
+.ps-paper { position: absolute; left: 73.5cqi; top: 22cqi; width: 22cqi; height: 29.9cqi; overflow: hidden; display: flex; align-items: flex-end; }
+.ps-tk { width: 100%; display: grid; gap: .25cqi; padding: 1.7cqi 1.5cqi 1.6cqi; background: var(--paper); color: var(--paper-ink); font: 500 1.9cqi/1.45 var(--font-mono); white-space: nowrap; animation: ps-print var(--t) linear infinite both; }
+.ps-tk > * { overflow: hidden; }
+.ps-tk b { display: flex; justify-content: space-between; gap: 1cqi; font-weight: 700; letter-spacing: .05em; padding-bottom: .7cqi; margin-bottom: .3cqi; border-bottom: 1px dashed var(--paper-line); }
+.ps-tk small { font-size: 1.65cqi; color: color-mix(in srgb, var(--paper-ink) 68%, transparent); }
+.ps-tk .ps-tf { margin-top: .4cqi; padding-top: .6cqi; border-top: 1px dashed var(--paper-line); }
+.ps-checks { position: absolute; left: 0; right: 0; top: 71cqi; display: flex; justify-content: center; flex-wrap: wrap; gap: 2cqi; }
+.ps-checks span { display: inline-flex; align-items: center; gap: 1.1cqi; padding: 1.3cqi 2.6cqi 1.3cqi 1.9cqi; border-radius: 999px; font: 600 3cqi/1.2 var(--font-body); color: var(--ink); background: rgb(52 211 153 / .1); border: 1px solid rgb(52 211 153 / .3); white-space: nowrap; animation: var(--t) var(--ease) infinite both; }
+.ps-checks svg { width: 3.2cqi; height: 3.2cqi; color: var(--ok); }
+.ps-checks .ps-c1 { animation-name: ps-c1; }
+.ps-checks .ps-c2 { animation-name: ps-c2; }
+
+@keyframes ps-p1 { 0% { opacity: 0; transform: translateY(-1.5cqi); } 3%, 20% { opacity: 1; transform: none; } 21.5%, 100% { opacity: 0; transform: none; } }
+@keyframes ps-p2 { 0%, 21.5% { opacity: 0; transform: translateY(-1.5cqi); } 23%, 59.5% { opacity: 1; transform: none; } 61%, 100% { opacity: 0; transform: none; } }
+@keyframes ps-p3 { 0%, 61% { opacity: 0; transform: translateY(-1.5cqi); } 62.5%, 95% { opacity: 1; transform: none; } 98%, 100% { opacity: 0; transform: none; } }
+@keyframes ps-a1 { 0% { opacity: 0; } 3%, 22% { opacity: 1; } 27%, 100% { opacity: 0; } }
+@keyframes ps-zoom { 0%, 22% { transform: none; } 27%, 100% { transform: scale(1.35); } }
+@keyframes ps-ring { 0%, 3% { opacity: 0; } 3.5%, 19.5% { opacity: 1; } 20%, 100% { opacity: 0; } }
+@keyframes ps-hs { 0%, 3% { opacity: 1; transform: none; } 3.5%, 19.5% { opacity: 0; transform: none; } 20% { opacity: 1; transform: none; } 21.5%, 100% { opacity: 1; transform: translateY(-16px) rotate(-9deg); } }
+@keyframes ps-shake { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 @keyframes ps-blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
-@keyframes ps-pulse { from { stroke-dashoffset: 12; } to { stroke-dashoffset: -104; } }
-@keyframes ps-serve { from { transform: rotate(-14deg); } to { transform: rotate(18deg); } }
-@keyframes ps-shake { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
-@keyframes ps-steam { 0% { transform: translateY(4px); opacity: 0; } 30% { opacity: .9; } 100% { transform: translateY(-8px); opacity: 0; } }
-@keyframes ps-ringing { 0%, 4.9% { opacity: 0; } 5%, 24% { opacity: 1; } 24.1%, 100% { opacity: 0; } }
-@keyframes ps-quiet { 0%, 4.9% { opacity: 1; } 5%, 24% { opacity: 0; } 24.1%, 100% { opacity: 1; } }
-@keyframes ps-talking { 0%, 4.9% { opacity: 0; } 5.5%, 56% { opacity: 1; } 58.5%, 100% { opacity: 0; } }
-@keyframes ps-led { 0%, 24% { opacity: 0; } 25%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
-@keyframes ps-pill { 0%, 5.5% { opacity: 0; transform: translateY(-30%) scale(.9); } 7.5%, 94% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
-@keyframes ps-a { 0%, 24% { opacity: 1; } 25%, 100% { opacity: 0; } }
-@keyframes ps-b { 0%, 24% { opacity: 0; } 25%, 100% { opacity: 1; } }
-@keyframes ps-b1 { 0%, 27% { opacity: 0; transform: translateY(14%) scale(.94); } 29.5%, 94% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
-@keyframes ps-b2 { 0%, 40% { opacity: 0; transform: translateY(14%) scale(.94); } 42.5%, 94% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
-@keyframes ps-print { 0%, 60% { transform: translate(2px, 41px); opacity: 1; } 67%, 69.9% { transform: translate(2px, 2px); opacity: 1; } 70%, 100% { transform: translate(2px, 2px); opacity: 0; } }
-@keyframes ps-take { 0%, 69.9% { transform: translate(261px, 240px); opacity: 0; } 70%, 71.5% { transform: translate(261px, 240px); opacity: 1; } 77%, 94% { transform: translate(279px, 224px) rotate(8deg); opacity: 1; } 97%, 100% { transform: translate(279px, 224px) rotate(8deg); opacity: 0; } }
-@keyframes ps-cook { 0%, 66% { transform: rotate(-70deg); } 69.5%, 71.5% { transform: rotate(0deg); } 77%, 94% { transform: rotate(35deg); } 98%, 100% { transform: rotate(-70deg); } }
-@keyframes ps-work { 0%, 79% { opacity: 0; } 82%, 94% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes ps-ripple { 0%, 20% { opacity: 0; transform: scale(.5); } 20.6% { opacity: .9; transform: scale(.7); } 24.5%, 100% { opacity: 0; transform: scale(1.9); } }
+@keyframes ps-burst { 0%, 20% { opacity: 0; transform: scale(.6); } 20.8% { opacity: 1; transform: scale(.9); } 23.5%, 100% { opacity: 0; transform: scale(1.15); } }
+@keyframes ps-a2 { 0%, 23% { opacity: 0; transform: scale(.92); } 27%, 58.5% { opacity: 1; transform: none; } 61%, 100% { opacity: 0; transform: translateY(-6cqi); } }
+@keyframes ps-orb { 0% { transform: scale(.92); opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
+@keyframes ps-amp { 0%, 39% { transform: scaleY(.45); } 40.5%, 49% { transform: scaleY(1); } 51%, 100% { transform: scaleY(.45); } }
+@keyframes ps-time { 0%, 31% { transform: translateY(0); } 31.01%, 36% { transform: translateY(-20%); } 36.01%, 42% { transform: translateY(-40%); } 42.01%, 48% { transform: translateY(-60%); } 48.01%, 100% { transform: translateY(-80%); } }
+@keyframes ps-s1 { 0%, 29% { opacity: 0; transform: translateY(2.5cqi) scale(.96); } 31%, 100% { opacity: 1; transform: none; } }
+@keyframes ps-s2 { 0%, 39% { opacity: 0; transform: translateY(2.5cqi) scale(.96); } 41%, 100% { opacity: 1; transform: none; } }
+@keyframes ps-ok { 0%, 50% { opacity: 0; transform: translateY(2cqi) scale(.9); } 52%, 100% { opacity: 1; transform: none; } }
+@keyframes ps-a3 { 0%, 60.5% { opacity: 0; transform: translateY(6cqi); } 64.5%, 95% { opacity: 1; transform: none; } 98.5%, 100% { opacity: 0; transform: none; } }
+@keyframes ps-toast { 0%, 66% { opacity: 0; transform: translateX(calc(100% + 4cqi)); } 68%, 83.5% { opacity: 1; transform: none; } 86%, 100% { opacity: 0; transform: translateX(calc(100% + 4cqi)); } }
+@keyframes ps-rows { 0%, 68% { transform: translateY(-11cqi); } 70.5%, 100% { transform: none; } }
+@keyframes ps-new { 0%, 68.3% { opacity: 0; background-color: rgb(255 122 26 / .32); } 70.5% { opacity: 1; background-color: rgb(255 122 26 / .32); } 77%, 100% { opacity: 1; background-color: rgb(255 122 26 / .1); } }
+@keyframes ps-print { 0% { transform: translateY(105%); } 71% { transform: translateY(105%); animation-timing-function: steps(10, end); } 82%, 100% { transform: none; } }
+@keyframes ps-led { 0%, 70.8% { background-color: #3A3A44; box-shadow: none; } 71.2%, 82% { background-color: var(--accent); box-shadow: 0 0 1.6cqi var(--accent); } 82.4%, 100% { background-color: var(--ok); box-shadow: 0 0 1.4cqi var(--ok); } }
+@keyframes ps-c1 { 0%, 70% { opacity: 0; transform: translateY(1.5cqi); } 72%, 100% { opacity: 1; transform: none; } }
+@keyframes ps-c2 { 0%, 82.5% { opacity: 0; transform: translateY(1.5cqi); } 84.5%, 100% { opacity: 1; transform: none; } }
 .stage .pscene { animation: rise 1s .15s var(--ease) both; }
 .shot-frame > .pscene { max-width: 360px; }
-@media (prefers-reduced-motion: reduce) { .pscene *, .pscene *::before, .pscene *::after { animation: none !important; } .ps-steam { opacity: .7; } }
+@media (prefers-reduced-motion: reduce) { .pscene *, .pscene *::before, .pscene *::after { animation: none !important; } }

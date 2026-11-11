@@ -82,11 +82,16 @@ GitHub Pages).
 
 ## Phone AI animation
 - phone_scene_i() in build.py + ".pscene" in site.css. Shown at the top of the phone AI page and as the first tile of the home page's
-  top visual. A busy counter (a queue, the staff serving), a customer calls, the phone on the counter rings, "AI neemt op", the
-  customer's order and the AI's answer, the ticket comes out of the kitchen printer, the cook takes it and starts ("In de keuken").
-  Pure CSS, one 17 second loop. With reduced motion it stands still on the end: AI answered, ticket in the cook's hand.
-- The two sentences per language are in PSCENE in build.py; the pill uses CALL, the tag uses WSCENE[lang]["steps"][1].
-- It replaced the paper ticket at the top of the phone AI page.
+  top visual. Three parts in one 17 second loop, no people in it (Sammy, 11 Nov 2026):
+  1. the restaurant counter (menu board, lamps, bell, fries, bag): the desk phone rings, the handset clicks up, the view zooms in;
+  2. the call: the AI's voice orb, the caller's number and the call time, what the caller says, the AI's answer, "Bestelling bevestigd";
+  3. a laptop with the dashboard: a notification "Nieuwe bestelling", the order lands at the top of the list, the printer prints the
+     ticket, then "In het dashboard" and "Ticket geprint".
+  The pill on top follows the stages: "Inkomende oproep", "AI neemt op", "In de keuken". With reduced motion it rests on part 2.
+- Texts per language: PCALL in build.py (the two sentences, the notification, the items, the two checks); the rest comes from CALL,
+  DASH, TICKET_META, WSCENE and P. The counter is one SVG on a 400 x 360 grid with the phone at x = 200. The zoom moves the drawing
+  inside its part, which clips it, so nothing reaches past the scene (no sideways scrolling on phones).
+- It replaced the paper ticket at the top of the phone AI page, and on 11 Nov (evening) an earlier version with stick figures.
 
 ## WhatsApp animation
 - chat_i() in build.py + ".wchat" in site.css. The customer types and sends the order, the AI types and answers with the order and two

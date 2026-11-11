@@ -509,56 +509,104 @@ def product_price_band(lang, pid, prefix, page):
 # ---------------- round 4: home stage, marquee, order flow ----------------
 CALL = {"nl": ("Inkomende oproep", "AI neemt op"), "fr": ("Appel entrant", "L'IA répond"), "en": ("Incoming call", "AI answering"),
         "tr": ("Gelen arama", "YZ cevaplıyor"), "de": ("Eingehender Anruf", "KI nimmt an")}
-# Phone AI scene: what the caller says and what the AI answers.
-PSCENE = {
-    "nl": ("Hallo, 2 grote friet en een bicky burger om af te halen.", "Genoteerd! Klaar over 15 minuten."),
-    "fr": ("Bonjour, 2 grandes frites et un bicky burger à emporter.", "C'est noté ! Prêt dans 15 minutes."),
-    "en": ("Hi, 2 large fries and a bicky burger for pickup.", "Got it! Ready in 15 minutes."),
-    "tr": ("Merhaba, 2 büyük patates ve bir bicky burger, gel al.", "Not aldım! 15 dakikada hazır."),
-    "de": ("Hallo, 2 große Pommes und einen Bicky Burger zum Abholen.", "Notiert! In 15 Minuten fertig."),
+# Phone AI scene, per language: what the caller says, what the AI answers, and the words of the call, the dashboard and the
+# printer. Sammy, 11 Nov 2026 (evening): no stick figures; the counter with the ringing phone, the AI taking the order, then the
+# laptop with the notification and the dashboard, and the printer printing the ticket. The rest comes from CALL, DASH,
+# TICKET_META, WSCENE and P.
+PCALL = {
+    "nl": {"said": "Hallo, 2 grote friet en een bicky burger om af te halen.",
+           "answer": "Genoteerd: 2 grote friet en 1 bicky burger. Klaar over 15 minuten.",
+           "ok": "Bestelling bevestigd", "new": "Nieuwe bestelling",
+           "items": ("2x Grote friet", "1x Bicky burger"), "checks": ("In het dashboard", "Ticket geprint")},
+    "fr": {"said": "Bonjour, 2 grandes frites et un bicky burger à emporter.",
+           "answer": "C'est noté : 2 grandes frites et 1 bicky burger. Ce sera prêt dans 15 minutes.",
+           "ok": "Commande confirmée", "new": "Nouvelle commande",
+           "items": ("2x Grande frite", "1x Bicky burger"), "checks": ("Dans le tableau de bord", "Ticket imprimé")},
+    "en": {"said": "Hi, 2 large fries and a bicky burger for pickup.",
+           "answer": "Got it: 2 large fries and 1 bicky burger. Ready in 15 minutes.",
+           "ok": "Order confirmed", "new": "New order",
+           "items": ("2x Large fries", "1x Bicky burger"), "checks": ("On the dashboard", "Ticket printed")},
+    "tr": {"said": "Merhaba, 2 büyük patates ve bir bicky burger, gel al.",
+           "answer": "Not aldım: 2 büyük patates ve 1 bicky burger. 15 dakikada hazır.",
+           "ok": "Sipariş onaylandı", "new": "Yeni sipariş",
+           "items": ("2x Büyük patates", "1x Bicky burger"), "checks": ("Panelde", "Fiş yazdırıldı")},
+    "de": {"said": "Hallo, 2 große Pommes und einen Bicky Burger zum Abholen.",
+           "answer": "Notiert: 2 große Pommes und 1 Bicky Burger. In 15 Minuten fertig.",
+           "ok": "Bestellung bestätigt", "new": "Neue Bestellung",
+           "items": ("2x Große Pommes", "1x Bicky Burger"), "checks": ("Im Dashboard", "Bon gedruckt")},
 }
+PS_TIMER = ["00:02", "00:05", "00:09", "00:14", "00:18"]   # the call's clock while the AI takes the order
+
 def phone_scene_i(lang):
-    """Animated scene for the phone AI: a customer calls while the counter is busy (a queue, the phone on the counter rings),
-    the AI answers and takes the order, the kitchen printer prints the ticket, the cook takes it and starts.
-    Pure CSS (see .pscene in site.css). Everything is drawn on a 400 x 360 grid; the floor is at y = 336, the figures are 109 high.
-    The cook's shoulder (324, 259.1) and the staff's (160, 259.1) are also in site.css, as the points their arms turn around."""
-    said, answer = PSCENE[lang]
+    """Animated scene for the phone AI, in three parts (pure CSS, see .pscene in site.css; one 17 s loop):
+    1) the restaurant counter: the desk phone rings, the handset clicks up and the view zooms into the call;
+    2) the call: the AI's voice orb, what the caller says, the AI's answer, "order confirmed";
+    3) the result: a notification and the new order on the dashboard (a laptop), the ticket comes out of the printer.
+    The pill on top names the stage (incoming call, AI answering, in the kitchen). Without motion it rests on part 2.
+    The counter is one SVG on a 400 x 360 grid with the phone at x = 200; the other parts are HTML sized in cqi."""
+    t = PCALL[lang]
     ring, picked = CALL[lang]
-    F, S = 336, 0.62                                   # floor, size of the figures
-    n = lambda v: f"{round(v, 1):g}"
-    head_y, neck, hip, sh = F - 154 * S, F - 141 * S, F - 73 * S, F - 124 * S
-    def fig(cx, cls, arms, extra=""):
-        """A stick figure standing at x = cx. arms: where each hand is, relative to the shoulder, in figure units."""
-        a = "".join(f"M{n(cx)} {n(sh)}L{n(cx + dx * S)} {n(sh + dy * S)}" for dx, dy in arms)
-        return (f'<g class="{cls}"><path d="M{n(cx)} {n(neck)}V{n(hip)}M{n(cx)} {n(hip)}L{n(cx - 15 * S)} {F}M{n(cx)} {n(hip)}L{n(cx + 15 * S)} {F}{a}"/>'
-                f'<circle cx="{n(cx)}" cy="{n(head_y)}" r="{n(13 * S)}"/>{extra}</g>')
-    queue = fig(16, "ps-cust ps-far", [(-10, 44), (12, 43)]) + fig(50, "ps-cust", [(-11, 44), (13, 42)]) + fig(84, "ps-cust", [(-12, 44), (30, 34)])
-    staff = fig(160, "ps-staff", [(16, 40)], f'<path class="ps-serve" d="M160 {n(sh)}L132.5 {n(sh + 13)}"/>')
-    desk = '<rect x="186" y="276" width="20" height="8" rx="2"/><rect x="183.5" y="270" width="25" height="5" rx="2.5"/>'
-    cook = fig(324, "ps-cookfig", [(30, 36)],
-               f'<path class="ps-hat" d="M316 236.5v-8a8 7 0 0 1 16 0v8z"/><path class="ps-cook" d="M324 {n(sh)}H295.5"/>')
-    ticket = '<rect width="24" height="38" rx="1.5"/><path d="M4 7h16M4 13h11M4 19h14M4 25h9M4 31h16"/>'
-    return f'''<div class="pscene" role="img" aria-label="{e(UI[lang]["example"])}: {e(ring)}">
-<svg class="ps-art" viewBox="0 0 400 360" aria-hidden="true">
-<path class="ps-floor" d="M6 {F}H394"/><path class="ps-wall" d="M230 196V{F}"/>
-<g class="ps-caller"><rect x="16" y="8" width="44" height="74" rx="9"/><rect class="ps-cscr" x="19.5" y="11.5" width="37" height="67" rx="6.5"/><circle class="ps-cbtn" cx="38" cy="45" r="11"/><path class="ps-cglyph" d="M33 41.5q5 7.5 10.3 6.8"/></g>
-<g class="ps-ring"><path class="ps-arc" d="M67 37a11 11 0 0 1 0 16"/><path class="ps-arc ps-arc2" d="M73 31a19 19 0 0 1 0 28"/></g>
-<path class="ps-line" d="M84 45H204"/><g class="ps-talk"><path class="ps-pulse" pathLength="100" d="M84 45H204"/><path class="ps-pulse ps-pulse2" pathLength="100" d="M84 45H204"/></g>
-{queue}{staff}
-<rect class="ps-counter" x="106" y="290" width="102" height="{F - 290}" rx="2"/><rect class="ps-slab" x="100" y="284" width="114" height="7" rx="3"/>
-<g class="ps-desk ps-still">{desk}</g><g class="ps-ring"><g class="ps-desk ps-shake">{desk}</g><path class="ps-arc" d="M213 265a9 9 0 0 1 0 13"/><path class="ps-arc" d="M179 265a9 9 0 0 0 0 13"/></g>
-<circle class="ps-led" cx="196" cy="280" r="2"/>
-<path class="ps-table" d="M244 300H302M250 300V{F}M296 300V{F}"/><rect class="ps-printer" x="252" y="278" width="40" height="22" rx="3"/><path class="ps-slot" d="M258 279.5H286"/>
-<svg x="259" y="238" width="28" height="41" overflow="hidden"><g class="ps-ticket ps-print">{ticket}</g></svg>
-<rect class="ps-stove" x="348" y="300" width="46" height="{F - 300}" rx="2"/><path class="ps-pan" d="M354 288.5h32l-3.5 11.5h-25z"/><path class="ps-handle" d="M354 291l-9-3"/>
-<g class="ps-work"><path class="ps-steam" d="M362 284q-3.5-5 0-10t0-10"/><path class="ps-steam ps-steam2" d="M370 284q-3.5-5 0-10t0-10"/><path class="ps-steam ps-steam3" d="M378 284q-3.5-5 0-10t0-10"/></g>
-{cook}
-<g class="ps-ticket ps-take">{ticket}</g>
-</svg>
-<div class="ps-pill"><span class="ps-dot"></span><span class="ps-txt"><b class="ps-pa">{e(ring)}</b><b class="ps-pb">{e(picked)}</b></span><span class="wave ps-pb"><i></i><i></i><i></i><i></i><i></i></span></div>
-<div class="ps-say ps-b1">{e(said)}</div><div class="ps-say ps-b2">{e(answer)}</div>
-<div class="ps-tag">{e(WSCENE[lang]["steps"][1])}</div>
-</div>'''
+    chans = [r[0] for r in DASH[lang][2]]            # short channel names: phone, WhatsApp, webshop, kiosk
+    check = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+    bell = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>'
+    hs = ('<rect x="162" y="165" width="76" height="10" rx="5"/>'
+          '<rect x="148" y="158" width="26" height="24" rx="8"/><rect x="226" y="158" width="26" height="24" rx="8"/>')
+    keys = "".join(f'<circle cx="{x}" cy="{y}" r="2.4"/>' for y in (200, 207.5, 215) for x in (188, 200, 212))
+    counter = f'''<svg class="ps-art" viewBox="0 0 400 360" aria-hidden="true">
+<path d="M46 80H74L104 222H16zM326 80H354L384 222H296z" fill="#FFB45C" opacity=".07"/>
+<path d="M60 0V64M340 0V64" stroke="#2E2E36" stroke-width="2"/>
+<path d="M42 78a18 15 0 0 1 36 0zM322 78a18 15 0 0 1 36 0z" fill="#2A2A32" stroke="#45454F" stroke-width="1.5"/>
+<circle cx="60" cy="80" r="4" fill="#FFD9A8"/><circle cx="340" cy="80" r="4" fill="#FFD9A8"/>
+<rect x="128" y="64" width="144" height="80" rx="7" fill="#121216" stroke="#2C2C35" stroke-width="1.5"/>
+<path d="M144 82H190" stroke="#FF7A1A" stroke-width="5" stroke-linecap="round"/>
+<path d="M144 100H210M144 114H200M144 128H216" stroke="#4E4E58" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M240 100H256M240 114H256M240 128H256" stroke="#85858F" stroke-width="3.2" stroke-linecap="round"/>
+<rect x="26" y="232" width="348" height="128" fill="#111115" stroke="#24242C" stroke-width="1.5"/>
+<path d="M142 236V360M258 236V360" stroke="#1C1C23" stroke-width="2"/>
+<path d="M26 248H374" stroke="#FF7A1A" stroke-width="2.4" opacity=".55"/>
+<rect x="16" y="222" width="368" height="11" rx="4" fill="#2A2A33"/>
+<rect x="68" y="216" width="46" height="6" rx="2" fill="#2E2E37"/>
+<path d="M73 216a18 17 0 0 1 36 0z" fill="#2A2A32" stroke="#4A4A55" stroke-width="1.5"/>
+<rect x="88" y="194" width="6" height="5" rx="1.5" fill="#4A4A55"/>
+<path d="M80 210a11 10 0 0 1 7-7.5" stroke="#fff" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>
+<path d="M294 186l-3-16M301 184l-1-18M308 184l1-17M315 186l3-15" stroke="#FFC845" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M288 184H322L316 222H294z" fill="#E8620A"/><path d="M291 196H319" stroke="#FFFDF6" stroke-opacity=".55" stroke-width="2"/>
+<path d="M346 188v-6a8 8 0 0 1 16 0v6" stroke="#4A4A55" stroke-width="2"/>
+<rect x="336" y="188" width="36" height="34" rx="2.5" fill="#1F1F26" stroke="#3A3A44" stroke-width="1.5"/><circle cx="354" cy="205" r="5.5" fill="#FF7A1A"/>
+<path d="M154 222L165 186Q167 179 174 179H226Q233 179 235 186L246 222z" fill="#1A1A20" stroke="#3E3E48" stroke-width="2" stroke-linejoin="round"/>
+<rect x="184" y="186" width="32" height="7" rx="2" fill="#2A2A33"/><g fill="#3A3A44">{keys}</g>
+<g class="ps-hs ps-hs-s" fill="#26262E" stroke="#4A4A55" stroke-width="2">{hs}</g>
+<g class="ps-ringing"><rect x="184" y="186" width="32" height="7" rx="2" fill="#FF7A1A"/>
+<g class="ps-hs ps-hs-r" fill="#26262E" stroke="#4A4A55" stroke-width="2">{hs}</g>
+<g stroke="#FF7A1A" stroke-width="3.5" stroke-linecap="round"><path class="ps-arc" d="M139 156Q131 170 139 184M261 156Q269 170 261 184"/><path class="ps-arc ps-arc2" d="M128 150Q117 170 128 190M272 150Q283 170 272 190"/></g></g>
+<circle class="ps-ripple" cx="200" cy="168" r="40" stroke="#FFB45C" stroke-width="2.5"/>
+<path class="ps-burst" d="M200 106V92M220.7 111.2L227.2 98.8M179.3 111.2L172.8 98.8M236 124.8L247.5 116.7M164 124.8L152.5 116.7" stroke="#FFB45C" stroke-width="3.5" stroke-linecap="round"/>
+</svg>'''
+    timer = '<span class="ps-time"><span>' + "".join(f"<em>{x}</em>" for x in PS_TIMER) + "</span></span>"
+    call = (f'<div class="ps-act ps-a2"><div class="ps-orb"><span class="ps-wv">{"<i></i>" * 7}</span></div>'
+            f'<p class="ps-who">+32 470 •• •• 18 · {timer}</p>'
+            f'<p class="ps-say ps-s1">{e(t["said"])}</p><p class="ps-say ps-s2">{e(t["answer"])}</p>'
+            f'<p class="ps-ok">{check}{e(t["ok"])}</p></div>')
+    rows = [("#1043", chans[0], "19:55", ", ".join(t["items"]), " ps-new"),
+            ("#1042", chans[1], "19:48", "1x Pizza margherita, 1x Cola", ""),
+            ("#1041", chans[3], "19:44", "2x Cheeseburger, 2x Cola", "")]
+    rws = "".join(f'<div class="ps-row{cls}"><div><b>{n}</b><span>{e(ch)}</span><small>{tm}</small></div><p>{e(it)}</p></div>'
+                  for n, ch, tm, it, cls in rows)
+    tk = "".join(f"<span>{e(x)}</span>" for x in t["items"])
+    result = (f'<div class="ps-act ps-a3">'
+              f'<div class="ps-scr"><div class="ps-bar"><b>{e(DASH[lang][0])}</b><span>19:41</span></div>'
+              f'<div class="ps-list"><div class="ps-rows">{rws}</div></div>'
+              f'<div class="ps-toast"><i>{bell}</i><span><b>{e(t["new"])}</b><small>#1043 · {e(P["phone"][lang]["name"])}</small></span></div></div>'
+              f'<div class="ps-base"></div><div class="ps-box"><i class="ps-led"></i></div>'
+              f'<div class="ps-paper"><div class="ps-tk"><b><span>CONVEASY</span><span>#1043</span></b><small>{e(TICKET_META[lang][0])}</small>{tk}'
+              f'<small class="ps-tf">{e(WSCENE[lang]["modes"][0])} · 19:55</small></div></div>'
+              f'<div class="ps-checks"><span class="ps-c1">{check}{e(t["checks"][0])}</span><span class="ps-c2">{check}{e(t["checks"][1])}</span></div></div>')
+    wave = '<span class="wave"><i></i><i></i><i></i><i></i><i></i></span>'
+    pill = (f'<div class="ps-pill"><span class="ps-p ps-p1"><i class="ps-dot"></i>{e(ring)}</span>'
+            f'<span class="ps-p ps-p2"><i class="ps-dot ps-ai"></i>{e(picked)}{wave}</span>'
+            f'<span class="ps-p ps-p3"><i class="ps-dot ps-go"></i>{e(WSCENE[lang]["steps"][1])}</span></div>')
+    return (f'<div class="pscene" role="img" aria-label="{e(UI[lang]["example"])}: {e(P["phone"][lang]["name"])}">'
+            f'<div class="ps-act ps-a1">{counter}</div>{call}{result}{pill}</div>')
 
 def home_stage(lang, prefix):
     """Top visual of the home page: the three ways customers order, each as a small animation with a link to its page
