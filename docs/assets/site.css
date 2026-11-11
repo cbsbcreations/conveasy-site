@@ -278,19 +278,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .phone { width: 100%; max-width: 280px; background: #000; border-radius: 40px; padding: 9px; box-shadow: 0 40px 80px -24px rgb(0 0 0 / .9), inset 0 0 0 1px rgb(255 255 255 / .16), 0 0 60px -20px var(--glow); position: relative; text-align: left; }
 .phone::before { content: ""; position: absolute; top: 17px; left: 50%; width: 76px; height: 20px; background: #000; border-radius: 999px; transform: translateX(-50%); z-index: 2; }
 .ph-screen { background: #0D0D10; color: var(--ink); border-radius: 32px; padding: 44px 14px 14px; display: grid; gap: 10px; }
-.w-head { display: grid; gap: 2px; }
-.w-head b { font: 700 1.15rem/1.1 var(--font-display); letter-spacing: -.02em; }
-.w-head small { color: var(--muted); font-size: .76rem; }
-.w-cats { display: flex; gap: 6px; flex-wrap: wrap; }
-.w-cats span { font-size: .72rem; font-weight: 500; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--muted); }
-.w-cats span.on { background: #fff; border-color: #fff; color: #000; }
-.w-item { display: grid; grid-template-columns: 42px 1fr auto; gap: 10px; align-items: center; padding: 8px; border: 1px solid var(--line); background: var(--surface-2); border-radius: 12px; }
-.w-item i { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #F7C26B, #E5743A); }
-.w-item:nth-of-type(even) i { background: linear-gradient(135deg, #FF8A7A, #C2341F); }
-.w-item b { display: grid; font-size: .86rem; font-weight: 500; }
-.w-item b small { font-weight: 400; color: var(--muted); font-size: .76rem; }
-.w-add { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 600; }
-.w-btn { background: var(--accent); color: var(--accent-ink); font-weight: 600; text-align: center; padding: 12px; border-radius: 12px; font-size: .9rem; }
 
 /* Grids and cards */
 .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
@@ -696,3 +683,117 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .stage .mscene { animation: rise 1s .15s var(--ease) both; }
 .shot-frame > .mscene { max-width: 360px; }
 @media (prefers-reduced-motion: reduce) { .mscene *, .mscene *::before, .mscene *::after { animation: none !important; } }
+
+/* Webshop scene: a customer orders on the phone. Menu (three products go in the basket) -> checkout (address, delivery cost,
+   way to pay) -> order page (thank you, the minutes counting down, the steps up to delivered), worded like the real webshop.
+   Pure CSS, one 16 s loop; without motion it rests on the menu with a filled basket. Sizes are in cqi of the phone's screen.
+   Timing: most parts share one small animation and get their moment from --d (the part of the loop at which they start). */
+.wscene .ws { --t: 16s; position: relative; display: block; padding: 0; aspect-ratio: 100 / 156; overflow: hidden; container-type: inline-size; }
+.ws-view { position: absolute; inset: 0; padding: 16.8cqi 5.4cqi 5.4cqi; display: flex; flex-direction: column; gap: 3.6cqi; animation: var(--t) var(--ease) infinite; }
+.ws-view > * { flex: none; }
+.ws-view > .ws-map { flex: 1 1 0; }
+.ws-menu { animation-name: ws-va; }
+.ws-check { opacity: 0; animation-name: ws-vb; }
+.ws-done { opacity: 0; animation-name: ws-vc; }
+.ws-roll { display: inline-block; height: 1.15em; overflow: hidden; vertical-align: bottom; font-variant-numeric: tabular-nums; }
+.ws-roll > span { display: block; animation: var(--t) var(--ease) infinite; }
+.ws-roll em { display: block; height: 1.15em; line-height: 1.15; font-style: normal; }
+.ws-tap { position: absolute; left: 50%; top: 50%; width: 13cqi; height: 13cqi; margin: -6.5cqi 0 0 -6.5cqi; border-radius: 50%; background: #fff; opacity: 0; pointer-events: none; animation: ws-tap var(--t) ease-out calc(var(--t) * var(--d)) infinite backwards; }
+.ws-btn { position: relative; background: var(--accent); color: var(--accent-ink); font-weight: 600; font-size: 5.3cqi; line-height: 1.15; text-align: center; padding: 4.4cqi 3cqi; border-radius: 4.6cqi; white-space: nowrap; }
+/* 1. menu */
+.ws-head { display: grid; gap: .8cqi; }
+.ws-head b { font: 700 7cqi/1.1 var(--font-display); letter-spacing: -.02em; }
+.ws-head small { color: var(--muted); font-size: 4.6cqi; line-height: 1.2; }
+.ws-cats { display: flex; gap: 2.3cqi; overflow: hidden; }
+.ws-cats span { flex: none; font-size: 4.4cqi; line-height: 1.2; font-weight: 500; padding: 2.2cqi 3.8cqi; border-radius: 999px; border: 1px solid var(--line-2); color: var(--muted); }
+.ws-cats span.on { background: #fff; border-color: #fff; color: #000; }
+.ws-item { display: grid; grid-template-columns: 16cqi minmax(0, 1fr) auto; gap: 3.8cqi; align-items: center; padding: 3cqi; border: 1px solid var(--line); background: var(--surface-2); border-radius: 4.6cqi; }
+.ws-item > i { width: 16cqi; height: 16cqi; border-radius: 3.8cqi; background: linear-gradient(135deg, #F7C26B, #E5743A); display: grid; place-items: center; }
+.ws-i2 > i { background: linear-gradient(135deg, #FF8A7A, #C2341F); }
+.ws-item > i svg { width: 60%; height: 60%; fill: none; stroke: rgb(22 10 0 / .78); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.ws-item b { display: grid; gap: .6cqi; min-width: 0; font-size: 5.2cqi; line-height: 1.2; font-weight: 500; }
+.ws-item b small { font-weight: 400; color: var(--muted); font-size: 4.6cqi; }
+.ws-i1 { --d: .055; } .ws-i2 { --d: .105; } .ws-i3 { --d: .155; }
+.ws-add { position: relative; width: 10.7cqi; height: 10.7cqi; border-radius: 50%; background: var(--ok); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; font-size: 6cqi; line-height: 1; animation: ws-added var(--t) var(--ease) calc(var(--t) * var(--d)) infinite backwards; }
+.ws-add em, .ws-add svg { grid-area: 1 / 1; }
+.ws-add em { font-style: normal; opacity: 0; animation: ws-off var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-add svg { width: 52%; height: 52%; fill: none; stroke: #04130C; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; animation: ws-on var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-i1 .ws-tap { --d: .045; } .ws-i2 .ws-tap { --d: .095; } .ws-i3 .ws-tap { --d: .145; }
+.ws-order { --d: .055; margin-top: auto; animation: ws-wake var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-order .ws-tap { --d: .21; }
+.ws-tot > span { transform: translateY(-75%); animation-name: ws-tot; }
+/* 2. checkout */
+.ws-title { font: 700 6.4cqi/1.1 var(--font-display); letter-spacing: -.02em; }
+.ws-seg { display: grid; grid-template-columns: 1fr 1fr; padding: .9cqi; border-radius: 4cqi; background: var(--surface-2); border: 1px solid var(--line); }
+.ws-seg span { text-align: center; font-size: 4.5cqi; line-height: 1.2; font-weight: 500; padding: 2.2cqi 1cqi; border-radius: 3.2cqi; color: var(--muted); }
+.ws-seg span.on { background: #fff; color: #000; }
+.ws-lab { font-size: 4.1cqi; line-height: 1.2; color: var(--muted); margin-bottom: -1.9cqi; }
+.ws-field { --d: .28; display: flex; align-items: center; height: 12.4cqi; padding: 0 3.6cqi; border-radius: 3.8cqi; border: 1px solid var(--line-2); background: var(--surface-2); font-size: 4.9cqi; line-height: 1.2; white-space: nowrap; overflow: hidden; animation: ws-focus var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-type i { font-style: normal; white-space: pre; animation: ws-on var(--t) linear calc(var(--t) * .29 + var(--i) * 60ms) infinite backwards; }
+.ws-fee { --d: .4; display: flex; align-items: center; gap: 1.6cqi; margin-top: -1.4cqi; font-size: 4.3cqi; line-height: 1.2; font-weight: 500; color: var(--ok); animation: ws-on var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-fee svg { flex: none; width: 4.4cqi; height: 4.4cqi; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.ws-chips { display: flex; gap: 2cqi; }
+.ws-chip { position: relative; font-size: 4.3cqi; line-height: 1.2; font-weight: 500; padding: 2.4cqi 3.4cqi; border-radius: 3.4cqi; border: 1px solid var(--line-2); color: var(--muted); white-space: nowrap; }
+.ws-sel { --d: .45; border-color: var(--accent); background: var(--brand-soft); color: var(--ink); animation: ws-picked var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-sel .ws-tap { --d: .44; }
+.ws-sums { margin-top: auto; display: grid; gap: 1.5cqi; font-size: 4.3cqi; line-height: 1.2; color: var(--muted); }
+.ws-sums > div { display: flex; justify-content: space-between; align-items: baseline; }
+.ws-sums .ws-sum { margin-top: .9cqi; padding-top: 2.4cqi; border-top: 1px solid var(--line); font-size: 4.8cqi; }
+.ws-sum b { color: var(--ink); font-size: 5.6cqi; font-weight: 700; }
+.ws-sums .ws-roll em { text-align: right; }
+.ws-tot2 > span { transform: translateY(-50%); animation: ws-up var(--t) var(--ease) calc(var(--t) * .4) infinite backwards; }
+.ws-place .ws-tap { --d: .51; }
+/* 3. order page */
+.ws-okc { align-self: center; width: 13cqi; height: 13cqi; border-radius: 50%; background: rgb(52 211 153 / .16); display: grid; place-items: center; animation: ws-pop var(--t) var(--ease) calc(var(--t) * .565) infinite backwards; }
+.ws-okc svg { width: 56%; height: 56%; fill: none; stroke: var(--ok); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+.ws-thx { display: grid; gap: .8cqi; text-align: center; margin-top: -1cqi; }
+.ws-thx b { font: 700 7cqi/1.1 var(--font-display); letter-spacing: -.02em; }
+.ws-thx small { font-size: 4.6cqi; line-height: 1.25; color: var(--muted); }
+.ws-eta { display: grid; gap: 1.5cqi; padding: 4.2cqi 4.6cqi 4.4cqi; border-radius: 5.4cqi; background: var(--surface-2); border: 1px solid var(--line); }
+.ws-eta > small { font-size: 3.5cqi; line-height: 1.2; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ws-big { display: grid; }
+.ws-big > b { grid-area: 1 / 1; font: 700 7.4cqi/1.15 var(--font-display); letter-spacing: -.03em; white-space: nowrap; }
+.ws-count { animation: ws-off var(--t) linear calc(var(--t) * .87) infinite backwards; }
+.ws-enjoy { opacity: 0; animation: ws-on var(--t) linear calc(var(--t) * .87) infinite backwards; }
+.ws-min > span { animation-name: ws-min; }
+.ws-subs { display: grid; font-size: 4.4cqi; line-height: 1.25; color: var(--muted); }
+.ws-subs > span { grid-area: 1 / 1; }
+.ws-drv { justify-self: start; display: inline-flex; align-items: center; gap: 1.6cqi; margin-top: .6cqi; padding: 1.5cqi 3cqi; border-radius: 999px; background: rgb(255 255 255 / .09); font-size: 4.2cqi; line-height: 1.2; font-weight: 600; opacity: 0; animation: ws-driver var(--t) var(--ease) calc(var(--t) * .76) infinite backwards; }
+.ws-drv svg { flex: none; width: 5cqi; height: 5cqi; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ws-steps { position: relative; list-style: none; margin: 0; padding: 0 0 0 1.4cqi; display: grid; gap: 2.7cqi; }
+.ws-steps::before, .ws-steps::after { content: ""; position: absolute; left: 2.7cqi; top: 2.8cqi; bottom: 2.8cqi; width: 1px; margin-left: -.5px; background: var(--line-2); }
+.ws-steps::after { background: var(--accent); transform-origin: 50% 0; transform: scaleY(0); animation: ws-rail var(--t) var(--ease) infinite; }
+.ws-steps li { display: flex; align-items: center; gap: 3cqi; font-size: 4.6cqi; line-height: 1.2; font-weight: 500; color: var(--muted); animation: ws-reach var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-steps li i { position: relative; z-index: 1; flex: none; width: 2.6cqi; height: 2.6cqi; border-radius: 50%; background: #34343C; box-shadow: 0 0 0 .9cqi #0D0D10; animation: ws-dot var(--t) linear calc(var(--t) * var(--d)) infinite backwards; }
+.ws-steps .ws-s1 { color: var(--ink); animation: none; }
+.ws-steps .ws-s1 i { background: var(--accent); animation: none; }
+.ws-steps .ws-s2 { --d: .66; } .ws-steps .ws-s3 { --d: .76; } .ws-steps .ws-s4 { --d: .87; }
+.ws-map { min-height: 12cqi; border-radius: 4.6cqi; overflow: hidden; background: #101014; border: 1px solid var(--line); }
+.ws-map svg { display: block; width: 100%; height: 100%; fill: none; }
+.ws-road { stroke: rgb(255 255 255 / .06); stroke-width: 2.6; }
+.ws-route { stroke: rgb(255 255 255 / .3); stroke-width: 1; stroke-dasharray: 1.6 2; stroke-linecap: round; }
+.ws-ride { stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 100; animation: ws-ride var(--t) linear infinite; }
+.ws-from { fill: #101014; stroke: var(--ink); stroke-width: 1.3; }
+.ws-to { fill: var(--accent); stroke: rgb(255 122 26 / .35); stroke-width: 2.2; }
+/* The three screens: menu until 23%, checkout 26-53%, order page 56-96%, then back to the menu. */
+@keyframes ws-va { 0%, 23% { opacity: 1; transform: none; } 26%, 96% { opacity: 0; transform: translateX(-9%); } 96.01% { opacity: 0; transform: translateX(9%); } 100% { opacity: 1; transform: none; } }
+@keyframes ws-vb { 0%, 23% { opacity: 0; transform: translateX(9%); } 26%, 53% { opacity: 1; transform: none; } 56%, 100% { opacity: 0; transform: translateX(-9%); } }
+@keyframes ws-vc { 0%, 53% { opacity: 0; transform: translateX(9%); } 56%, 96% { opacity: 1; transform: none; } 99.5%, 100% { opacity: 0; transform: none; } }
+@keyframes ws-tot { 0%, 5.4% { transform: translateY(0); } 6.2%, 10.4% { transform: translateY(-25%); } 11.2%, 15.4% { transform: translateY(-50%); } 16.2%, 60% { transform: translateY(-75%); } 60.01%, 100% { transform: translateY(0); } }
+@keyframes ws-min { 0%, 65.8% { transform: translateY(0); } 66.8%, 75.8% { transform: translateY(-33.333%); } 76.8%, 99.9% { transform: translateY(-66.666%); } 100% { transform: translateY(0); } }
+@keyframes ws-ride { 0%, 76.5% { stroke-dashoffset: 100; } 87%, 99.9% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 100; } }
+@keyframes ws-rail { 0%, 65.8% { transform: scaleY(0); } 66.8%, 75.8% { transform: scaleY(.333); } 76.8%, 86.8% { transform: scaleY(.666); } 87.8%, 99.9% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+/* Shared: each starts at its own --d and stays for 40% of the loop, which always ends while its screen is out of view. */
+@keyframes ws-tap { 0% { opacity: 0; transform: scale(.3); } 1% { opacity: .5; transform: scale(.85); } 3.6%, 100% { opacity: 0; transform: scale(1.5); } }
+@keyframes ws-on { 0% { opacity: 0; } .8%, 40% { opacity: 1; } 41%, 100% { opacity: 0; } }
+@keyframes ws-off { 0% { opacity: 1; } .8%, 40% { opacity: 0; } 41%, 100% { opacity: 1; } }
+@keyframes ws-added { 0% { background-color: var(--accent); transform: scale(1); } 1.2% { background-color: var(--ok); transform: scale(1.22); } 2.6%, 40% { background-color: var(--ok); transform: scale(1); } 41%, 100% { background-color: var(--accent); transform: scale(1); } }
+@keyframes ws-wake { 0% { opacity: .45; } .8%, 40% { opacity: 1; } 41%, 100% { opacity: .45; } }
+@keyframes ws-focus { 0% { border-color: var(--line-2); } .8%, 12% { border-color: var(--accent); } 13%, 100% { border-color: var(--line-2); } }
+@keyframes ws-picked { 0% { border-color: var(--line-2); background-color: transparent; color: var(--muted); } .8%, 40% { border-color: var(--accent); background-color: var(--brand-soft); color: var(--ink); } 41%, 100% { border-color: var(--line-2); background-color: transparent; color: var(--muted); } }
+@keyframes ws-up { 0% { transform: translateY(0); } 1.5%, 40% { transform: translateY(-50%); } 41%, 100% { transform: translateY(0); } }
+@keyframes ws-pop { 0% { transform: scale(0); } 1.8% { transform: scale(1.18); } 3%, 100% { transform: scale(1); } }
+@keyframes ws-driver { 0% { opacity: 0; transform: translateY(30%); } 1.2%, 10% { opacity: 1; transform: none; } 11%, 100% { opacity: 0; transform: none; } }
+@keyframes ws-reach { 0% { color: var(--muted); } .8%, 40% { color: var(--ink); } 41%, 100% { color: var(--muted); } }
+@keyframes ws-dot { 0% { background-color: #34343C; } .8%, 40% { background-color: var(--accent); } 41%, 100% { background-color: #34343C; } }
+@media (prefers-reduced-motion: reduce) { .wscene *, .wscene *::before, .wscene *::after { animation: none !important; } }

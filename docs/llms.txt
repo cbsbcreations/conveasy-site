@@ -3,7 +3,7 @@
 > Conveasy is AI ordering software for restaurants in Belgium and the Benelux. An AI takes orders and table reservations by phone and on WhatsApp, 24/7 and in 60+ languages. Restaurants also get a commission-free webshop with QR ordering, a self-order kiosk (card and online payments only) and Marketing AI, which includes a digital stamp card in Google Wallet and Apple Wallet. All orders and reservations land in one dashboard, on the kitchen screen and on the kitchen printer.
 
 Key facts:
-- Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes).
+- Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes). Handles 50+ calls at the same time.
 - WhatsApp AI: €99/month, on the restaurant's own WhatsApp number.
 - Webshop + QR ordering: €79/month, 0% commission on orders.
 - Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €1,599 one-time (payable in 3 instalments), other models on request.
