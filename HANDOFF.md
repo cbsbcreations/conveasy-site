@@ -11,6 +11,8 @@ earlier that day: chat demo and voice demo connected, test address on GitHub Pag
   GitHub Pages serves this folder from the repo cbsbcreations/conveasy-site (branch main).
   Test address: https://cbsbcreations.github.io/conveasy-site/ . For conveasy.be itself: add a file docs/CNAME with `conveasy.be`
   (let the build write it), set the custom domain under the repo's Settings > Pages, and point the DNS at One.com to GitHub Pages.
+  The pages link the stylesheet and the script with a fingerprint (site.css?v=..., written by the build), so a browser that still
+  holds an older copy fetches the new one together with the new page.
 - preview/ : same site with an orange "preview" bar, used for the claude.ai preview (main.html is the page that is published there).
   Not in git; the build makes it. Inside that preview the two live demos cannot run (no microphone, no outside connections); they show a note.
 - n8n/ : copy of the two Code nodes of the chat demo workflow.

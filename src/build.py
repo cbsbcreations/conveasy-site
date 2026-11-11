@@ -5,7 +5,7 @@ Outputs:
   ../preview/  same pages with a preview banner, plus main.html for the claude.ai preview
 Run: python3 build.py
 """
-import html, json, os, re, shutil, sys
+import hashlib, html, json, os, re, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from content import *  # noqa
 from overrides import OV as OVX, apply as apply_overrides
@@ -98,6 +98,13 @@ def jsonld(lang, pid, faqs, crumbs):
     return '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False).replace("</", "<\\/") + "</script>"
 
 # ---------------- Pieces ----------------
+# Fingerprint behind the address of the stylesheet and the script (site.css?v=1a2b3c4d), set per build in build().
+# A browser that still holds last week's stylesheet would otherwise show a new page with the old styles until its copy expires.
+ASSET_Q = {"css": "", "js": ""}
+def asset_fingerprint(name):
+    with open(os.path.join(HERE, name), "rb") as f:
+        return hashlib.sha1(f.read()).hexdigest()[:8]
+
 def head(lang, pid, prefix, faqs, crumbs, main):
     title, desc = meta_of(lang, pid)
     alts = "".join(f'<link rel="alternate" hreflang="{l}" href="{canonical(l, pid)}">' for l in LANGS)
@@ -114,7 +121,7 @@ def head(lang, pid, prefix, faqs, crumbs, main):
               '<meta name="theme-color" content="#000000">',
               '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
               f'<link rel="stylesheet" href="{FONTS}">',
-              f'<link rel="stylesheet" href="{prefix}assets/site.css">',
+              f'<link rel="stylesheet" href="{prefix}assets/site.css{ASSET_Q["css"]}">',
               jsonld(lang, pid, faqs, crumbs)]
     return "\n".join(parts)
 
@@ -698,7 +705,7 @@ def render(lang, pid, prefix, preview, main=False):
     elif pid in SECTORS: body, faqs, crumbs = page_sector(lang, pid, prefix)
     else: body, faqs, crumbs = {"pricing": page_pricing, "about": page_about, "contact": page_contact, "legal": page_legal}[pid](lang, prefix)
     bar = f'<div class="preview-bar"><div class="wrap">{e(UI[lang]["preview"])}</div></div>' if preview else ""
-    inner = f'{bar}{header(lang, pid, prefix)}<main>{body}</main>{footer(lang, prefix, f"{lang}/{pid}")}<script src="{prefix}assets/site.js"></script>'
+    inner = f'{bar}{header(lang, pid, prefix)}<main>{body}</main>{footer(lang, prefix, f"{lang}/{pid}")}<script src="{prefix}assets/site.js{ASSET_Q["js"]}"></script>'
     hd = head(lang, pid, prefix, faqs, crumbs, main)
     if main:
         return hd + "\n" + inner + "\n"
@@ -752,6 +759,8 @@ def build(outdir, preview):
     os.makedirs(os.path.join(outdir, "assets"))
     shutil.copy(os.path.join(HERE, "site.css"), os.path.join(outdir, "assets", "site.css"))
     shutil.copy(os.path.join(HERE, "site.js"), os.path.join(outdir, "assets", "site.js"))
+    # Only for the real site: the claude.ai preview serves its files by plain path and always gets them fresh.
+    ASSET_Q.update(css="" if preview else "?v=" + asset_fingerprint("site.css"), js="" if preview else "?v=" + asset_fingerprint("site.js"))
     if os.path.isdir(SHOT_DIR) and any(shot_file(x) for x in SHOT_FN):
         shutil.copytree(SHOT_DIR, os.path.join(outdir, "assets", "shots"))
     for l in LANGS:
