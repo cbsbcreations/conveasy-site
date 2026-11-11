@@ -13,7 +13,6 @@ DATA = {
         "marketing": "marketing-ki",
         "pricing": "preise",
         "frituur": "frittenbude",
-        "snackbar": "imbiss",
         "pizzeria": "pizzeria",
         "burger": "burger",
         "about": "ueber-uns",
@@ -202,24 +201,6 @@ DATA = {
             "faq": [
                 ("Kennt die KI typische Produkte einer Frittenbude?", "Die KI arbeitet mit Ihrer eigenen Speisekarte. Alles, was darauf steht, mit Saucen, Größen und Extras, kann sie annehmen."),
                 ("Kann ich Bestellungen pausieren, wenn zu viel los ist?", "Sie ändern Ihre Wartezeiten oder ausverkauften Artikel im Dashboard. Die KI richtet sich sofort danach."),
-            ],
-        },
-        "snackbar": {
-            "name": "Imbisse", "nav": "Imbiss",
-            "title": "KI-Bestellsystem für Imbisse und Snackbars | Conveasy",
-            "desc": "Telefon, WhatsApp, Webshop und Kiosk für Ihren Imbiss in einem System. Die KI nimmt Bestellungen an, 24/7 und in über 60 Sprachen. Ohne Provision.",
-            "h1": "Ein Bestellsystem für Imbisse, das keinen Anruf verpasst",
-            "lead": "Snacks, Brötchen, Teller und Getränke, bis spät in die Nacht. Conveasy nimmt Bestellungen per Telefon und WhatsApp an, und Kunden bestellen selbst über Ihren Webshop oder Kiosk.",
-            "pains": [
-                ("Von einem Imbiss entwickelt", "Conveasy läuft zuerst in unserem eigenen Restaurant, Eatpoint. Dort testen wir jede Funktion zur Stoßzeit."),
-                ("Lange Öffnungszeiten", "Die KI arbeitet von der Öffnung bis zum Ladenschluss und nimmt danach Vorbestellungen an."),
-                ("Alle Kanäle zusammen", "Telefon, WhatsApp, Webshop und Kiosk in einem Dashboard."),
-                ("Kunden in ihrer Sprache", "Die KI spricht über 60 Sprachen, praktisch für jeden Kunden, der anruft."),
-            ],
-            "ticket": [("1x", "Durum Hähnchen"), ("", "ohne Zwiebeln, extra Knoblauch"), ("2x", "Käsekrokette"), ("1x", "Mexicano"), ("1x", "Fanta")],
-            "faq": [
-                ("Kann ich nur mit WhatsApp anfangen?", "Ja. Jeder Kanal ist einzeln erhältlich, und Sie können später weitere hinzufügen."),
-                ("Funktioniert es neben Takeaway oder Uber Eats?", "Ja. Conveasy ist unabhängig von diesen Plattformen. Mit Ihrem eigenen Webshop und WhatsApp können Kunden auch ohne Provision bei Ihnen bestellen."),
             ],
         },
         "pizzeria": {

@@ -1,13 +1,15 @@
 # Conveasy.be website: handoff
 
 New conveasy.be (replaces the Framer site). Static HTML, 5 languages (nl, fr, en, tr, de).
-Last update: 11 Nov 2026 (phone AI animation, WhatsApp animation, both at the top of the home page, "En verder" lists with what the
-systems also do; earlier that day: webshop phone animation, "50+ calls at once", Marketing AI animation, kiosk animation, payment
-methods, photo library, kiosk hardware 1599, voice greeting per page language, chat demo and voice demo connected, test address on
-GitHub Pages).
+Last update: 11 Nov 2026, late evening (Voor wie: sushi and kebab instead of snackbar, a page for all restaurants; the real
+logo mark from the Framer site, favicon, WhatsApp profile pictures; earlier: phone AI and WhatsApp animations, the home
+page's top row, "En verder" lists, webshop animation, "50+ calls at once", Marketing AI and kiosk animations, payment methods,
+photo library, kiosk hardware 1599, voice greeting per page language, both demos connected, test address on GitHub Pages).
 
 ## Folders
-- src/ : source. build.py builds the site from content.py, lang_de.py, lang_tr.py, overrides.py, answers.py, extras.py, legal/, site.css, site.js.
+- src/ : source. build.py builds the site from content.py, lang_de.py, lang_tr.py, overrides.py, answers.py, extras.py, sectors_more.py,
+  legal/, site.css, site.js, favicon.svg and apple-touch-icon.png.
+- brand/ : the logo mark (SVG) and the WhatsApp profile pictures. Not part of the website.
   Run: `python3 src/build.py` (from this folder) to rebuild docs/ and preview/.
 - docs/ : the finished website (index.html, nl/, fr/, en/, tr/, de/, assets/, sitemap.xml, robots.txt, llms.txt).
   GitHub Pages serves this folder from the repo cbsbcreations/conveasy-site (branch main).
@@ -124,6 +126,22 @@ GitHub Pages).
 - Source: the live n8n phone and WhatsApp flows and the webshop repo, read on 11 Nov 2026. The phone safety-net flows carry the name Eatpoint
   in n8n: check that they also run for Conveasy's client restaurants, since the site now says so.
 - llms.txt carries the same points in English.
+
+## Restaurant types ("Voor wie")
+- Since 11 Nov 2026: Frituur, Sushi, Pizzeria, Burger, Kebab and Alle restaurants (SECTORS in content.py). The snackbar page is gone
+  (Sammy). Old addresses of it (nl/snackbar, fr/snack, en/snack-bar, tr/snack-bar, de/imbiss) no longer exist.
+- Texts of sushi, kebab and "alle" in five languages: src/sectors_more.py, which also holds the home section heading ("Voor elk type
+  restaurant" with one line under it), the short card text of "alle" and the about page's description. Frituur, pizzeria and burger
+  stay in content.py (nl, fr, en), lang_tr.py and lang_de.py.
+- The "Alle restaurants" page shows the kinds of restaurants as chips that pop in, with "+ Jouw zaak" last (TYPES in
+  sectors_more.py, types_i() in build.py, .types in site.css).
+
+## Logo
+- The logo mark is the drawing from the Framer site (white squircle with a small square and an arrow): LOGO_MARK in build.py (header
+  and footer), src/favicon.svg (browser tab, white on a black rounded square), src/apple-touch-icon.png (phone home screen), and
+  brand/conveasy-logo-mark.svg.
+- WhatsApp profile pictures, 1080 x 1080, made from the mark: brand/conveasy-whatsapp-profiel-zwart.png (black with an orange glow) and
+  brand/conveasy-whatsapp-profiel-oranje.png. WhatsApp crops them to a circle; the mark stays inside it.
 
 ## Rules
 - Call it "Marketing AI". Never mention Eatpoint on the site. No auto ads/ad testing promised. No kassa/POS page.

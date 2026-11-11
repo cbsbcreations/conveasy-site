@@ -22,7 +22,6 @@ SLUGS = {
     "marketing": {"nl": "marketing-ai", "fr": "marketing-ia", "en": "marketing-ai"},
     "pricing": {"nl": "prijzen", "fr": "tarifs", "en": "pricing"},
     "frituur": {"nl": "frituur", "fr": "friterie", "en": "frituur"},
-    "snackbar": {"nl": "snackbar", "fr": "snack", "en": "snack-bar"},
     "pizzeria": {"nl": "pizzeria", "fr": "pizzeria", "en": "pizzeria"},
     "burger": {"nl": "burger", "fr": "burger", "en": "burger"},
     "about": {"nl": "over-ons", "fr": "a-propos", "en": "about"},
@@ -30,7 +29,9 @@ SLUGS = {
     "legal": {"nl": "juridisch", "fr": "mentions-legales", "en": "legal"},
 }
 PRODUCTS = ["phone", "whatsapp", "webshop", "kiosk", "marketing"]
-SECTORS = ["frituur", "snackbar", "pizzeria", "burger"]
+# Sammy, 11 Nov 2026: no snackbar page; sushi in its place, kebab added, and a page for every kind of restaurant.
+# The texts of sushi, kebab and alle are in sectors_more.py.
+SECTORS = ["frituur", "sushi", "pizzeria", "burger", "kebab", "alle"]
 
 UI = {
     "nl": {
@@ -568,44 +569,6 @@ S["frituur"] = {
            "ticket": [("2x", "Large fries"), ("", "1x andalouse, 1x mayo"), ("1x", "Bicky burger"), ("1x", "Frikandel special"), ("1x", "Cola")],
            "faq": [("Does the AI know typical fry shop products?", "The AI works with your own menu. Anything on it, with sauces, sizes and extras, it can take."),
                    ("Can I pause orders when it's too busy?", "You change your waiting times or sold-out items in the dashboard. The AI follows right away.")]},
-}
-S["snackbar"] = {
-    "nl": {"name": "Snackbars", "nav": "Snackbar",
-           "title": "AI-bestelsysteem voor snackbars | Conveasy",
-           "desc": "Telefoon, WhatsApp, webshop en kiosk voor je snackbar in één systeem. De AI neemt bestellingen aan, 24/7 en in 60+ talen. Zonder commissie.",
-           "h1": "Een bestelsysteem voor snackbars dat nooit een oproep mist",
-           "lead": "Snacks, broodjes, schotels en dranken, tot laat op de avond. Conveasy neemt bestellingen aan via telefoon en WhatsApp, en klanten bestellen zelf via je webshop of kiosk.",
-           "pains": [("Gemaakt door een snackbar", "Conveasy draait eerst in onze eigen zaak, Eatpoint. Elke functie testen we daar in de drukte."),
-                     ("Lange openingsuren", "De AI werkt van opening tot sluiting, en neemt daarna pre-orders aan."),
-                     ("Alle kanalen samen", "Telefoon, WhatsApp, webshop en kiosk komen in één dashboard."),
-                     ("Klanten in hun taal", "De AI spreekt 60+ talen, handig voor elke klant die binnenbelt.")],
-           "ticket": [("1x", "Durum kip"), ("", "zonder ui, extra look"), ("2x", "Kaaskroket"), ("1x", "Mexicano"), ("1x", "Fanta")],
-           "faq": [("Kan ik beginnen met alleen WhatsApp?", "Ja. Elk kanaal kan apart en je kunt later uitbreiden."),
-                   ("Werkt het naast Takeaway of Uber Eats?", "Ja. Conveasy staat los van die platforms. Met je eigen webshop en WhatsApp kunnen klanten ook zonder commissie bij je bestellen.")]},
-    "fr": {"name": "Snacks", "nav": "Snack",
-           "title": "Système de commande par IA pour snacks | Conveasy",
-           "desc": "Téléphone, WhatsApp, boutique en ligne et borne pour votre snack dans un seul système. L'IA prend les commandes, 24h/24 et dans plus de 60 langues. Sans commission.",
-           "h1": "Un système de commande pour snacks qui ne rate aucun appel",
-           "lead": "Snacks, sandwichs, assiettes et boissons, jusque tard le soir. Conveasy prend les commandes par téléphone et WhatsApp, et vos clients commandent eux-mêmes via votre boutique en ligne ou votre borne.",
-           "pains": [("Conçu par un snack", "Conveasy tourne d'abord dans notre propre établissement, Eatpoint. Nous testons chaque fonction pendant le rush."),
-                     ("De longues heures d'ouverture", "L'IA travaille de l'ouverture à la fermeture, puis prend les précommandes."),
-                     ("Tous les canaux ensemble", "Téléphone, WhatsApp, boutique en ligne et borne dans un seul tableau de bord."),
-                     ("Les clients dans leur langue", "L'IA parle plus de 60 langues, pratique pour chaque client qui appelle.")],
-           "ticket": [("1x", "Durum poulet"), ("", "sans oignon, extra ail"), ("2x", "Croquette au fromage"), ("1x", "Mexicano"), ("1x", "Fanta")],
-           "faq": [("Puis-je commencer avec WhatsApp seulement ?", "Oui. Chaque canal se prend séparément et vous pouvez ajouter les autres plus tard."),
-                   ("Est-ce que ça fonctionne à côté de Takeaway ou Uber Eats ?", "Oui. Conveasy est indépendant de ces plateformes. Avec votre boutique en ligne et WhatsApp, vos clients peuvent aussi commander chez vous sans commission.")]},
-    "en": {"name": "Snack bars", "nav": "Snack bar",
-           "title": "AI ordering system for snack bars | Conveasy",
-           "desc": "Phone, WhatsApp, webshop and kiosk for your snack bar in one system. The AI takes orders, 24/7 and in 60+ languages. No commission.",
-           "h1": "An ordering system for snack bars that never misses a call",
-           "lead": "Snacks, sandwiches, platters and drinks, until late at night. Conveasy takes orders on the phone and WhatsApp, and customers order themselves through your webshop or kiosk.",
-           "pains": [("Made by a snack bar", "Conveasy runs first in our own restaurant, Eatpoint. We test every feature there during the rush."),
-                     ("Long opening hours", "The AI works from opening to closing, then takes pre-orders."),
-                     ("Every channel together", "Phone, WhatsApp, webshop and kiosk in one dashboard."),
-                     ("Customers in their language", "The AI speaks 60+ languages, handy for every customer who calls.")],
-           "ticket": [("1x", "Chicken durum"), ("", "no onion, extra garlic"), ("2x", "Cheese croquette"), ("1x", "Mexicano"), ("1x", "Fanta")],
-           "faq": [("Can I start with WhatsApp only?", "Yes. Every channel is available on its own and you can add more later."),
-                   ("Does it work alongside Takeaway or Uber Eats?", "Yes. Conveasy is separate from those platforms. With your own webshop and WhatsApp, customers can also order from you without commission.")]},
 }
 S["pizzeria"] = {
     "nl": {"name": "Pizzeria's", "nav": "Pizzeria",

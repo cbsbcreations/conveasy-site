@@ -11,6 +11,7 @@ from content import *  # noqa
 from overrides import OV as OVX, apply as apply_overrides
 import answers
 import extras
+import sectors_more
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal"))
 import legal_nl, legal_fr, legal_en, legal_tr, legal_de
 LEGAL_DOCS = {"nl": legal_nl, "fr": legal_fr, "en": legal_en, "tr": legal_tr, "de": legal_de}
@@ -99,6 +100,8 @@ def jsonld(lang, pid, faqs, crumbs):
     return '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False).replace("</", "<\\/") + "</script>"
 
 # ---------------- Pieces ----------------
+# The Conveasy logo mark, the same drawing as on the Framer site (white; the colour comes from site.css). Also in brand/.
+LOGO_MARK = '<svg class="logo-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 18c0-1.886 0-2.828.586-3.414C3.172 14 4.114 14 6 14s2.828 0 3.414.586C10 15.172 10 16.114 10 18s0 2.828-.586 3.414C8.828 22 7.886 22 6 22s-2.828 0-3.414-.586C2 20.828 2 19.886 2 18z"/><path fill-rule="evenodd" d="M3.464 3.464C2 4.93 2 7.286 2 12v1.138c.509-.333 1.069-.48 1.606-.551.645-.087 1.439-.087 2.305-.087h.179c.865 0 1.659 0 2.304.087.711.095 1.463.32 2.08.938.619.618.844 1.37.94 2.08.086.646.086 1.44.086 2.305v.18c0 .865 0 1.659-.087 2.304-.072.537-.218 1.097-.55 1.605L12 22c4.714 0 7.071 0 8.536-1.464C22 19.07 22 16.713 22 12c0-4.714 0-7.071-1.464-8.536C19.07 2 16.713 2 12 2 7.286 2 4.929 2 3.464 3.464zM15.75 12.75a.75.75 0 0 0 0-1.5h-1.94l3.72-3.72a.75.75 0 0 0-1.06-1.06l-3.72 3.72V8.25a.75.75 0 0 0-1.5 0V12c0 .414.336.75.75.75z"/></svg>'
 # Fingerprint behind the address of the stylesheet and the script (site.css?v=1a2b3c4d), set per build in build().
 # A browser that still holds last week's stylesheet would otherwise show a new page with the old styles until its copy expires.
 ASSET_Q = {"css": "", "js": ""}
@@ -120,6 +123,7 @@ def head(lang, pid, prefix, faqs, crumbs, main):
               f'<meta property="og:url" content="{canonical(lang, pid)}">', f'<meta property="og:locale" content="{OG_LOCALE[lang]}">',
               '<meta name="twitter:card" content="summary_large_image">',
               '<meta name="theme-color" content="#000000">',
+              f'<link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{prefix}assets/apple-touch-icon.png">',
               '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
               f'<link rel="stylesheet" href="{FONTS}">',
               f'<link rel="stylesheet" href="{prefix}assets/site.css{ASSET_Q["css"]}">',
@@ -136,7 +140,7 @@ def header(lang, pid, prefix):
     mob_prod = "".join(f'<a href="{h(p)}">{e(P[p][lang]["name"])}</a>' for p in PRODUCTS)
     mob_sec = "".join(f'<a href="{h(s)}">{e(S[s][lang]["name"])}</a>' for s in SECTORS)
     return f'''<header class="site-header"><div class="wrap">
-<a class="logo" href="{h("home")}" aria-label="Conveasy home"><span class="logo-mark" aria-hidden="true"></span>Conveasy</a>
+<a class="logo" href="{h("home")}" aria-label="Conveasy home">{LOGO_MARK}Conveasy</a>
 <nav class="nav" aria-label="Main">
 <details class="dd"><summary>{e(u["products"])}</summary><div class="dd-menu">{prod_links}</div></details>
 <details class="dd"><summary>{e(u["sectors"])}</summary><div class="dd-menu">{sec_links}</div></details>
@@ -162,7 +166,7 @@ def footer(lang, prefix, page):
     secs = "".join(f'<li><a href="{h(s)}">{e(S[s][lang]["name"])}</a></li>' for s in SECTORS)
     return f'''<footer class="site-footer"><div class="wrap"><div class="foot-mark" aria-hidden="true">Conveasy</div>
 <div class="foot-cols">
-<div style="display:grid;gap:12px;align-content:start"><a class="logo" href="{h("home")}"><span class="logo-mark" aria-hidden="true"></span>Conveasy</a><p>{e(u["foot_tag"])}</p><p>WhatsApp: {e(WA_DISPLAY)}</p></div>
+<div style="display:grid;gap:12px;align-content:start"><a class="logo" href="{h("home")}">{LOGO_MARK}Conveasy</a><p>{e(u["foot_tag"])}</p><p>WhatsApp: {e(WA_DISPLAY)}</p></div>
 <div><h4>{e(u["products"])}</h4><ul>{prods}</ul></div>
 <div><h4>{e(u["sectors"])}</h4><ul>{secs}</ul></div>
 <div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
@@ -430,6 +434,15 @@ def resv_band(lang, prefix):
 
 PAGE_SHOTS = {"phone": ["kds", "dash"], "whatsapp": ["dash", "kds"], "webshop": ["dash", "kds"], "kiosk": ["kds", "dash"]}
 
+def types_i(lang):
+    """For the "all restaurants" page: the kinds of restaurants Conveasy works for, as chips, with "your restaurant" last.
+    The chips pop in one after the other (see .types in site.css)."""
+    title, sub, kinds, yours = sectors_more.TYPES[lang]
+    chips = "".join(f'<span style="--i:{i}">{e(k)}</span>' for i, k in enumerate(kinds))
+    chips += f'<span class="ty-you" style="--i:{len(kinds)}">+ {e(yours)}</span>'
+    return (f'<div class="panel types" role="img" aria-label="{e(UI[lang]["example"])}: {e(title)}">'
+            f'<div class="p-title">{e(title)}<span>{e(sub)}</span></div><div class="ty-chips">{chips}</div></div>')
+
 def mock_for(lang, pid):
     meta = TICKET_META[lang]
     if pid == "phone": return framed(lang, phone_scene_i(lang))
@@ -437,6 +450,7 @@ def mock_for(lang, pid):
     if pid == "webshop": return framed(lang, web_i(lang))
     if pid == "kiosk": return kiosk(lang)
     if pid == "marketing": return mkt(lang)
+    if pid == "alle": return framed(lang, types_i(lang))
     if pid in SECTORS: return ticket(lang, S[pid][lang]["ticket"], *meta)
     return ""
 
@@ -759,7 +773,8 @@ def wa_demo_band(lang):
 def page_home(lang, prefix):
     d, u = HOME[lang], UI[lang]
     pg = f"{lang}/home"
-    sec_cards = "".join(f'<a class="card" href="{prefix + path_of(lang, s)}"><h3>{e(S[s][lang]["name"])}</h3><p>{e(S[s][lang]["pains"][0][1])}</p><span class="more">{e(u["more"])} →</span></a>' for s in SECTORS)
+    sec_text = f'<p>{e(d["sectors_text"])}</p>' if d.get("sectors_text") else ""
+    sec_cards = "".join(f'<a class="card" href="{prefix + path_of(lang, s)}"><h3>{e(S[s][lang]["name"])}</h3><p>{e(S[s][lang].get("card", S[s][lang]["pains"][0][1]))}</p><span class="more">{e(u["more"])} →</span></a>' for s in SECTORS)
     dash_feats = "".join(f'<div class="feature"><h3>{e(t)}</h3><p>{e(x)}</p></div>' for t, x in d["dash_feats"])
     body = hero(lang, prefix, d["h1"], d["lead"] + " " + d["made_by"], home_stage(lang, prefix), pg, badge=d["badge"], facts=d["facts"])
     body = body.replace('<section class="hero">', '<section class="hero hero-home">', 1)
@@ -769,7 +784,7 @@ def page_home(lang, prefix):
 <section class="band dark"><div class="wrap" style="display:grid;gap:40px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));align-items:center">
 <div style="display:grid;gap:24px;min-width:0"><div class="section-head" style="margin:0"><span class="eyebrow">{e(d["dash_eyebrow"])}</span><h2>{e(d["dash_title"])}</h2><p>{e(d["dash_text"])}</p></div><div class="grid">{dash_feats}</div></div>{dash(lang)}</div></section>
 {shots_band(lang, prefix, ["kds", "resv", "web", "kiosk"])}
-<section class="band"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(d["sectors_eyebrow"])}</span><h2>{e(d["sectors_title"])}</h2></div><div class="grid">{sec_cards}</div></div></section>
+<section class="band"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(d["sectors_eyebrow"])}</span><h2>{e(d["sectors_title"])}</h2>{sec_text}</div><div class="grid">{sec_cards}</div></div></section>
 {how_band(lang)}
 <section class="band"><div class="wrap grid-3" style="align-items:start">
 <div class="section-head" style="margin:0;grid-column:span 2;max-width:none"><span class="eyebrow">{e(d["story_eyebrow"])}</span><h2>{e(d["story_title"])}</h2><p class="lead">{e(d["story_text"])}</p><p><a href="{prefix + path_of(lang, "about")}">{e(d["story_link"])} →</a></p></div>
@@ -938,7 +953,7 @@ def llms():
          "- Self-order kiosk: €89/month; 21.5-inch table-stand kiosk hardware €1,599 one-time (payable in 3 instalments), other models on request.",
          "- One-time setup fee: €299 for phone AI, €199 for each other channel, €399 for phone AI + WhatsApp AI + webshop + kiosk together.",
          "- Works separately from the restaurant's till (POS); each channel can be bought on its own.",
-         "- Typical customers: frituren (Belgian fry shops), snack bars, pizzerias, burger restaurants.",
+         "- Works for every kind of restaurant: it uses the restaurant's own menu. Pages for frituren (Belgian fry shops), sushi restaurants, pizzerias, burger restaurants, kebab shops and all other restaurants.",
          "- Table reservations 24/7 through the phone AI and the WhatsApp AI; each reservation (name, date, time, party size) lands in the dashboard. Included in the phone AI and WhatsApp AI price at no extra cost.",
          "- Marketing AI: €69/month. Announcements to customers on all channels, Google review links, automatic emails for a second order and for unfinished orders, prepaid cards, and a digital stamp card in Google Wallet and Apple Wallet with notifications.",
          f"- Contact: WhatsApp {WA_DISPLAY}, {SITE}/en/contact", "",
@@ -964,6 +979,8 @@ def build(outdir, preview):
     os.makedirs(os.path.join(outdir, "assets"))
     shutil.copy(os.path.join(HERE, "site.css"), os.path.join(outdir, "assets", "site.css"))
     shutil.copy(os.path.join(HERE, "site.js"), os.path.join(outdir, "assets", "site.js"))
+    for icon in ("favicon.svg", "apple-touch-icon.png"):   # the logo mark as browser and home-screen icon
+        shutil.copy(os.path.join(HERE, icon), os.path.join(outdir, "assets", icon))
     # Only for the real site: the claude.ai preview serves its files by plain path and always gets them fresh.
     ASSET_Q.update(css="" if preview else "?v=" + asset_fingerprint("site.css"), js="" if preview else "?v=" + asset_fingerprint("site.js"))
     if os.path.isdir(SHOT_DIR) and any(shot_file(x) for x in SHOT_FN):
@@ -988,16 +1005,19 @@ def load_extra_langs():
         l, D = m.LANG, m.DATA
         if l not in LANGS: LANGS.append(l)
         LANG_NAMES[l] = D["LANG_NAME"]; HTML_LANG[l] = D["HTML_LANG"]; OG_LOCALE[l] = D["OG_LOCALE"]
-        for pid, slug in D["SLUGS"].items(): SLUGS[pid][l] = slug
+        for pid, slug in D["SLUGS"].items():
+            if pid in SLUGS: SLUGS[pid][l] = slug
         UI[l] = D["UI"]; PRICING[l] = D["PRICING"]; HOME[l] = D["HOME"]; ABOUT[l] = D["ABOUT"]; CONTACT[l] = D["CONTACT"]; LEGAL[l] = D["LEGAL"]
         for pp in PRODUCTS: P[pp][l] = D["P"][pp]
-        for ss in SECTORS: S[ss][l] = D["S"][ss]
+        for ss in SECTORS:
+            if ss in S and ss in D["S"]: S[ss][l] = D["S"][ss]   # sushi, kebab and alle come from sectors_more.py
         for name in ("TICKET_META", "CHAT", "DASH", "KIOSK", "MKT"): globals()[name][l] = D[name]
 
 if __name__ == "__main__":
     load_extra_langs()
     apply_overrides(globals())
     answers.apply(globals())
+    sectors_more.apply(globals())
     build(os.path.join(ROOT, "docs"), False)
     write(os.path.join(ROOT, "docs", ".nojekyll"), "")  # GitHub Pages: serve the files as they are
     PLACEHOLDERS.clear()

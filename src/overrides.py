@@ -15,7 +15,6 @@ OV = {
               "blocks": [("Waarom Conveasy", "Als het druk is, gaan telefoonbestellingen verloren, en platforms nemen een groot deel van elke bestelling. Conveasy neemt de telefoon op, beantwoordt WhatsApp en geeft je een eigen webshop en kiosk."),
                          ("Eén systeem voor alles", "Alle bestellingen en reservaties komen in één dashboard en op je keukenscherm of printer, wat het kanaal ook is."),
                          ("Eerst directe bestellingen", "Geen commissie op je eigen kanalen. Klanten bestellen bij jou, niet via een platform.")]},
-    "snack0": ("Snacks met veel opties", "Zonder ui, extra look, saus apart: de AI zet elke opmerking juist op het ticket."),
     "marketing": {"name": "Marketing AI", "sub": "Meer klanten via advertenties, Google en AI", "badge": "Nieuw",
                   "title": "Marketing AI voor restaurants | Conveasy",
                   "desc": "Conveasy Marketing AI test advertenties met jouw budget en helpt je zaak gevonden te worden op Google en in AI-assistenten zoals ChatGPT.",
@@ -56,7 +55,6 @@ OV = {
               "blocks": [("Pourquoi Conveasy", "Pendant le rush, des commandes téléphoniques se perdent, et les plateformes prennent une grande partie de chaque commande. Conveasy décroche le téléphone, répond sur WhatsApp et vous donne votre propre boutique en ligne et votre borne."),
                          ("Un seul système pour tout", "Toutes les commandes et réservations arrivent dans un seul tableau de bord et sur votre écran cuisine ou imprimante, quel que soit le canal."),
                          ("Les commandes directes d'abord", "Aucune commission sur vos propres canaux. Les clients commandent chez vous, pas via une plateforme.")]},
-    "snack0": ("Des snacks avec beaucoup d'options", "Sans oignons, extra ail, sauce à part : l'IA met chaque remarque correctement sur le ticket."),
     "marketing": {"name": "Marketing IA", "sub": "Plus de clients via la publicité, Google et l'IA", "badge": "Nouveau",
                   "title": "Marketing IA pour restaurants | Conveasy",
                   "desc": "Conveasy Marketing IA teste des publicités avec votre budget et aide votre établissement à être trouvé sur Google et par les assistants IA comme ChatGPT.",
@@ -97,7 +95,6 @@ OV = {
               "blocks": [("Why Conveasy", "During the rush, phone orders get lost, and platforms take a big share of every order. Conveasy answers the phone, replies on WhatsApp and gives you your own webshop and kiosk."),
                          ("One system for everything", "All orders and reservations land in one dashboard and on your kitchen screen or printer, whatever the channel."),
                          ("Direct orders first", "No commission on your own channels. Customers order from you, not through a platform.")]},
-    "snack0": ("Snacks with lots of options", "No onions, extra garlic, sauce on the side: the AI puts every note correctly on the ticket."),
     "marketing": {"name": "Marketing AI", "sub": "More customers from ads, Google and AI", "badge": "New",
                   "title": "Marketing AI for restaurants | Conveasy",
                   "desc": "Conveasy Marketing AI tests ads with your budget and helps your restaurant get found on Google and by AI assistants like ChatGPT.",
@@ -138,7 +135,6 @@ OV = {
               "blocks": [("Neden Conveasy", "Yoğun saatlerde telefon siparişleri kaybolur, platformlar da her siparişten büyük pay alır. Conveasy telefonu açar, WhatsApp'a cevap verir ve sana kendi online sipariş siteni ve kioskunu verir."),
                          ("Her şey tek sistemde", "Kanal ne olursa olsun tüm siparişler ve rezervasyonlar tek panoya ve mutfak ekranına ya da yazıcına gelir."),
                          ("Önce doğrudan siparişler", "Kendi kanallarında komisyon yok. Müşteriler platformdan değil, doğrudan senden sipariş verir.")]},
-    "snack0": ("Çok seçenekli atıştırmalıklar", "Soğansız, ekstra sarımsak, sos ayrı: yapay zekâ her notu fişe doğru yazar."),
     "marketing": {"name": "Pazarlama YZ", "sub": "Reklam, Google ve yapay zekâdan daha fazla müşteri", "badge": "Yeni",
                   "title": "Restoranlar için Pazarlama Yapay Zekâsı | Conveasy",
                   "desc": "Conveasy Pazarlama YZ senin bütçenle reklamları test eder, restoranının Google'da ve ChatGPT gibi yapay zekâ asistanlarında bulunmasına yardım eder.",
@@ -179,7 +175,6 @@ OV = {
               "blocks": [("Warum Conveasy", "Zur Stoßzeit gehen Telefonbestellungen verloren, und Plattformen nehmen einen großen Teil jeder Bestellung. Conveasy nimmt das Telefon ab, antwortet auf WhatsApp und gibt Ihnen einen eigenen Webshop und Kiosk."),
                          ("Ein System für alles", "Alle Bestellungen und Reservierungen landen in einem Dashboard und auf Ihrem Küchenbildschirm oder Drucker, egal über welchen Kanal."),
                          ("Direktbestellungen zuerst", "Keine Provision auf Ihren eigenen Kanälen. Gäste bestellen bei Ihnen, nicht über eine Plattform.")]},
-    "snack0": ("Snacks mit vielen Optionen", "Ohne Zwiebeln, extra Knoblauch, Soße extra: Die KI schreibt jede Anmerkung richtig auf den Bon."),
     "marketing": {"name": "Marketing-KI", "sub": "Mehr Kunden über Anzeigen, Google und KI", "badge": "Neu",
                   "title": "Marketing-KI für Restaurants | Conveasy",
                   "desc": "Conveasy Marketing-KI testet Anzeigen mit Ihrem Budget und sorgt dafür, dass Ihr Restaurant auf Google und bei KI-Assistenten wie ChatGPT gefunden wird.",
@@ -239,7 +234,6 @@ def apply(ns):
         company = ABOUT[l]["blocks"][-1]
         ABOUT[l].update({k: v for k, v in o["about"].items() if k != "blocks"})
         ABOUT[l]["blocks"] = list(o["about"]["blocks"]) + [company]
-        S["snackbar"][l]["pains"][0] = o["snack0"]
         # 24/7 reservations via phone AI and WhatsApp AI
         r = o["resv"]
         for pid in ("phone", "whatsapp"):

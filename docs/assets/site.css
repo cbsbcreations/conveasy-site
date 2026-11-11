@@ -72,8 +72,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .site-header.scrolled { background: rgb(0 0 0 / 0.86); }
 .site-header .wrap { display: flex; align-items: center; gap: 14px; min-height: 66px; }
 .logo { font: 700 1.3rem/1 var(--font-display); color: var(--ink); text-decoration: none; letter-spacing: -0.03em; display: inline-flex; align-items: center; gap: 9px; }
-.logo-mark { width: 26px; height: 26px; border-radius: 7px; background: #fff; display: inline-grid; place-items: center; position: relative; overflow: hidden; transition: transform .5s var(--ease); }
-.logo-mark::after { content: ""; width: 9px; height: 9px; border-radius: 2px; background: #000; transform: translate(4px, -4px); }
+/* the Conveasy logo mark (an inline SVG, the same drawing as on the Framer site) */
+.logo-mark { flex: none; width: 28px; height: 28px; fill: #fff; transition: transform .5s var(--ease); }
 .logo:hover .logo-mark { transform: rotate(-8deg) scale(1.05); }
 .nav { display: flex; align-items: center; gap: 2px; margin-left: auto; }
 .nav > a, .nav summary { color: var(--ink); text-decoration: none; font-weight: 500; font-size: 0.95rem; padding: 8px 12px; border-radius: 8px; cursor: pointer; list-style: none; transition: background .2s, color .2s; display: inline-flex; align-items: center; gap: 7px; }
@@ -218,7 +218,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .ticket ul { list-style: none; margin: 0; padding: 12px 0; display: grid; gap: 6px; }
 .ticket li { display: grid; grid-template-columns: 34px 1fr; }
 .ticket li span { font-weight: 700; }
-.ticket li.sub { padding-left: 34px; font-size: .78rem; color: color-mix(in srgb, var(--paper-ink) 65%, transparent); }
+.ticket li.sub { display: block; padding-left: 34px; font-size: .78rem; color: color-mix(in srgb, var(--paper-ink) 65%, transparent); }
 .ticket .t-foot { display: flex; justify-content: space-between; padding-top: 10px; border-top: 2px dashed var(--paper-line); font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; }
 
 /* Chat */
@@ -972,3 +972,13 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .stage .pscene { animation: rise 1s .15s var(--ease) both; }
 .shot-frame > .pscene { max-width: 360px; }
 @media (prefers-reduced-motion: reduce) { .pscene *, .pscene *::before, .pscene *::after { animation: none !important; } }
+
+/* "All restaurants" page: the kinds of restaurants as chips that pop in one after the other; "your restaurant" last, in orange */
+.types { max-width: 460px; }
+.ty-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 2px 4px 6px; }
+.ty-chips span { font: 500 .86rem/1 var(--font-body); padding: 9px 13px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--ink); white-space: nowrap; }
+.ty-chips .ty-you { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.stage .ty-chips span { animation: pop .5s var(--ease) both; animation-delay: calc(.35s + var(--i) * 45ms); }
+.stage .ty-chips .ty-you { animation: pop .5s var(--ease) both, ty-glow 2.4s ease-in-out infinite; animation-delay: calc(.35s + var(--i) * 45ms), 2s; }
+@keyframes ty-glow { 0%, 100% { box-shadow: 0 0 0 0 rgb(255 122 26 / 0); } 50% { box-shadow: 0 0 0 6px rgb(255 122 26 / .2); } }
+@media (prefers-reduced-motion: reduce) { .ty-chips span { animation: none !important; } }
