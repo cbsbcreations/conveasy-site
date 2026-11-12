@@ -13,8 +13,15 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   Run: `python3 src/build.py` (from this folder) to rebuild docs/ and preview/.
 - docs/ : the finished website (index.html, nl/, fr/, en/, tr/, de/, assets/, sitemap.xml, robots.txt, llms.txt).
   GitHub Pages serves this folder from the repo cbsbcreations/conveasy-site (branch main).
-  Test address: https://cbsbcreations.github.io/conveasy-site/ . For conveasy.be itself: add a file docs/CNAME with `conveasy.be`
-  (let the build write it), set the custom domain under the repo's Settings > Pages, and point the DNS at One.com to GitHub Pages.
+  Going live on conveasy.be (12 Nov 2026): the build writes docs/CNAME (conveasy.be) and GitHub Pages has conveasy.be as custom
+  domain, so the old test address now forwards to conveasy.be. DNS is at One.com (account of Selim Balci); Sammy changes it himself:
+  A records of conveasy.be from Framer (31.43.160.6, 31.43.161.6) to GitHub Pages 185.199.108.153, .109.153, .110.153, .111.153;
+  CNAME www from sites.framer.app to cbsbcreations.github.io. Leave app.conveasy.be (A + TXT fah-claim), the _acme-challenge CNAME
+  of app, and api.conveasy.be (self-hosted n8n at Elestio) as they are. After the switch: tick Enforce HTTPS under Settings > Pages
+  once GitHub has the certificate, then cancel the Framer site plan and remove conveasy.be from the Framer project.
+- Kept from the Framer site: Meta's domain verification tag (FB_DOMAIN_VERIFY, on every page), the addresses /privacy, /terms and
+  /data-deletion (Meta's WhatsApp app points to them; each is a real page with that English document), /about and /contact (forward
+  to the English pages). 404.html is the not-found page (Dutch and English).
   The pages link the stylesheet and the script with a fingerprint (site.css?v=..., written by the build), so a browser that still
   holds an older copy fetches the new one together with the new page.
 - preview/ : same site with an orange "preview" bar, used for the claude.ai preview (main.html is the page that is published there).
