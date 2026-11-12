@@ -1,0 +1,158 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1024" height="1024"></canvas>
+<script>
+// Conveasy animated logo: one loop, t from 0 to 1. Everything is a pure function of t, so frames are exact and the loop is seamless.
+const S = 1024, C = S / 2, TAU = Math.PI * 2;
+const ORANGE = [255, 122, 26];
+const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${Math.max(0, Math.min(1, a))})`;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const easeInOut = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+
+// Logo mark (viewBox 0 0 24 24), same paths as the website header.
+const SMALL = new Path2D('M2 18c0-1.886 0-2.828.586-3.414C3.172 14 4.114 14 6 14s2.828 0 3.414.586C10 15.172 10 16.114 10 18s0 2.828-.586 3.414C8.828 22 7.886 22 6 22s-2.828 0-3.414-.586C2 20.828 2 19.886 2 18z');
+const BIG = new Path2D('M3.464 3.464C2 4.93 2 7.286 2 12v1.138c.509-.333 1.069-.48 1.606-.551.645-.087 1.439-.087 2.305-.087h.179c.865 0 1.659 0 2.304.087.711.095 1.463.32 2.08.938.619.618.844 1.37.94 2.08.086.646.086 1.44.086 2.305v.18c0 .865 0 1.659-.087 2.304-.072.537-.218 1.097-.55 1.605L12 22c4.714 0 7.071 0 8.536-1.464C22 19.07 22 16.713 22 12c0-4.714 0-7.071-1.464-8.536C19.07 2 16.713 2 12 2 7.286 2 4.929 2 3.464 3.464zM15.75 12.75a.75.75 0 0 0 0-1.5h-1.94l3.72-3.72a.75.75 0 0 0-1.06-1.06l-3.72 3.72V8.25a.75.75 0 0 0-1.5 0V12c0 .414.336.75.75.75z');
+const ARROW = new Path2D('M15.75 12.75a.75.75 0 0 0 0-1.5h-1.94l3.72-3.72a.75.75 0 0 0-1.06-1.06l-3.72 3.72V8.25a.75.75 0 0 0-1.5 0V12c0 .414.336.75.75.75z');
+const K = 22.5;                 // mark scale: 20 units -> 450 px (44% of the picture, like the static profile picture)
+const RING = 316;               // orbit ring radius (just outside the mark's corners)
+
+// Seeded stars, so every frame has the same sky.
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const STARS = [];
+for (let i = 0; i < 46; i++) {
+  const a = rnd() * TAU, r = 385 + rnd() * 360;
+  STARS.push({ x: C + Math.cos(a) * r, y: C + Math.sin(a) * r, s: 1.7 + rnd() * 1.9, k: 1 + Math.floor(rnd() * 2), p: rnd(), warm: rnd() < 0.3, base: 0.35 + rnd() * 0.5, tw: i % 3 === 0 });
+}
+
+const cv = document.getElementById('c'), x = cv.getContext('2d');
+
+function draw(t) {
+  x.setTransform(1, 0, 0, 1, 0, 0);
+  x.globalAlpha = 1; x.shadowBlur = 0; x.shadowColor = 'transparent';
+  x.fillStyle = '#000'; x.fillRect(0, 0, S, S);
+
+  // Timeline
+  const fill = easeInOut(seg(t, 0.06, 0.22));          // arrow fills tail -> head (the order comes in)
+  const arrowA = 1 - easeInOut(seg(t, 0.36, 0.50));    // then the arrow fades out
+  const bumpX = seg(t, 0.21, 0.35);                    // small square bumps when the order lands
+  const bump = Math.sin(Math.PI * bumpX) * (bumpX > 0 && bumpX < 1 ? 1 : 0);
+  const flash = bump;                                  // halo brightens with the bump
+  const sweep = seg(t, 0.56, 0.82);                    // light scan over the mark
+
+  // Stars (twinkle with whole periods per loop)
+  for (const st of STARS) {
+    const tw = st.tw ? 0.5 + 0.5 * Math.sin(TAU * (st.k * t + st.p)) : 0.75;
+    x.fillStyle = st.warm ? rgba([255, 190, 140], st.base * (0.3 + 0.7 * tw)) : rgba([255, 255, 255], st.base * (0.3 + 0.7 * tw));
+    x.beginPath(); x.arc(st.x, st.y, st.s, 0, TAU); x.fill();
+  }
+
+  // Halo behind the mark
+  const I = 1;
+  const g = x.createRadialGradient(C, C, 160, C, C, 460);
+  g.addColorStop(0, rgba(ORANGE, 0));
+  g.addColorStop(0.36, rgba(ORANGE, 0.30 * I));
+  g.addColorStop(0.58, rgba(ORANGE, 0.13 * I));
+  g.addColorStop(1, rgba(ORANGE, 0));
+  x.fillStyle = g; x.fillRect(0, 0, S, S);
+
+  // HUD ticks, slowly turning the other way (60 ticks, 6 degrees per loop = seamless)
+  x.save(); x.translate(C, C);
+  for (let i = 0; i < 60; i++) {
+    const major = i % 5 === 0;
+    const a = TAU * i / 60;
+    const r0 = major ? 346 : 351, r1 = major ? 371 : 363;
+    x.strokeStyle = major ? rgba([255, 255, 255], 0.34) : rgba([255, 255, 255], 0.16);
+    x.lineWidth = major ? 3 : 2; x.lineCap = 'round';
+    x.beginPath(); x.moveTo(Math.cos(a) * r0, Math.sin(a) * r0); x.lineTo(Math.cos(a) * r1, Math.sin(a) * r1); x.stroke();
+  }
+  x.restore();
+
+  // Ripples (sound / signal waves) when the order lands
+  for (const start of [0.24, 0.34]) {
+    const tau = seg(t, start, start + 0.5);
+    if (tau <= 0 || tau >= 1) continue;
+    const r = RING + 172 * easeOut(tau);
+    x.strokeStyle = rgba(ORANGE, 0.6 * Math.pow(1 - tau, 1.5));
+    x.lineWidth = 1.5 + 4.5 * (1 - tau);
+    x.beginPath(); x.arc(C, C, r, 0, TAU); x.stroke();
+  }
+
+  // Orbit ring: faint track + a comet that goes round once per loop
+  x.strokeStyle = rgba(ORANGE, 0.18); x.lineWidth = 3;
+  x.beginPath(); x.arc(C, C, RING, 0, TAU); x.stroke();
+  const head = -Math.PI / 2 + TAU * t, span = TAU * 0.32;
+  const cg = x.createConicGradient(head - span, C, C);
+  cg.addColorStop(0, rgba(ORANGE, 0));
+  cg.addColorStop(0.32 * 0.55, rgba(ORANGE, 0.35));
+  cg.addColorStop(0.32, rgba([255, 168, 100], 1));
+  cg.addColorStop(0.3201, rgba(ORANGE, 0));
+  cg.addColorStop(1, rgba(ORANGE, 0));
+  x.save();
+  x.shadowColor = rgba(ORANGE, 0.9); x.shadowBlur = 22;
+  x.strokeStyle = cg; x.lineWidth = 7; x.lineCap = 'butt';
+  x.beginPath(); x.arc(C, C, RING, head - span, head); x.stroke();
+  x.restore();
+  const hx = C + Math.cos(head) * RING, hy = C + Math.sin(head) * RING;
+  const hg = x.createRadialGradient(hx, hy, 0, hx, hy, 34);
+  hg.addColorStop(0, rgba([255, 200, 150], 0.95));
+  hg.addColorStop(0.35, rgba(ORANGE, 0.55));
+  hg.addColorStop(1, rgba(ORANGE, 0));
+  x.fillStyle = hg; x.beginPath(); x.arc(hx, hy, 34, 0, TAU); x.fill();
+  x.fillStyle = '#fff'; x.beginPath(); x.arc(hx, hy, 6.5, 0, TAU); x.fill();
+
+  // The mark
+  x.save();
+  x.translate(C - 12 * K, C - 12 * K); x.scale(K, K);
+
+  // Arrow light, drawn behind the mark so it shows through the arrow cut-out.
+  if (fill > 0 && arrowA > 0) {
+    x.save(); x.clip(ARROW);
+    // Fill direction: from the tail (top right) to the point (bottom left).
+    const ax0 = 18.2, ay0 = 5.8, ax1 = 11.0, ay1 = 13.0;
+    const lg = x.createLinearGradient(ax0, ay0, ax1, ay1);
+    const edge = clamp(fill, 0.0001, 0.9999);
+    lg.addColorStop(0, rgba([255, 196, 140], arrowA));
+    lg.addColorStop(Math.max(0, edge - 0.12), rgba(ORANGE, arrowA));
+    lg.addColorStop(edge, rgba(ORANGE, arrowA));
+    lg.addColorStop(Math.min(1, edge + 0.0001), rgba(ORANGE, 0));
+    lg.addColorStop(1, rgba(ORANGE, 0));
+    x.fillStyle = lg; x.fillRect(10, 5, 9, 9);
+    x.restore();
+  }
+
+  // Big shape (with the arrow and the gap cut out)
+  x.fillStyle = '#fff';
+  x.fill(BIG, 'evenodd');
+
+  // Small square: bumps and warms up when the order lands
+  x.save();
+  const sc = 1 + 0.085 * bump;
+  x.translate(6, 18); x.scale(sc, sc); x.translate(-6, -18);
+  const warm = bump;
+  x.fillStyle = `rgb(255,${Math.round(255 - 70 * warm)},${Math.round(255 - 150 * warm)})`;
+  x.fill(SMALL);
+  x.restore();
+
+  // Scan light over the mark
+  if (sweep > 0 && sweep < 1) {
+    x.save();
+    const clipP = new Path2D(); clipP.addPath(BIG); clipP.addPath(SMALL);
+    x.clip(clipP, 'evenodd');
+    const pos = -0.35 + 1.7 * easeInOut(sweep);
+    const sg = x.createLinearGradient(2, 2, 22, 22);
+    const w = 0.13;
+    sg.addColorStop(0, rgba(ORANGE, 0));
+    sg.addColorStop(clamp(pos - w), rgba(ORANGE, 0));
+    sg.addColorStop(clamp(pos), rgba(ORANGE, 0.42));
+    sg.addColorStop(clamp(pos + w), rgba(ORANGE, 0));
+    sg.addColorStop(1, rgba(ORANGE, 0));
+    x.fillStyle = sg; x.fillRect(0, 0, 24, 24);
+    x.restore();
+  }
+  x.restore();
+}
+draw(0);
+</script></body></html>
