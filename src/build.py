@@ -123,6 +123,7 @@ def head(lang, pid, prefix, faqs, crumbs, main):
               f'<meta property="og:url" content="{canonical(lang, pid)}">', f'<meta property="og:locale" content="{OG_LOCALE[lang]}">',
               '<meta name="twitter:card" content="summary_large_image">',
               '<meta name="theme-color" content="#000000">',
+              f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}">',
               f'<link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{prefix}assets/apple-touch-icon.png">',
               '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
               f'<link rel="stylesheet" href="{FONTS}">',
@@ -930,6 +931,61 @@ def render(lang, pid, prefix, preview, main=False):
         return hd + "\n" + inner + "\n"
     return f'<!doctype html>\n<html lang="{HTML_LANG[lang]}">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n{hd}\n</head>\n<body>\n{inner}\n</body>\n</html>\n'
 
+# ---------------- Going live on conveasy.be (12 Nov 2026) ----------------
+# Meta verified the domain conveasy.be with this tag on the Framer site's home page; every page carries it now.
+FB_DOMAIN_VERIFY = "wkem3zltnryelk3wh9qb4o02ktotv9"
+# The Framer site's addresses. /privacy, /terms and /data-deletion are set in Meta's app for WhatsApp, so they stay real pages
+# (each with that one English document); /about and /contact send visitors on to the new English pages.
+OLD_DOCS = ("privacy", "terms", "data-deletion")
+OLD_MOVED = {"about": "en/about.html", "contact": "en/contact.html"}
+
+def doc_html(doc):
+    secs = ""
+    for head_, parts in doc["sections"]:
+        inner = "".join(f"<p>{e(x)}</p>" if isinstance(x, str) else "<ul>" + "".join(f"<li>{e(i)}</li>" for i in x) + "</ul>" for x in parts)
+        secs += f'<h3 style="font-size:1.05rem;margin-top:1.4em">{e(head_)}</h3>{inner}'
+    return f'<p style="opacity:.7">{e(doc["updated"])}</p><p>{e(doc["intro"])}</p>{secs}'
+
+def shell(lang, prefix, title, desc, url, body, robots=""):
+    """A page outside the language folders, in the site's layout (header and footer of the given language)."""
+    hd = "\n".join([f"<title>{e(title)}</title>", f'<meta name="description" content="{e(desc)}">',
+                    f'<link rel="canonical" href="{url}">' if url else "", robots,
+                    '<meta name="theme-color" content="#000000">', f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}">',
+                    f'<link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{prefix}assets/apple-touch-icon.png">',
+                    '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+                    f'<link rel="stylesheet" href="{FONTS}">', f'<link rel="stylesheet" href="{prefix}assets/site.css{ASSET_Q["css"]}">'])
+    inner = f'{header(lang, "legal", prefix)}<main>{body}</main>{footer(lang, prefix, f"{lang}/legal")}<script src="{prefix}assets/site.js{ASSET_Q["js"]}"></script>'
+    return (f'<!doctype html>\n<html lang="{HTML_LANG[lang]}">\n<head>\n<meta charset="utf-8">\n'
+            f'<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n{hd}\n</head>\n<body>\n{inner}\n</body>\n</html>\n')
+
+NOT_FOUND = {"nl": ("Pagina niet gevonden", "Deze pagina bestaat niet (meer). Kies je taal om verder te gaan."),
+             "en": ("Page not found", "This page does not exist (any more). Pick your language to go on.")}
+
+def live_extras(outdir):
+    """Files only the real conveasy.be needs: the domain for GitHub Pages, the old Framer addresses and the 404 page."""
+    write(os.path.join(outdir, "CNAME"), "conveasy.be\n")
+    others = " · ".join(f'<a href="{path_of(l, "legal")}">{e(LANG_NAMES[l])}</a>' for l in LANGS)
+    for doc in LEGAL_DOCS["en"].DOCS:
+        if doc["id"] not in OLD_DOCS: continue
+        body = (f'<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy"><h1>{e(doc["title"])}</h1></div></div></section>'
+                f'<section class="band" style="padding-top:0"><div class="wrap"><div class="prose">{doc_html(doc)}'
+                f'<p style="margin-top:2em;opacity:.8">{e(LEGAL_DOCS["en"].COMPANY)} · {e(LEGAL_DOCS["en"].EMAIL)}</p>'
+                f'<p style="opacity:.8">All legal texts: {others}</p></div></div></section>')
+        write(os.path.join(outdir, doc["id"] + ".html"),
+              shell("en", "", f'{doc["title"]} | Conveasy', doc["intro"][:155], f'{SITE}/{doc["id"]}', body))
+    for old, new in OLD_MOVED.items():
+        write(os.path.join(outdir, old + ".html"),
+              f'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>Conveasy</title><meta name="robots" content="noindex">'
+              f'<link rel="canonical" href="{SITE}/{new[:-5]}"><meta http-equiv="refresh" content="0; url={new}">'
+              f'<script>location.replace("{new}" + location.hash)</script></head><body><p><a href="{new}">Conveasy</a></p></body></html>\n')
+    # GitHub Pages shows 404.html for any missing address, at any depth, so this one uses addresses from the root of the domain
+    t, x = NOT_FOUND["nl"]
+    t2, x2 = NOT_FOUND["en"]
+    homes = "".join(f'<a class="btn btn-ghost" href="/{path_of(l, "home")}">{e(LANG_NAMES[l])}</a>' for l in LANGS)
+    body = (f'<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy"><h1>{e(t)}</h1>'
+            f'<p class="lead">{e(x)}<br>{e(x2)}</p><div class="btn-row">{homes}</div></div></div></section>')
+    write(os.path.join(outdir, "404.html"), shell("nl", "/", f"{t} | Conveasy", x, "", body, '<meta name="robots" content="noindex">'))
+
 # ---------------- SEO files ----------------
 def sitemap():
     rows = []
@@ -1020,6 +1076,7 @@ if __name__ == "__main__":
     sectors_more.apply(globals())
     build(os.path.join(ROOT, "docs"), False)
     write(os.path.join(ROOT, "docs", ".nojekyll"), "")  # GitHub Pages: serve the files as they are
+    live_extras(os.path.join(ROOT, "docs"))              # CNAME, the old Framer addresses, 404
     PLACEHOLDERS.clear()
     build(os.path.join(ROOT, "preview"), True)
     # placeholder list (Dutch wording) for Sammy
