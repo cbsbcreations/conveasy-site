@@ -1,7 +1,8 @@
 # Conveasy.be website: handoff
 
 New conveasy.be (replaces the Framer site). Static HTML, 5 languages (nl, fr, en, tr, de).
-Last update: 11 Nov 2026, late evening (Voor wie: sushi and kebab instead of snackbar, a page for all restaurants; the real
+Live on https://conveasy.be since 12 Nov 2026 (GitHub Pages, HTTPS enforced); the Framer site plan is cancelled.
+Earlier, 11 Nov 2026 (Voor wie: sushi and kebab instead of snackbar, a page for all restaurants; the real
 logo mark from the Framer site, favicon, WhatsApp profile pictures; earlier: phone AI and WhatsApp animations, the home
 page's top row, "En verder" lists, webshop animation, "50+ calls at once", Marketing AI and kiosk animations, payment methods,
 photo library, kiosk hardware 1599, voice greeting per page language, both demos connected, test address on GitHub Pages).
@@ -13,12 +14,17 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   Run: `python3 src/build.py` (from this folder) to rebuild docs/ and preview/.
 - docs/ : the finished website (index.html, nl/, fr/, en/, tr/, de/, assets/, sitemap.xml, robots.txt, llms.txt).
   GitHub Pages serves this folder from the repo cbsbcreations/conveasy-site (branch main).
-  Going live on conveasy.be (12 Nov 2026): the build writes docs/CNAME (conveasy.be) and GitHub Pages has conveasy.be as custom
-  domain, so the old test address now forwards to conveasy.be. DNS is at One.com (account of Selim Balci); Sammy changes it himself:
-  A records of conveasy.be from Framer (31.43.160.6, 31.43.161.6) to GitHub Pages 185.199.108.153, .109.153, .110.153, .111.153;
-  CNAME www from sites.framer.app to cbsbcreations.github.io. Leave app.conveasy.be (A + TXT fah-claim), the _acme-challenge CNAME
-  of app, and api.conveasy.be (self-hosted n8n at Elestio) as they are. After the switch: tick Enforce HTTPS under Settings > Pages
-  once GitHub has the certificate, then cancel the Framer site plan and remove conveasy.be from the Framer project.
+  Live on conveasy.be since 12 Nov 2026: the build writes docs/CNAME (conveasy.be) and GitHub Pages has conveasy.be as custom
+  domain (DNS check successful, certificate issued, Enforce HTTPS on), so the old test address forwards to conveasy.be and
+  www.conveasy.be forwards to conveasy.be. DNS is at One.com (account of Selim Balci); Sammy changes it himself:
+  A conveasy.be -> 185.199.108.153, .109.153, .110.153, .111.153 (GitHub Pages; before: Framer 31.43.160.6, 31.43.161.6);
+  CNAME www -> cbsbcreations.github.io (before: sites.framer.app). Keep as they are: A app.conveasy.be -> 35.219.200.107 plus
+  TXT app fah-claim and the _acme-challenge CNAME of app (restaurant portal and kitchen screens on Firebase App Hosting), and
+  CNAME api.conveasy.be (self-hosted n8n at Elestio). The A record of app was deleted by mistake during the switch on 12 Nov:
+  check it is back (One.com > DNS-records > A, hostname app, 35.219.200.107, TTL 3600).
+  Framer: conveasy.be was removed from the Framer project "Xtract Template (copy)" and its Basic site plan (paid yearly) was
+  cancelled on 12 Nov 2026; it stays active on its framer.app address until 13 Jun 2027 and does not renew. The other paid
+  Framer site in that workspace (Complex Methods, interconnectedrec.be) is not Conveasy and was left alone.
 - Kept from the Framer site: Meta's domain verification tag (FB_DOMAIN_VERIFY, on every page), the addresses /privacy, /terms and
   /data-deletion (Meta's WhatsApp app points to them; each is a real page with that English document), /about and /contact (forward
   to the English pages). 404.html is the not-found page (Dutch and English).
