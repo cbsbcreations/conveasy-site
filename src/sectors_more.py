@@ -244,6 +244,17 @@ ABOUT_DESC = {
 }
 
 
+# Contact page, under the intro (Sammy, 12 Nov 2026): one quiet line for businesses that are not restaurants. Later each other
+# sector gets its own site, and all the sector sites will link to each other.
+OTHER = {
+    "nl": "Geen restaurant? We bouwen ook AI-telefonie voor andere sectoren. Vertel ons wat je zoekt.",
+    "fr": "Vous n'êtes pas un restaurant ? Nous créons aussi la téléphonie IA pour d'autres secteurs. Dites-nous ce que vous cherchez.",
+    "en": "Not a restaurant? We also build AI phone agents for other sectors. Tell us what you need.",
+    "tr": "Restoran değil misin? Başka sektörler için de yapay zekâ ile telefon sistemi kuruyoruz. Ne aradığını bize yaz.",
+    "de": "Kein Restaurant? Wir bauen KI-Telefonie auch für andere Branchen. Sagen Sie uns, was Sie suchen.",
+}
+
+
 def apply(ns):
     """Merge into build.py's globals: slugs and texts of the new pages, the home section heading, the about description."""
     for pid, slugs in SLUGS.items():

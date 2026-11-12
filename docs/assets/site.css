@@ -982,3 +982,6 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .stage .ty-chips .ty-you { animation: pop .5s var(--ease) both, ty-glow 2.4s ease-in-out infinite; animation-delay: calc(.35s + var(--i) * 45ms), 2s; }
 @keyframes ty-glow { 0%, 100% { box-shadow: 0 0 0 0 rgb(255 122 26 / 0); } 50% { box-shadow: 0 0 0 6px rgb(255 122 26 / .2); } }
 @media (prefers-reduced-motion: reduce) { .ty-chips span { animation: none !important; } }
+
+/* Contact page: the line for businesses that are not restaurants */
+.other-note { max-width: 62ch; margin: 18px 0 0; padding-left: 14px; border-left: 2px solid var(--accent); color: var(--muted); font-size: .98rem; line-height: 1.55; }

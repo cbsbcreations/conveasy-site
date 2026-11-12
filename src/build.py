@@ -883,7 +883,7 @@ def page_contact(lang, prefix):
     pg = f"{lang}/contact"
     trail = [(u["home"], "home"), (u["contact"], None)]
     checks = "".join(f'<label><input type="checkbox" id="int-{p}" name="interest" value="{p}"> {e(P[p][lang]["name"])}</label>' for p in PRODUCTS)
-    body = f'''<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy">{crumbs_html(lang, prefix, trail)}<h1>{e(d["h1"])}</h1><p class="lead">{e(d["lead"])}</p></div></div></section>
+    body = f'''<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy">{crumbs_html(lang, prefix, trail)}<h1>{e(d["h1"])}</h1><p class="lead">{e(d["lead"])}</p><p class="other-note">{e(sectors_more.OTHER[lang])}</p></div></div></section>
 <section class="band" style="padding-top:0"><div class="wrap contact-grid">
 <div class="wa-box card"><h2 style="font-size:1.4rem">{e(d["wa_h"])}</h2><p>{e(d["wa_text"])}</p><div class="wa-number">{e(WA_DISPLAY)}</div>
 <div class="btn-row"><a class="btn btn-primary" href="{WA_LINK}" rel="noopener">{e(d["open_wa"])}</a><button type="button" class="btn btn-ghost" data-copy="{e(WA_DISPLAY)}" data-done="{e(d["copied"])}">{e(d["copy"])}</button></div>

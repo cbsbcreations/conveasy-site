@@ -136,6 +136,10 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 - The "Alle restaurants" page shows the kinds of restaurants as chips that pop in, with "+ Jouw zaak" last (TYPES in
   sectors_more.py, types_i() in build.py, .types in site.css).
 
+- Other sectors (Sammy, 12 Nov 2026): conveasy.be stays restaurant-only. The contact page has one line for businesses that are not
+  restaurants ("Geen restaurant? We bouwen ook AI-telefonie voor andere sectoren.", OTHER in sectors_more.py). Later each other
+  sector (garages, realtors) gets its own site, and all the sector sites will link to each other.
+
 ## Logo
 - The logo mark is the drawing from the Framer site (white squircle with a small square and an arrow): LOGO_MARK in build.py (header
   and footer), src/favicon.svg (browser tab, white on a black rounded square), src/apple-touch-icon.png (phone home screen), and
