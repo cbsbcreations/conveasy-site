@@ -20,8 +20,8 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   A conveasy.be -> 185.199.108.153, .109.153, .110.153, .111.153 (GitHub Pages; before: Framer 31.43.160.6, 31.43.161.6);
   CNAME www -> cbsbcreations.github.io (before: sites.framer.app). Keep as they are: A app.conveasy.be -> 35.219.200.107 plus
   TXT app fah-claim and the _acme-challenge CNAME of app (restaurant portal and kitchen screens on Firebase App Hosting), and
-  CNAME api.conveasy.be (self-hosted n8n at Elestio). The A record of app was deleted by mistake during the switch on 12 Nov:
-  check it is back (One.com > DNS-records > A, hostname app, 35.219.200.107, TTL 3600).
+  CNAME api.conveasy.be (self-hosted n8n at Elestio). The A record of app was deleted by mistake during the switch on 12 Nov
+  and put back the same evening (A, hostname app, 35.219.200.107, TTL 3600); app.conveasy.be loads again over HTTPS.
   Framer: conveasy.be was removed from the Framer project "Xtract Template (copy)" and its Basic site plan (paid yearly) was
   cancelled on 12 Nov 2026; it stays active on its framer.app address until 13 Jun 2027 and does not renew. The other paid
   Framer site in that workspace (Complex Methods, interconnectedrec.be) is not Conveasy and was left alone.
