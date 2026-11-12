@@ -10,7 +10,8 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 ## Folders
 - src/ : source. build.py builds the site from content.py, lang_de.py, lang_tr.py, overrides.py, answers.py, extras.py, sectors_more.py,
   legal/, site.css, site.js, favicon.svg and apple-touch-icon.png.
-- brand/ : the logo mark (SVG) and the WhatsApp profile pictures. Not part of the website.
+- brand/ : the logo mark (SVG), the WhatsApp profile pictures and the moving Gmail picture (GIF, source in brand/animatie/).
+  Not part of the website.
   Run: `python3 src/build.py` (from this folder) to rebuild docs/ and preview/.
 - docs/ : the finished website (index.html, nl/, fr/, en/, tr/, de/, assets/, sitemap.xml, robots.txt, llms.txt).
   GitHub Pages serves this folder from the repo cbsbcreations/conveasy-site (branch main).
@@ -159,6 +160,13 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   brand/conveasy-logo-mark.svg.
 - WhatsApp profile pictures, 1080 x 1080, made from the mark: brand/conveasy-whatsapp-profiel-zwart.png (black with an orange glow) and
   brand/conveasy-whatsapp-profiel-oranje.png. WhatsApp crops them to a circle; the mark stays inside it.
+- Moving logo for the Gmail / Google account picture (12 Nov 2026): brand/conveasy-gmail-profiel-bewegend.gif (512 x 512, about
+  1 MB) and brand/conveasy-gmail-profiel-bewegend-klein.gif (256 x 256, about 0.4 MB). A 3-second loop: an orange light circles the
+  logo, the arrow fills orange (an order coming in), the small square lights up, two waves go out, a light sweep crosses the logo.
+  The first frame is the complete logo, because some Google views only show the first frame. Source: brand/animatie/anim.html
+  (draws each frame on a canvas from a time 0..1); `node brand/animatie/render.js <folder> 75` writes the 75 frames, then ffmpeg
+  makes the GIF (palettegen max_colors=128, paletteuse dither=none, diff_mode=rectangle). Upload: Google Account > Personal info >
+  Profile picture > Upload from device.
 
 ## Rules
 - Call it "Marketing AI". Never mention Eatpoint on the site. No auto ads/ad testing promised. No kassa/POS page.
