@@ -13,7 +13,8 @@ Key facts:
 - Works for every kind of restaurant: it uses the restaurant's own menu. Pages for frituren (Belgian fry shops), sushi restaurants, pizzerias, burger restaurants, kebab shops and all other restaurants.
 - Table reservations 24/7 through the phone AI and the WhatsApp AI; each reservation (name, date, time, party size) lands in the dashboard. Included in the phone AI and WhatsApp AI price at no extra cost.
 - Marketing AI: €69/month. Announcements to customers on all channels, Google review links, automatic emails for a second order and for unfinished orders, prepaid cards, and a digital stamp card in Google Wallet and Apple Wallet with notifications.
-- Contact: WhatsApp +32 456 56 47 47, https://conveasy.be/en/contact
+- Contact: phone +1 878 880 1550, email conveasyai@gmail.com, WhatsApp and demo requests at https://conveasy.be/en/contact
+- Company: Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, USA. EIN 61-2205005.
 
 ## Products (English)
 - [Phone AI](https://conveasy.be/en/phone-ai): Answers every call, even during the rush. The order goes straight to the kitchen.

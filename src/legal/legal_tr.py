@@ -1,11 +1,11 @@
 # Turkish translation of legal_en.py (privacy policy, terms of service, data deletion).
 # Same structure as legal_en.py: list of documents. Each section body is a list; a str is a paragraph, a list of str is a bullet list.
-COMPANY = "Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, ABD"
+COMPANY = "Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, ABD"
 EMAIL = "conveasyai@gmail.com"
 
 DOCS = [
     {"id": "privacy", "title": "Gizlilik politikası", "updated": "Son güncelleme: 18 Ekim 2026",
-     "intro": "Conveasy, restoranlar için bir yapay zekâ sipariş asistanıdır. Restoranlar adına telefon aramalarını ve WhatsApp mesajlarını yanıtlar, siparişleri alır ve restorana iletir. Conveasy, Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, ABD (“biz”, “bize”) tarafından işletilmektedir. Bu politika, hangi kişisel verileri neden işlediğimizi ve haklarının neler olduğunu açıklar.",
+     "intro": "Conveasy, restoranlar için bir yapay zekâ sipariş asistanıdır. Restoranlar adına telefon aramalarını ve WhatsApp mesajlarını yanıtlar, siparişleri alır ve restorana iletir. Conveasy, Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, ABD (“biz”, “bize”) tarafından işletilmektedir. Bu politika, hangi kişisel verileri neden işlediğimizi ve haklarının neler olduğunu açıklar.",
      "sections": [
         ("1. Verilerinden kim sorumludur", [[
             "Conveasy kullanan restoranlar ve bu web sitesinin ziyaretçileri için veri sorumlusu Balloz Solutions LLC’dir.",
@@ -40,10 +40,10 @@ DOCS = [
         ("11. Değişiklikler", [
             "Bu politikayı güncelleyebiliriz. En güncel sürüm her zaman bu sayfada yayımlanır."]),
         ("12. İletişim", [
-            "Balloz Solutions LLC (Conveasy), 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, ABD. conveasyai@gmail.com"]),
+            "Balloz Solutions LLC (Conveasy), 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, ABD. EIN: 61-2205005. Telefon: +1 878 880 1550. conveasyai@gmail.com"]),
      ]},
     {"id": "terms", "title": "Hizmet şartları", "updated": "Son güncelleme: 26 Ekim 2026",
-     "intro": "Bu şartlar, Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, ABD (“biz”, “bize”) tarafından işletilen, restoranlar için bir yapay zekâ sipariş asistanı olan Conveasy için geçerlidir. Conveasy’yi kullanarak veya işletmeni ona bağlayarak bu şartları kabul etmiş olursun. Seninle ayrı bir sözleşme imzalamışsak, o sözleşme önceliklidir.",
+     "intro": "Bu şartlar, Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, ABD (“biz”, “bize”) tarafından işletilen, restoranlar için bir yapay zekâ sipariş asistanı olan Conveasy için geçerlidir. Conveasy’yi kullanarak veya işletmeni ona bağlayarak bu şartları kabul etmiş olursun. Seninle ayrı bir sözleşme imzalamışsak, o sözleşme önceliklidir.",
      "sections": [
         ("1. Hizmet", ["Conveasy, restoranın için telefon aramalarını ve WhatsApp mesajlarını yanıtlar, siparişleri alır ve bunları mutfak yazıcına veya paneline (dashboard) gönderir. Özellikler, fiyatlar ve dahil olan hacimler planına bağlıdır."]),
         ("2. Hesabın", ["Doğru işletme bilgileri vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki tüm etkinliklerden ve menünü, fiyatlarını, çalışma saatlerini, teslimat bölgelerini ve tükenen ürünleri güncel tutmaktan sen sorumlusun."]),
