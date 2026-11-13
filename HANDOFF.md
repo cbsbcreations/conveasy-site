@@ -60,7 +60,12 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 - The assistant "TEST Conveasy" runs on GPT-6 Luna since 11 Nov 2026 (was GPT-5.6 Luna).
 
 ## Business facts used on the site
-- Company: Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, NM 87110 (Albuquerque). Email conveasyai@gmail.com.
+- Company: Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110 ("Road" written out, not "Rd").
+  EIN 61-2205005. Email conveasyai@gmail.com. Phone for calls: +1 878 880 1550 (PHONE_DISPLAY / PHONE_TEL in content.py), shown in
+  the footer, on the contact page ("Liever bellen?"), in the company details on the about and legal pages, on /privacy, /terms and
+  /data-deletion, in llms.txt and in the structured data (Organization: legalName, taxID, address, telephone).
+  Since 13 Nov 2026 the WhatsApp number +32 456 56 47 47 is no longer printed anywhere; the WhatsApp buttons still open a chat
+  with it (WA_LINK).
 - Prices/month: WhatsApp AI 99, webshop 79, kiosk 89, Marketing AI 69 (includes Google/Apple Wallet stamp card).
 - Setup: voice AI 299, others 199, bundle voice+WhatsApp+webshop+kiosk 399. Kiosk hardware 1599 (21.5" table stand), payable in 3 instalments.
 - 1 week free trial. Over the limit = upgrade to a bigger plan. Live within max 10 days.

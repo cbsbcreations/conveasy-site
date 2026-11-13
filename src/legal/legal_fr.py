@@ -1,12 +1,12 @@
 # French (Belgium) translation of legal_en.py (privacy policy, terms of service, data deletion).
 # Same structure as legal_en.py: list of documents. Each section body is a list; a str is a paragraph,
 # a list of str is a bullet list. Keep this file in sync with legal_en.py.
-COMPANY = "Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, États-Unis"
+COMPANY = "Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, États-Unis"
 EMAIL = "conveasyai@gmail.com"
 
 DOCS = [
     {"id": "privacy", "title": "Politique de confidentialité", "updated": "Dernière mise à jour : 18 octobre 2026",
-     "intro": "Conveasy est un assistant de commande IA pour les restaurants. Il répond aux appels téléphoniques et aux messages WhatsApp pour les restaurants, prend les commandes et les transmet au restaurant. Conveasy est exploité par Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, États-Unis (« nous »). Cette politique explique quelles données à caractère personnel nous traitons, pourquoi, et quels sont vos droits.",
+     "intro": "Conveasy est un assistant de commande IA pour les restaurants. Il répond aux appels téléphoniques et aux messages WhatsApp pour les restaurants, prend les commandes et les transmet au restaurant. Conveasy est exploité par Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, États-Unis (« nous »). Cette politique explique quelles données à caractère personnel nous traitons, pourquoi, et quels sont vos droits.",
      "sections": [
         ("1. Qui est responsable de vos données", [[
             "Pour les restaurants qui utilisent Conveasy et pour les visiteurs de ce site web, Balloz Solutions LLC est le responsable du traitement.",
@@ -41,10 +41,10 @@ DOCS = [
         ("11. Modifications", [
             "Nous pouvons mettre à jour cette politique. La version la plus récente est toujours publiée sur cette page."]),
         ("12. Contact", [
-            "Balloz Solutions LLC (Conveasy), 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, États-Unis. conveasyai@gmail.com"]),
+            "Balloz Solutions LLC (Conveasy), 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, États-Unis. EIN : 61-2205005. Téléphone : +1 878 880 1550. conveasyai@gmail.com"]),
      ]},
     {"id": "terms", "title": "Conditions d’utilisation", "updated": "Dernière mise à jour : 26 octobre 2026",
-     "intro": "Les présentes conditions s’appliquent à Conveasy, un assistant de commande IA pour les restaurants exploité par Balloz Solutions LLC, 1209 Mountain Rd Pl NE STE N, Albuquerque, NM 87110, États-Unis (« nous »). En utilisant Conveasy ou en y connectant votre établissement, vous acceptez les présentes conditions. Si nous avons signé un contrat distinct avec vous, ce contrat prévaut.",
+     "intro": "Les présentes conditions s’appliquent à Conveasy, un assistant de commande IA pour les restaurants exploité par Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, États-Unis (« nous »). En utilisant Conveasy ou en y connectant votre établissement, vous acceptez les présentes conditions. Si nous avons signé un contrat distinct avec vous, ce contrat prévaut.",
      "sections": [
         ("1. Le service", ["Conveasy répond aux appels téléphoniques et aux messages WhatsApp pour votre restaurant, prend les commandes et les envoie à l’imprimante de votre cuisine ou à votre tableau de bord. Les fonctionnalités, les prix et les volumes inclus dépendent de votre formule."]),
         ("2. Votre compte", ["Vous devez fournir des informations exactes sur votre entreprise et conserver vos identifiants de connexion en lieu sûr. Vous êtes responsable de toute activité sur votre compte et de la mise à jour de votre menu, de vos prix, de vos heures d’ouverture, de vos zones de livraison et des articles épuisés."]),

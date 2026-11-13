@@ -421,6 +421,8 @@ a.card:hover .more, .card .more:hover { gap: 12px; }
 @media (max-width: 860px) { .contact-grid { grid-template-columns: minmax(0, 1fr); } }
 .wa-box { border-color: rgb(255 122 26 / .35); }
 .wa-number { font: 600 clamp(1.4rem, 3vw, 1.9rem)/1.1 var(--font-mono); letter-spacing: -.01em; color: var(--ink); user-select: all; }
+.call-number { justify-self: start; font: 600 clamp(1.4rem, 3vw, 1.9rem)/1.1 var(--font-mono); letter-spacing: -.01em; color: var(--ink); text-decoration: none; transition: color .2s; }
+.call-number:hover { color: var(--accent); }
 form.lead-form { display: grid; gap: 16px; background: rgb(10 10 12 / .9); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(22px, 3vw, 32px); position: relative; z-index: 1; }
 .field { display: grid; gap: 7px; min-width: 0; }
 .field label, fieldset legend { font-weight: 500; font-size: .92rem; }

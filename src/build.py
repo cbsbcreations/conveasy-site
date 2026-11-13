@@ -63,10 +63,13 @@ def meta_of(lang, pid):
     return d["title"], d["desc"]
 
 # ---------------- JSON-LD ----------------
-ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": "Conveasy", "url": SITE + "/",
+ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": "Conveasy", "legalName": "Balloz Solutions LLC", "url": SITE + "/",
+       "taxID": EIN, "telephone": PHONE_TEL, "email": EMAIL,
+       "address": {"@type": "PostalAddress", "streetAddress": "1209 Mountain Road Pl NE STE N", "addressLocality": "Albuquerque",
+                   "addressRegion": "NM", "postalCode": "87110", "addressCountry": "US"},
        "description": "AI ordering software for restaurants: phone AI and WhatsApp AI for orders and 24/7 table reservations, commission-free webshop with QR ordering, self-order kiosk and Marketing AI with a digital stamp card in Google and Apple Wallet.",
        "areaServed": ["BE", "NL", "LU"],
-       "contactPoint": {"@type": "ContactPoint", "telephone": "+32456564747", "contactType": "sales",
+       "contactPoint": {"@type": "ContactPoint", "telephone": PHONE_TEL, "contactType": "sales",
                         "availableLanguage": ["nl", "fr", "en", "tr", "de"]}}
 
 def jsonld(lang, pid, faqs, crumbs):
@@ -167,7 +170,7 @@ def footer(lang, prefix, page):
     secs = "".join(f'<li><a href="{h(s)}">{e(S[s][lang]["name"])}</a></li>' for s in SECTORS)
     return f'''<footer class="site-footer"><div class="wrap"><div class="foot-mark" aria-hidden="true">Conveasy</div>
 <div class="foot-cols">
-<div style="display:grid;gap:12px;align-content:start"><a class="logo" href="{h("home")}">{LOGO_MARK}Conveasy</a><p>{e(u["foot_tag"])}</p><p>WhatsApp: {e(WA_DISPLAY)}</p></div>
+<div style="display:grid;gap:12px;align-content:start"><a class="logo" href="{h("home")}">{LOGO_MARK}Conveasy</a><p>{e(u["foot_tag"])}</p><p>{e(PHONE_LABEL[lang])} <a href="tel:{PHONE_TEL}">{e(PHONE_DISPLAY)}</a></p></div>
 <div><h4>{e(u["products"])}</h4><ul>{prods}</ul></div>
 <div><h4>{e(u["sectors"])}</h4><ul>{secs}</ul></div>
 <div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
@@ -467,7 +470,7 @@ def faq_band(lang, faqs, page):
 def cta_band(lang, prefix):
     u = UI[lang]
     return f'''<section class="band dark cta"><div class="wrap"><h2>{e(u["cta_title"])}</h2><p>{e(u["cta_text"])}</p>
-<div class="btn-row"><a class="btn btn-primary" href="{prefix + path_of(lang, "contact")}">{e(u["demo"])} <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-ghost" href="{WA_LINK}" rel="noopener">{e(u["wa"])}: {e(WA_DISPLAY)}</a></div></div></section>'''
+<div class="btn-row"><a class="btn btn-primary" href="{prefix + path_of(lang, "contact")}">{e(u["demo"])} <span class="arr" aria-hidden="true">→</span></a><a class="btn btn-ghost" href="{WA_LINK}" rel="noopener">{e(u["wa"])}</a></div></div></section>'''
 
 def how_band(lang):
     u = UI[lang]
@@ -886,8 +889,9 @@ def page_contact(lang, prefix):
     checks = "".join(f'<label><input type="checkbox" id="int-{p}" name="interest" value="{p}"> {e(P[p][lang]["name"])}</label>' for p in PRODUCTS)
     body = f'''<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy">{crumbs_html(lang, prefix, trail)}<h1>{e(d["h1"])}</h1><p class="lead">{e(d["lead"])}</p><p class="other-note">{e(sectors_more.OTHER[lang])}</p></div></div></section>
 <section class="band" style="padding-top:0"><div class="wrap contact-grid">
-<div class="wa-box card"><h2 style="font-size:1.4rem">{e(d["wa_h"])}</h2><p>{e(d["wa_text"])}</p><div class="wa-number">{e(WA_DISPLAY)}</div>
-<div class="btn-row"><a class="btn btn-primary" href="{WA_LINK}" rel="noopener">{e(d["open_wa"])}</a><button type="button" class="btn btn-ghost" data-copy="{e(WA_DISPLAY)}" data-done="{e(d["copied"])}">{e(d["copy"])}</button></div>
+<div class="wa-box card"><h2 style="font-size:1.4rem">{e(d["wa_h"])}</h2><p>{e(d["wa_text"])}</p>
+<div class="btn-row"><a class="btn btn-primary" href="{WA_LINK}" rel="noopener">{e(d["open_wa"])}</a></div>
+<h3 style="margin-top:12px">{e(d["call_h"])}</h3><a class="call-number" href="tel:{PHONE_TEL}">{e(PHONE_DISPLAY)}</a>
 <h3 style="margin-top:12px">{e(d["email_h"])}</h3><p>{ph(d["email"], lang, pg)}</p></div>
 <form class="lead-form" novalidate data-to="conveasyai@gmail.com" data-subject="{e(d["f_subject"])}">
 <div class="two"><div class="field"><label for="f-name">{e(d["f_name"])}</label><input id="f-name" name="name" autocomplete="name" required></div>
@@ -969,7 +973,7 @@ def live_extras(outdir):
         if doc["id"] not in OLD_DOCS: continue
         body = (f'<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy"><h1>{e(doc["title"])}</h1></div></div></section>'
                 f'<section class="band" style="padding-top:0"><div class="wrap"><div class="prose">{doc_html(doc)}'
-                f'<p style="margin-top:2em;opacity:.8">{e(LEGAL_DOCS["en"].COMPANY)} · {e(LEGAL_DOCS["en"].EMAIL)}</p>'
+                f'<p style="margin-top:2em;opacity:.8">{e(LEGAL_DOCS["en"].COMPANY)} · EIN {e(EIN)} · Phone: <a href="tel:{PHONE_TEL}">{e(PHONE_DISPLAY)}</a> · {e(LEGAL_DOCS["en"].EMAIL)}</p>'
                 f'<p style="opacity:.8">All legal texts: {others}</p></div></div></section>')
         write(os.path.join(outdir, doc["id"] + ".html"),
               shell("en", "", f'{doc["title"]} | Conveasy', doc["intro"][:155], f'{SITE}/{doc["id"]}', body))
@@ -1012,7 +1016,8 @@ def llms():
          "- Works for every kind of restaurant: it uses the restaurant's own menu. Pages for frituren (Belgian fry shops), sushi restaurants, pizzerias, burger restaurants, kebab shops and all other restaurants.",
          "- Table reservations 24/7 through the phone AI and the WhatsApp AI; each reservation (name, date, time, party size) lands in the dashboard. Included in the phone AI and WhatsApp AI price at no extra cost.",
          "- Marketing AI: €69/month. Announcements to customers on all channels, Google review links, automatic emails for a second order and for unfinished orders, prepaid cards, and a digital stamp card in Google Wallet and Apple Wallet with notifications.",
-         f"- Contact: WhatsApp {WA_DISPLAY}, {SITE}/en/contact", "",
+         f"- Contact: phone {PHONE_DISPLAY}, email {EMAIL}, WhatsApp and demo requests at {SITE}/en/contact",
+         f"- Company: Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, USA. EIN {EIN}.", "",
          "## Products (English)"]
     for p in PRODUCTS:
         L.append(f"- [{P[p]['en']['name']}]({canonical('en', p)}): {P[p]['en']['card']}")
