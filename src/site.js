@@ -4,7 +4,7 @@ var VAPI_PUBLIC_KEY = '9fbb5145-6656-435c-910f-0977d6ca78c5';
 var VAPI_SDK_URL = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@3.0.1/+esm';
 // WhatsApp chat demo: the n8n workflow "Conveasy — Website chat demo (WhatsApp)". It gets POST {message, history, lang}
 // and answers {reply, buttons}, {limit: true} or {error}. No key is needed here; the workflow only answers conveasy.be.
-var CHAT_DEMO_ENDPOINT = 'https://balloz.app.n8n.cloud/webhook/conveasy-site-wa-demo';
+var CHAT_DEMO_ENDPOINT = 'https://api.conveasy.be/webhook/conveasy-site-wa-demo';
 
 (function () {
   var root = document.documentElement;

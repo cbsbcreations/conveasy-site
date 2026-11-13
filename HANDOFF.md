@@ -40,8 +40,9 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 ### WhatsApp chat demo: connected
 - src/site.js posts {message, history, lang} to `CHAT_DEMO_ENDPOINT` and gets {reply, buttons}, {limit: true} or {error} back.
   The page keeps the conversation and sends it along each time; nothing is stored on a server.
-- Endpoint: n8n workflow "Conveasy — Website chat demo (WhatsApp)" (id 9eb0PIubSSJ6ovPe) on balloz.app.n8n.cloud,
-  POST /webhook/conveasy-site-wa-demo. When n8n moves to api.conveasy.be, change CHAT_DEMO_ENDPOINT in src/site.js and rebuild.
+- Endpoint: n8n workflow "Conveasy — Website chat demo (WhatsApp)" on Conveasy's own n8n, https://api.conveasy.be
+  (id B7hzXRnBHMCZXki7 there), POST /webhook/conveasy-site-wa-demo. Moved on 13 Nov 2026 with the rest of n8n; the old copy on
+  n8n Cloud (balloz.app.n8n.cloud, id 9eb0PIubSSJ6ovPe) is the fallback and can be switched off once this site calls the new address.
 - The workflow calls Claude Haiku 5.5 directly (credential "Anthropic account"); the menu and rules are in its node "Build Request".
   The menu is a copy of the Vapi assistant "TEST Conveasy" (Mario's Snackbar): change it in both places.
 - It only answers these origins: https://conveasy.be, https://www.conveasy.be, https://cbsbcreations.github.io.
