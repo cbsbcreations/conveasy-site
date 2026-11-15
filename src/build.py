@@ -948,6 +948,9 @@ def render(lang, pid, prefix, preview, main=False):
 # ---------------- Going live on conveasy.be (12 Nov 2026) ----------------
 # Meta verified the domain conveasy.be with this tag on the Framer site's home page; every page carries it now.
 FB_DOMAIN_VERIFY = "wkem3zltnryelk3wh9qb4o02ktotv9"
+# Google Search Console (account cbsbcreations): conveasy.be is a URL-prefix property verified with this file;
+# conveasy.ai is a domain property verified by a TXT record at Cloudflare. Do not remove either.
+SEARCH_CONSOLE_FILES = {"be": ("google6824dbdb3a323a04",)}
 FB_TAG = f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}">' if TARGET == "be" else ""  # verifies conveasy.be only
 # The Framer site's addresses. /privacy, /terms and /data-deletion are set in Meta's app for WhatsApp, so they stay real pages
 # (each with that one English document); /about and /contact send visitors on to the new English pages.
@@ -979,6 +982,8 @@ NOT_FOUND = {"nl": ("Pagina niet gevonden", "Deze pagina bestaat niet (meer). Ki
 def live_extras(outdir):
     """Files only the live site needs: the domain for GitHub Pages, the 404 page and (conveasy.be only) the old Framer addresses."""
     write(os.path.join(outdir, "CNAME"), SITE.split("//")[1] + "\n")
+    for token in SEARCH_CONSOLE_FILES.get(TARGET, ()):        # Google Search Console verification files
+        write(os.path.join(outdir, token + ".html"), f"google-site-verification: {token}.html")
     others = " · ".join(f'<a href="{path_of(l, "legal")}">{e(LANG_NAMES[l])}</a>' for l in LANGS)
     for doc in (LEGAL_DOCS["en"].DOCS if TARGET == "be" else []):
         if doc["id"] not in OLD_DOCS: continue
