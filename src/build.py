@@ -16,6 +16,16 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "leg
 import legal_nl, legal_fr, legal_en, legal_tr, legal_de
 LEGAL_DOCS = {"nl": legal_nl, "fr": legal_fr, "en": legal_en, "tr": legal_tr, "de": legal_de}
 
+# Two sites from this one source:
+#   conveasy.be  Dutch at the root, built into docs/ (this repo's GitHub Pages) and preview/
+#   conveasy.ai  the international site, English at the root, built into ai/ and published from the repo
+#                cbsbcreations/conveasy-ai (its docs/ folder), see HANDOFF.md
+# `python3 src/build.py` builds conveasy.be, then runs itself again with CONVEASY_TARGET=ai for conveasy.ai.
+TARGET = os.environ.get("CONVEASY_TARGET", "be")
+if TARGET == "ai":
+    SITE = "https://conveasy.ai"
+ROOT_LANG = "en" if TARGET == "ai" else "nl"   # the language at the root address and for x-default
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 MONTHLY = {"whatsapp": "99", "webshop": "79", "kiosk": "89"}
@@ -115,7 +125,7 @@ def asset_fingerprint(name):
 def head(lang, pid, prefix, faqs, crumbs, main):
     title, desc = meta_of(lang, pid)
     alts = "".join(f'<link rel="alternate" hreflang="{l}" href="{canonical(l, pid)}">' for l in LANGS)
-    alts += f'<link rel="alternate" hreflang="x-default" href="{canonical("nl", pid)}">'
+    alts += f'<link rel="alternate" hreflang="x-default" href="{canonical(ROOT_LANG, pid)}">'
     parts = [f"<title>{e(title)}</title>"]
     if main:
         parts.append('<meta name="claude:viewport-fit-sides" content="cover">')
@@ -126,7 +136,7 @@ def head(lang, pid, prefix, faqs, crumbs, main):
               f'<meta property="og:url" content="{canonical(lang, pid)}">', f'<meta property="og:locale" content="{OG_LOCALE[lang]}">',
               '<meta name="twitter:card" content="summary_large_image">',
               '<meta name="theme-color" content="#000000">',
-              f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}">',
+              FB_TAG,
               f'<link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{prefix}assets/apple-touch-icon.png">',
               '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
               f'<link rel="stylesheet" href="{FONTS}">',
@@ -528,7 +538,7 @@ def product_price_band(lang, pid, prefix, page):
 CALL = {"nl": ("Inkomende oproep", "AI neemt op"), "fr": ("Appel entrant", "L'IA répond"), "en": ("Incoming call", "AI answering"),
         "tr": ("Gelen arama", "YZ cevaplıyor"), "de": ("Eingehender Anruf", "KI nimmt an")}
 # Phone AI scene, per language: what the caller says, what the AI answers, and the words of the call, the dashboard and the
-# printer. the owner, 11 Nov 2026 (evening): no stick figures; the counter with the ringing phone, the AI taking the order, then the
+# printer. 11 Nov 2026: no stick figures; the counter with the ringing phone, the AI taking the order, then the
 # laptop with the notification and the dashboard, and the printer printing the ticket. The rest comes from CALL, DASH,
 # TICKET_META, WSCENE and P.
 PCALL = {
@@ -685,7 +695,7 @@ def flow_band(lang):
     return (f'<section class="band dark flow"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(eb)}</span><h2>{e(title)}</h2></div>'
             f'<div class="flow-grid"><ol class="flow-steps">{lis}</ol><div class="flow-stage" data-step="0" aria-hidden="true">{stage}</div></div></div></section>')
 
-# the owner, Nov 11: "Probeer onze AI" voice demo (Vapi). Assistant ID from the owner; the public key goes in site.js.
+# Nov 11: "Probeer onze AI" voice demo (Vapi). Assistant ID from the owner; the public key goes in site.js.
 VAPI_ASSISTANT_ID = "7ffc6c16-d943-4f97-98e3-a84351ffd954"
 DEMO = {
     "nl": ("Live demo", "Probeer onze AI", "Praat zelf met onze telefoon-AI. Doe alsof je naar een demo-snackbar belt en bestel iets: frietjes, een snack, een saus.",
@@ -938,6 +948,7 @@ def render(lang, pid, prefix, preview, main=False):
 # ---------------- Going live on conveasy.be (12 Nov 2026) ----------------
 # Meta verified the domain conveasy.be with this tag on the Framer site's home page; every page carries it now.
 FB_DOMAIN_VERIFY = "wkem3zltnryelk3wh9qb4o02ktotv9"
+FB_TAG = f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}">' if TARGET == "be" else ""  # verifies conveasy.be only
 # The Framer site's addresses. /privacy, /terms and /data-deletion are set in Meta's app for WhatsApp, so they stay real pages
 # (each with that one English document); /about and /contact send visitors on to the new English pages.
 OLD_DOCS = ("privacy", "terms", "data-deletion")
@@ -954,7 +965,7 @@ def shell(lang, prefix, title, desc, url, body, robots=""):
     """A page outside the language folders, in the site's layout (header and footer of the given language)."""
     hd = "\n".join([f"<title>{e(title)}</title>", f'<meta name="description" content="{e(desc)}">',
                     f'<link rel="canonical" href="{url}">' if url else "", robots,
-                    '<meta name="theme-color" content="#000000">', f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}">',
+                    '<meta name="theme-color" content="#000000">', FB_TAG,
                     f'<link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{prefix}assets/apple-touch-icon.png">',
                     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
                     f'<link rel="stylesheet" href="{FONTS}">', f'<link rel="stylesheet" href="{prefix}assets/site.css{ASSET_Q["css"]}">'])
@@ -966,10 +977,10 @@ NOT_FOUND = {"nl": ("Pagina niet gevonden", "Deze pagina bestaat niet (meer). Ki
              "en": ("Page not found", "This page does not exist (any more). Pick your language to go on.")}
 
 def live_extras(outdir):
-    """Files only the real conveasy.be needs: the domain for GitHub Pages, the old Framer addresses and the 404 page."""
-    write(os.path.join(outdir, "CNAME"), "conveasy.be\n")
+    """Files only the live site needs: the domain for GitHub Pages, the 404 page and (conveasy.be only) the old Framer addresses."""
+    write(os.path.join(outdir, "CNAME"), SITE.split("//")[1] + "\n")
     others = " · ".join(f'<a href="{path_of(l, "legal")}">{e(LANG_NAMES[l])}</a>' for l in LANGS)
-    for doc in LEGAL_DOCS["en"].DOCS:
+    for doc in (LEGAL_DOCS["en"].DOCS if TARGET == "be" else []):
         if doc["id"] not in OLD_DOCS: continue
         body = (f'<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy"><h1>{e(doc["title"])}</h1></div></div></section>'
                 f'<section class="band" style="padding-top:0"><div class="wrap"><div class="prose">{doc_html(doc)}'
@@ -977,18 +988,18 @@ def live_extras(outdir):
                 f'<p style="opacity:.8">All legal texts: {others}</p></div></div></section>')
         write(os.path.join(outdir, doc["id"] + ".html"),
               shell("en", "", f'{doc["title"]} | Conveasy', doc["intro"][:155], f'{SITE}/{doc["id"]}', body))
-    for old, new in OLD_MOVED.items():
+    for old, new in (OLD_MOVED.items() if TARGET == "be" else []):
         write(os.path.join(outdir, old + ".html"),
               f'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>Conveasy</title><meta name="robots" content="noindex">'
               f'<link rel="canonical" href="{SITE}/{new[:-5]}"><meta http-equiv="refresh" content="0; url={new}">'
               f'<script>location.replace("{new}" + location.hash)</script></head><body><p><a href="{new}">Conveasy</a></p></body></html>\n')
     # GitHub Pages shows 404.html for any missing address, at any depth, so this one uses addresses from the root of the domain
-    t, x = NOT_FOUND["nl"]
-    t2, x2 = NOT_FOUND["en"]
+    t, x = NOT_FOUND[ROOT_LANG]
+    t2, x2 = NOT_FOUND["en" if ROOT_LANG == "nl" else "nl"]
     homes = "".join(f'<a class="btn btn-ghost" href="/{path_of(l, "home")}">{e(LANG_NAMES[l])}</a>' for l in LANGS)
     body = (f'<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy"><h1>{e(t)}</h1>'
             f'<p class="lead">{e(x)}<br>{e(x2)}</p><div class="btn-row">{homes}</div></div></div></section>')
-    write(os.path.join(outdir, "404.html"), shell("nl", "/", f"{t} | Conveasy", x, "", body, '<meta name="robots" content="noindex">'))
+    write(os.path.join(outdir, "404.html"), shell(ROOT_LANG, "/", f"{t} | Conveasy", x, "", body, '<meta name="robots" content="noindex">'))
 
 # ---------------- SEO files ----------------
 def sitemap():
@@ -996,7 +1007,7 @@ def sitemap():
     for pid in SLUGS:
         for l in LANGS:
             alts = "".join(f'<xhtml:link rel="alternate" hreflang="{a}" href="{canonical(a, pid)}"/>' for a in LANGS)
-            alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{canonical("nl", pid)}"/>'
+            alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{canonical(ROOT_LANG, pid)}"/>'
             rows.append(f"<url><loc>{canonical(l, pid)}</loc>{alts}</url>")
     return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n"
 
@@ -1049,7 +1060,7 @@ def build(outdir, preview):
     for l in LANGS:
         for pid in SLUGS:
             write(os.path.join(outdir, path_of(l, pid)), render(l, pid, "../", preview))
-    write(os.path.join(outdir, "index.html"), render("nl", "home", "", preview))
+    write(os.path.join(outdir, "index.html"), render(ROOT_LANG, "home", "", preview))
     write(os.path.join(outdir, "sitemap.xml"), sitemap())
     write(os.path.join(outdir, "robots.txt"), ROBOTS)
     write(os.path.join(outdir, "llms.txt"), llms())
@@ -1079,6 +1090,14 @@ if __name__ == "__main__":
     apply_overrides(globals())
     answers.apply(globals())
     sectors_more.apply(globals())
+    if TARGET == "ai":
+        LANGS.sort(key=lambda l: l != "en")             # English first in the language switch: en, nl, fr, tr, de
+        out = os.path.join(ROOT, "ai")
+        build(out, False)
+        write(os.path.join(out, ".nojekyll"), "")
+        live_extras(out)                                  # CNAME conveasy.ai and the 404 page
+        print("conveasy.ai built in ai/ | languages:", " ".join(LANGS))
+        sys.exit(0)
     build(os.path.join(ROOT, "docs"), False)
     write(os.path.join(ROOT, "docs", ".nojekyll"), "")  # GitHub Pages: serve the files as they are
     live_extras(os.path.join(ROOT, "docs"))              # CNAME, the old Framer addresses, 404
@@ -1098,3 +1117,5 @@ if __name__ == "__main__":
     write(os.path.join(ROOT, "PLACEHOLDERS.txt"), "\n".join(nl + notes) + ("\n" if (nl or notes) else "Niets meer in te vullen.\n"))
     print("pages per lang:", len(SLUGS), "| placeholders (nl):", len(nl))
     for t in nl: print(" -", t)
+    import subprocess
+    subprocess.run([sys.executable, os.path.abspath(__file__)], env=dict(os.environ, CONVEASY_TARGET="ai"), check=True)

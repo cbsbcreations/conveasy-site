@@ -845,7 +845,7 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 @keyframes wc-m4 { 0%, 58% { opacity: 0; transform: translateY(18%) scale(.94); } 60%, 94% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .wchat *, .wchat *::before, .wchat *::after { animation: none !important; } }
 
-/* Phone AI scene (the owner, 11 Nov 2026, evening: no stick figures). Three parts in one 17 s loop:
+/* Phone AI scene (no stick figures). Three parts in one 17 s loop:
    1) the restaurant counter: the desk phone rings, the handset clicks up and the view zooms into the call (SVG, 400 x 360 grid);
    2) the call: the AI's voice orb, what the caller says, the AI's answer, "order confirmed";
    3) the result: a notification and the new order on the dashboard (a laptop), the ticket comes out of the printer.

@@ -1,4 +1,4 @@
-# the owner's answers of Nov 11, 2026: Marketing AI EUR 69 (Nov 11: stamp card folded in) with new features (no ads), 1-week trial,
+# The owner's answers of Nov 11, 2026: Marketing AI EUR 69 (Nov 11: stamp card folded in) with new features (no ads), 1-week trial,
 # upgrade when the minutes run out, demo requests to conveasyai@gmail.com, own domain or one from Conveasy.
 
 MKT2 = {

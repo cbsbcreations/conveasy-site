@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """More that the systems do, shown as a list under the feature tiles of the phone AI, WhatsApp AI and webshop pages.
-the owner, 11 Nov 2026: taken from what the real flows do (n8n phone and WhatsApp flows, the conveasy-webshop repo).
+11 Nov 2026: taken from what the real flows do (n8n phone and WhatsApp flows, the conveasy-webshop repo).
 Per page and language: (small label, heading, [(title, text), ...])."""
 
 MORE = {

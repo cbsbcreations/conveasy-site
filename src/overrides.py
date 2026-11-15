@@ -207,7 +207,7 @@ OV = {
 }
 
 
-INCLUDED = {'nl': 'Reservaties inbegrepen', 'fr': 'Réservations incluses', 'en': 'Reservations included', 'tr': 'Rezervasyon dahil', 'de': 'Reservierungen inklusive'}  # the owner, Nov 10: reservations included in phone AI and WhatsApp AI price
+INCLUDED = {'nl': 'Reservaties inbegrepen', 'fr': 'Réservations incluses', 'en': 'Reservations included', 'tr': 'Rezervasyon dahil', 'de': 'Reservierungen inklusive'}  # Nov 10: reservations included in phone AI and WhatsApp AI price
 
 def apply(ns):
     """Apply the round-3 copy to build.py's globals (ns)."""
@@ -224,7 +224,7 @@ def apply(ns):
         PRICING[l]["stamp_price"] = "49"
         PRICING[l]["tier_feats"] = list(PRICING[l]["tier_feats"]) + [INCLUDED[l] + " 24/7"]
         PRICING[l]["wa_feats"] = list(PRICING[l]["wa_feats"]) + [INCLUDED[l] + " 24/7"]
-        o["resv"]["points"] = list(o["resv"]["points"])[:2] + [INCLUDED[l]]  # the owner, Nov 10: digital stamp card EUR 49 a month
+        o["resv"]["points"] = list(o["resv"]["points"])[:2] + [INCLUDED[l]]  # Nov 10: digital stamp card EUR 49 a month
         MKT[l] = o["mkt_mock"]
         # No own-shop story
         h = HOME[l]
@@ -240,7 +240,7 @@ def apply(ns):
             P[pid][l]["features"] = [r["feat"]] + list(P[pid][l]["features"])
             P[pid][l]["faq"] = list(P[pid][l]["faq"]) + [r["faq"]]
         h["faq"] = list(h["faq"]) + [r["faq"]]
-    # the owner, Nov 10: show 24/7 clearly on the phone AI and WhatsApp AI (badge on cards and hero, and in the headline)
+    # Nov 10: show 24/7 clearly on the phone AI and WhatsApp AI (badge on cards and hero, and in the headline)
     for l, (badge, h_phone, h_wa) in ALWAYS_ON.items():
         if l not in HOME:
             continue
@@ -249,7 +249,7 @@ def apply(ns):
         P["phone"][l]["h1"] = h_phone
         P["whatsapp"][l]["h1"] = h_wa
 
-    # the owner, Nov 10: live within 10 days at most. Also answered on the pricing page.
+    # Nov 10: live within 10 days at most. Also answered on the pricing page.
     for l, q in LIVE10.items():
         if l in HOME:
             PRICING[l]["faq"] = [q] + list(PRICING[l]["faq"])

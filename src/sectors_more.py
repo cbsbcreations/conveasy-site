@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Restaurant types under "Voor wie" (the owner, 11 Nov 2026): no snackbar page any more, sushi in its place, kebab added,
+"""Restaurant types under "Voor wie" (11 Nov 2026): no snackbar page any more, sushi in its place, kebab added,
 and a page that says Conveasy works for every kind of restaurant ("alle"). All five languages are here; build.py merges
 them into SLUGS and S after the other languages and the overrides are loaded (apply below).
 Facts used: the AI works with the restaurant's own menu; table reservations 24/7 by phone and WhatsApp (name, date, time,
@@ -244,7 +244,7 @@ ABOUT_DESC = {
 }
 
 
-# Contact page, under the intro (the owner, 12 Nov 2026): one quiet line for businesses that are not restaurants. Later each other
+# Contact page, under the intro (12 Nov 2026): one quiet line for businesses that are not restaurants. Later each other
 # sector gets its own site, and all the sector sites will link to each other.
 OTHER = {
     "nl": "Geen restaurant? We bouwen ook AI-telefonie voor andere sectoren. Vertel ons wat je zoekt.",

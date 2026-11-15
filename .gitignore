@@ -2,3 +2,5 @@
 preview/
 __pycache__/
 *.pyc
+# conveasy.ai, built by src/build.py and published from the repo cbsbcreations/conveasy-ai
+ai/

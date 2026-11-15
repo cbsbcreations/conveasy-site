@@ -1,4 +1,4 @@
-# Conveasy.be website: handoff
+# Conveasy websites (conveasy.be and conveasy.ai): handoff
 
 New conveasy.be (replaces the Framer site). Static HTML, 5 languages (nl, fr, en, tr, de).
 Live on https://conveasy.be since 12 Nov 2026 (GitHub Pages, HTTPS enforced); the Framer site plan is cancelled.
@@ -17,7 +17,7 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   GitHub Pages serves this folder from the repo cbsbcreations/conveasy-site (branch main).
   Live on conveasy.be since 12 Nov 2026: the build writes docs/CNAME (conveasy.be) and GitHub Pages has conveasy.be as custom
   domain (DNS check successful, certificate issued, Enforce HTTPS on), so the old test address forwards to conveasy.be and
-  www.conveasy.be forwards to conveasy.be. DNS is at One.com (account of the owner); the owner changes it himself:
+  www.conveasy.be forwards to conveasy.be. DNS is at One.com (the owner's account):
   A conveasy.be -> 185.199.108.153, .109.153, .110.153, .111.153 (GitHub Pages; before: Framer 31.43.160.6, 31.43.161.6);
   CNAME www -> cbsbcreations.github.io (before: sites.framer.app). Keep as they are: A app.conveasy.be -> 35.219.200.107 plus
   TXT app fah-claim and the _acme-challenge CNAME of app (restaurant portal and kitchen screens on Firebase App Hosting), and
@@ -35,6 +35,20 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   Not in git; the build makes it. Inside that preview the two live demos cannot run (no microphone, no outside connections); they show a note.
 - n8n/ : copy of the two Code nodes of the chat demo workflow.
 - PLACEHOLDERS.txt : what still has to be filled in (written by the build).
+
+## conveasy.ai: the international site (15 Nov 2026)
+- Same source and pages, English at the root. `python3 src/build.py` builds conveasy.be (docs/, preview/) and then runs itself
+  again with CONVEASY_TARGET=ai, which builds conveasy.ai into ai/ (not in git). Differences: SITE https://conveasy.ai, the root
+  page and x-default are English, the language switch goes en nl fr tr de, no Meta verification tag (it verifies conveasy.be
+  only), no old Framer addresses; ai/ has its own CNAME (conveasy.ai) and 404 page.
+- Publish: `sh tools/publish-ai.sh /path/to/conveasy-ai` copies ai/ into the docs/ folder of a checkout of the repo
+  cbsbcreations/conveasy-ai; then commit and push there. GitHub Pages serves that repo (main, /docs) on conveasy.ai with HTTPS
+  enforced; www.conveasy.ai forwards to conveasy.ai. After any change to the site, publish both.
+- Domain: registered at Cloudflare on 15 Nov 2026 (2 years, auto-renew; WHOIS redacted by Cloudflare). DNS at Cloudflare, all
+  "DNS only": A conveasy.ai -> 185.199.108.153, .109.153, .110.153, .111.153; CNAME www -> cbsbcreations.github.io.
+- Live demos: the Vapi key and the chat demo workflow accept only conveasy.be, www.conveasy.be and cbsbcreations.github.io. On
+  conveasy.ai both show their error note until https://conveasy.ai and https://www.conveasy.ai are added (Vapi > API Keys, and
+  the workflow's trigger "Chat In": Allowed Origins and Only Run If).
 
 ## The two live demos (home page, phone AI page, WhatsApp AI page)
 ### WhatsApp chat demo: connected
@@ -104,7 +118,7 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 
 ## Phone AI animation
 - phone_scene_i() in build.py + ".pscene" in site.css. Shown at the top of the phone AI page and as the first tile of the home page's
-  top visual. Three parts in one 17 second loop, no people in it (the owner, 11 Nov 2026):
+  top visual. Three parts in one 17 second loop, no people in it (11 Nov 2026):
   1. the restaurant counter (menu board, lamps, bell, fries, bag): the desk phone rings, the handset clicks up, the view zooms in;
   2. the call: the AI's voice orb, the caller's number and the call time, what the caller says, the AI's answer, "Bestelling bevestigd";
   3. a laptop with the dashboard: a notification "Nieuwe bestelling", the order lands at the top of the list, the printer prints the
@@ -149,14 +163,14 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 
 ## Restaurant types ("Voor wie")
 - Since 11 Nov 2026: Frituur, Sushi, Pizzeria, Burger, Kebab and Alle restaurants (SECTORS in content.py). The snackbar page is gone
-  (the owner). Old addresses of it (nl/snackbar, fr/snack, en/snack-bar, tr/snack-bar, de/imbiss) no longer exist.
+  Old addresses of it (nl/snackbar, fr/snack, en/snack-bar, tr/snack-bar, de/imbiss) no longer exist.
 - Texts of sushi, kebab and "alle" in five languages: src/sectors_more.py, which also holds the home section heading ("Voor elk type
   restaurant" with one line under it), the short card text of "alle" and the about page's description. Frituur, pizzeria and burger
   stay in content.py (nl, fr, en), lang_tr.py and lang_de.py.
 - The "Alle restaurants" page shows the kinds of restaurants as chips that pop in, with "+ Jouw zaak" last (TYPES in
   sectors_more.py, types_i() in build.py, .types in site.css).
 
-- Other sectors (the owner, 12 Nov 2026): conveasy.be stays restaurant-only. The contact page has one line for businesses that are not
+- Other sectors (12 Nov 2026): conveasy.be stays restaurant-only. The contact page has one line for businesses that are not
   restaurants ("Geen restaurant? We bouwen ook AI-telefonie voor andere sectoren.", OTHER in sectors_more.py). Later each other
   sector (garages, realtors) gets its own site, and all the sector sites will link to each other.
 

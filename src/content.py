@@ -34,7 +34,7 @@ SLUGS = {
     "legal": {"nl": "juridisch", "fr": "mentions-legales", "en": "legal"},
 }
 PRODUCTS = ["phone", "whatsapp", "webshop", "kiosk", "marketing"]
-# the owner, 11 Nov 2026: no snackbar page; sushi in its place, kebab added, and a page for every kind of restaurant.
+# 11 Nov 2026: no snackbar page; sushi in its place, kebab added, and a page for every kind of restaurant.
 # The texts of sushi, kebab and alle are in sectors_more.py.
 SECTORS = ["frituur", "sushi", "pizzeria", "burger", "kebab", "alle"]
 
