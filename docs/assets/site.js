@@ -1,9 +1,11 @@
-// Voice demo: the Vapi PUBLIC key "conveasy.be website". In Vapi it only works on conveasy.be, www.conveasy.be and the test address
-// (cbsbcreations.github.io) and only with the assistant TEST Conveasy. A new address has to be added to the key in Vapi (API Keys).
-var VAPI_PUBLIC_KEY = '9fbb5145-6656-435c-910f-0977d6ca78c5';
+// Voice demo: Vapi PUBLIC keys, one per site, both limited to the assistant TEST Conveasy, transient assistants off.
+// "conveasy.be website" works on conveasy.be, www.conveasy.be and the test address (cbsbcreations.github.io);
+// "conveasy.ai website" (made 16 Nov 2026) works on conveasy.ai and www.conveasy.ai. Vapi cannot edit a key's origins:
+// a new address needs a new key (Vapi > API Keys).
+var VAPI_PUBLIC_KEY = /(^|\.)conveasy\.ai$/.test(location.hostname) ? '5dfe614c-4691-4c8b-964d-389387bcf20b' : '9fbb5145-6656-435c-910f-0977d6ca78c5';
 var VAPI_SDK_URL = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@3.0.1/+esm';
 // WhatsApp chat demo: the n8n workflow "Conveasy — Website chat demo (WhatsApp)". It gets POST {message, history, lang}
-// and answers {reply, buttons}, {limit: true} or {error}. No key is needed here; the workflow only answers conveasy.be.
+// and answers {reply, buttons}, {limit: true} or {error}. No key is needed here; the workflow only answers conveasy.be and conveasy.ai.
 var CHAT_DEMO_ENDPOINT = 'https://api.conveasy.be/webhook/conveasy-site-wa-demo';
 
 (function () {

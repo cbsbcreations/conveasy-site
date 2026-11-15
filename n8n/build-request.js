@@ -1,4 +1,4 @@
-// Chat demo on conveasy.be ("Bestel via WhatsApp"): checks the visitor's message, keeps the daily limit and builds the question for Claude.
+// Chat demo on conveasy.be and conveasy.ai ("Bestel via WhatsApp"): checks the visitor's message, keeps the daily limit and builds the question for Claude.
 // Nothing about the visitor is stored here: the page sends the conversation so far along with every message.
 // The menu is the same as the VAPI test assistant "TEST Conveasy" (Mario's Snackbar). Change it in both places.
 // The rules are in English on purpose: with Dutch rules, Dutch words leaked into Turkish and French conversations.
@@ -15,7 +15,10 @@ const LANGS = {
   fr: { name: 'French', words: 'frites, petite / moyenne / grande, sauce, canette', total: 'Total', pickup: 'À emporter', delivery: 'Livraison', nameLabel: 'Nom', check: 'Tout est correct ?', yes: "Oui, c'est bon", change: 'Modifier', demo: "C'était une démo de Conveasy : rien n'a été réellement commandé. Vous voulez ceci pour votre établissement ? Demandez une démo sur ce site." },
   en: { name: 'English', words: 'fries, small / medium / large, sauce, can', total: 'Total', pickup: 'Pickup', delivery: 'Delivery', nameLabel: 'Name', check: 'Is everything correct?', yes: "Yes, that's right", change: 'Change', demo: 'This was a Conveasy demo: nothing was actually ordered. Want this for your own business? Request a demo on this website.' },
   tr: { name: 'Turkish', words: 'patates kızartması, küçük / orta / büyük, sos, kutu', total: 'Toplam', pickup: 'Gel al', delivery: 'Teslimat', nameLabel: 'İsim', check: 'Her şey doğru mu?', yes: 'Evet, doğru', change: 'Değiştir', demo: 'Bu bir Conveasy demosuydu: gerçekte hiçbir şey sipariş edilmedi. Bunu kendi işletmen için ister misin? Bu web sitesinden bir demo talep edebilirsin.' },
-  de: { name: 'German', words: 'Pommes, klein / mittel / groß, Soße, Dose', total: 'Gesamt', pickup: 'Abholung', delivery: 'Lieferung', nameLabel: 'Name', check: 'Stimmt alles?', yes: 'Ja, stimmt', change: 'Ändern', demo: 'Das war eine Demo von Conveasy: Es wurde nichts wirklich bestellt. Möchten Sie das für Ihren eigenen Betrieb? Fordern Sie auf dieser Website eine Demo an.' }
+  de: { name: 'German', words: 'Pommes, klein / mittel / groß, Soße, Dose', total: 'Gesamt', pickup: 'Abholung', delivery: 'Lieferung', nameLabel: 'Name', check: 'Stimmt alles?', yes: 'Ja, stimmt', change: 'Ändern', demo: 'Das war eine Demo von Conveasy: Es wurde nichts wirklich bestellt. Möchten Sie das für Ihren eigenen Betrieb? Fordern Sie auf dieser Website eine Demo an.' },
+  es: { name: 'Spanish (Spain)', words: 'patatas fritas, pequeña / mediana / grande, salsa, lata', total: 'Total', pickup: 'Recoger', delivery: 'A domicilio', nameLabel: 'Nombre', check: '¿Está todo correcto?', yes: 'Sí, correcto', change: 'Cambiar', demo: 'Esto era una demo de Conveasy: no se ha pedido nada de verdad. ¿Quieres esto para tu propio negocio? Solicita una demo en esta web.' },
+  pt: { name: 'Portuguese (Portugal)', words: 'batatas fritas, pequena / média / grande, molho, lata', total: 'Total', pickup: 'Levantar', delivery: 'Entrega', nameLabel: 'Nome', check: 'Está tudo certo?', yes: 'Sim, está certo', change: 'Alterar', demo: 'Isto foi uma demonstração da Conveasy: nada foi realmente encomendado. Quer isto para o seu próprio negócio? Peça uma demonstração neste site.' },
+  it: { name: 'Italian', words: 'patatine fritte, piccola / media / grande, salsa, lattina', total: 'Totale', pickup: 'Ritiro', delivery: 'Consegna', nameLabel: 'Nome', check: 'È tutto corretto?', yes: 'Sì, è corretto', change: 'Modifica', demo: 'Questa era una demo di Conveasy: non è stato ordinato niente di reale. Vuoi questo per la tua attività? Richiedi una demo su questo sito.' }
 };
 const NL = String.fromCharCode(10);
 
@@ -38,7 +41,7 @@ const message = str(b.message).trim();
 if (!message) return stop(200, { error: 'empty' });
 if (message.length > MAX_MESSAGE) return stop(200, { error: 'too_long' });
 const langKey = str(b.lang);
-const lang = Object.prototype.hasOwnProperty.call(LANGS, langKey) ? langKey : 'nl';
+const lang = Object.prototype.hasOwnProperty.call(LANGS, langKey) ? langKey : 'en';
 
 // The conversation so far, as the page sent it: only visitor and assistant turns, taking turns, starting with the visitor.
 const turns = [];
@@ -64,11 +67,11 @@ if (store.count >= DAILY_MAX) return stop(200, { error: 'busy' });
 store.count = (Number(store.count) || 0) + 1;
 
 const system = [
-  "You are the WhatsApp assistant of Mario's Snackbar. This is a demo by Conveasy: visitors of conveasy.be type an order the way a customer would on WhatsApp, to see how the AI takes orders. Nothing is really ordered, prepared or delivered. The chat already opened with your greeting and the question what the customer would like, so do not greet again.",
+  "You are the WhatsApp assistant of Mario's Snackbar. This is a demo by Conveasy: visitors of the Conveasy website type an order the way a customer would on WhatsApp, to see how the AI takes orders. Nothing is really ordered, prepared or delivered. The chat already opened with your greeting and the question what the customer would like, so do not greet again.",
   'LANGUAGE' + NL
-    + '- The conversation runs in the page language (given at the very end), until the customer clearly writes in another one of Dutch, French, English, Turkish or German: then switch to that language and stay in it. A name, an address, a product name or a short reply like "ok" never changes the language.' + NL
+    + '- The conversation runs in the page language (given at the very end), until the customer clearly writes in another one of Dutch, French, English, Turkish, German, Spanish, Portuguese or Italian: then switch to that language and stay in it. A name, an address, a product name or a short reply like "ok" never changes the language.' + NL
     + '- Write every message entirely in that one language, including the order overview and the button texts. Never mix two languages in one message. Keep the product names of the menu as they are; translate ordinary words such as fries, small, medium, large, sauce and can.' + NL
-    + '- Form of address: Dutch je/jij, French vous, German Sie, Turkish sen, English you.',
+    + '- Form of address: Dutch je/jij, French vous, German Sie, Turkish sen, English you, Spanish tú, Portuguese (European) você, used sparingly, Italian tu.',
   'STYLE' + NL
     + '- Write like on WhatsApp: short and friendly, usually 1 to 3 sentences. Ask at most one question per message.' + NL
     + '- Plain text only: no asterisks, no markdown, no bullet characters. At most one emoji per message, and only when it fits.' + NL
