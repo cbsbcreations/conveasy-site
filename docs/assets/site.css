@@ -1002,7 +1002,9 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .calc-n small { color: var(--muted); font-size: .9rem; }
 .calc-n b { font: 700 clamp(1.7rem, 3.4vw, 2.4rem)/1.1 var(--font-display, inherit); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .calc-keep b { color: var(--brand); }
-.calc-even { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); }
+.calc-now b { font-size: clamp(1.15rem, 2vw, 1.4rem); color: var(--muted); }
+.calc-shop { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); }
+.calc-even { margin: 0; }
 @media (max-width: 760px) { .calc { grid-template-columns: minmax(0, 1fr); } }
 /* Referral offer */
 .refer { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px 32px; }

@@ -308,14 +308,14 @@ document.querySelectorAll('[data-calc]').forEach(function (box) {
   function out(k) { return box.querySelector('[data-o="' + k + '"]'); }
   var shop = parseFloat(box.getAttribute('data-webshop')) || 79;
   function run() {
-    var rate = Math.min(num('rate'), 100) / 100, share = Math.min(num('share'), 100) / 100;
-    var month = num('orders') * num('avg') * rate;
+    var rate = Math.min(num('rate'), 100) / 100;
+    var month = num('orders') * num('avg') * rate;          // commission paid to the platform now
+    var save = Math.max(month - shop, 0);                    // the same orders through the own webshop instead
+    out('save').textContent = money(save);
+    out('year').textContent = money(save * 12);
     out('month').textContent = money(month);
-    out('year').textContent = money(month * 12);
-    out('kept').textContent = money(month * share);
-    out('kept-label').textContent = box.getAttribute('data-t-kept').replace('{p}', String(Math.round(share * 100)));
     var per = num('avg') * rate, even = out('even');
-    if (per > 0) { even.hidden = false; even.textContent = box.getAttribute('data-t-even').replace('{n}', String(Math.ceil(shop / per))); }
+    if (per > 0 && save <= 0) { even.hidden = false; even.textContent = box.getAttribute('data-t-even').replace('{n}', String(Math.ceil(shop / per))); }
     else { even.hidden = true; }
   }
   box.addEventListener('input', run);

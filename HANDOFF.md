@@ -36,16 +36,19 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 - n8n/ : copy of the two Code nodes of the chat demo workflow.
 - PLACEHOLDERS.txt : what still has to be filled in (written by the build).
 
-## conveasy.ai: the international site (15 Nov 2026), languages split (16 Nov 2026)
+## conveasy.ai: the international site (15 Nov 2026), languages on both sites (16 Nov 2026)
 - Same source, two sites. `python3 src/build.py` builds conveasy.be (docs/, preview/) and then runs itself again with
   CONVEASY_TARGET=ai, which builds conveasy.ai into ai/ (not in git).
-- Languages (SITE_LANGS in build.py): conveasy.be has Dutch and French only (for Belgium, Dutch at the root). conveasy.ai has
-  en de nl fr es pt it tr, English at the root; its language switch is a menu (eight do not fit in a row).
-  The English, Turkish and German addresses on conveasy.be forward to the same page on conveasy.ai (small redirect pages written
-  by live_extras), so old links keep working.
-- Every page lists all its versions on both sites with hreflang: nl-BE and fr-BE point to conveasy.be, nl/fr/en/de/es/pt/it/tr
-  to conveasy.ai, x-default to the English page on conveasy.ai. The sitemaps carry the same list. Each site's footer links the
-  other site. On conveasy.ai a few texts say "Europe" instead of "Benelux" (ai_wording in build.py).
+- Languages (SITE_LANGS in build.py): both sites have all 8 languages (nl fr en tr de es pt it), conveasy.be for Belgium
+  (Dutch at the root, French for Wallonia and Brussels, see "Start language" below), conveasy.ai for everyone else (English at
+  the root). The language switch is a menu (eight do not fit in a row). For a few hours on 16 Nov 2026 conveasy.be had only
+  Dutch and French; the owner asked for all languages on it the same night.
+- Every page lists all its versions on both sites with hreflang: the language with -BE (nl-BE, fr-BE, en-BE, ...) points to
+  conveasy.be, the plain language (nl, fr, en, ...) to conveasy.ai, x-default to the English page on conveasy.ai. So search
+  engines show visitors in Belgium conveasy.be and others conveasy.ai, without treating the two as duplicates. The sitemaps
+  carry the same list. Each site's footer links the same page on the other site. Wording: on conveasy.ai a few texts say
+  "Europe" instead of "Benelux" (ai_wording in build.py); on conveasy.be the Spanish, Portuguese and Italian texts say Benelux
+  and Belgian (be_wording).
 - Spanish, Portuguese (Portugal) and Italian: src/lang_es_pt_it.py, a table from each English text to its three translations,
   plus slugs and names. When an English text changes, its translation is not found any more: the ai build prints the English
   texts it is missing, and those pages show them in English until the table has the new text. The legal texts stay in English
@@ -57,9 +60,18 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   A conveasy.ai -> 185.199.108.153, .109.153, .110.153, .111.153 (Proxied since 16 Nov 2026, see below); CNAME www ->
   cbsbcreations.github.io (DNS only).
 - Start language by country (16 Nov 2026): Cloudflare Redirect Rules on conveasy.ai send a visitor who opens the bare address
-  https://conveasy.ai/ to their language with a 302: DE, AT, CH -> /de/; NL -> /nl/; FR, LU -> /fr/; ES -> /es/; PT -> /pt/;
-  IT -> /it/. Everyone else (Belgium included) gets the English root. Only "/" is redirected, so shared links, inner pages and
-  search engine crawlers are not affected. The rules ("Start language by country: ...") are in Cloudflare > conveasy.ai > Rules >
+  https://conveasy.ai/ to their language with a 302: DE, AT -> /de/; NL -> /nl/; FR, LU -> /fr/; ES -> /es/; PT -> /pt/;
+  IT -> /it/ (Switzerland was in the German rule until the Worker below took it over). Everyone else gets the English root.
+  Only "/" is redirected, so shared links, inner pages and search engine crawlers are not affected.
+- Start language by region (16 Nov 2026): Cloudflare Worker "conveasy-start-language" (source: tools/start-language-worker.js,
+  tested logic; paste it into the Worker's editor in the dashboard after a change), routes conveasy.ai/ and conveasy.ai/geo,
+  failure mode fail open. On conveasy.ai/ it sends visitors in Belgium to conveasy.be (French in Wallonia and Brussels, Dutch
+  in Flanders) and visitors in Switzerland to German, French or Italian by canton (the browser language decides in the
+  bilingual cantons Fribourg, Valais, Bern and Graubünden). conveasy.be itself is not behind Cloudflare (DNS at One.com), so its
+  root page (index.html, the Dutch home) asks https://conveasy.ai/geo where the visitor is and moves Wallonia, Brussels and
+  French-speaking countries to /fr/ (BE_ROOT_SCRIPT in build.py); without an answer within 1.2 s the browser language decides.
+  Region on Redirect Rules needs Cloudflare's Business plan; Workers get it on the Free plan (100,000 requests a day, and the
+  Worker only runs on those two addresses). The rules ("Start language by country: ...") are in Cloudflare > conveasy.ai > Rules >
   Redirect Rules; Free plan allows 10. Country needs the Cloudflare proxy: that is why the four A records are Proxied, with
   SSL/TLS mode Full. Email Address Obfuscation is off and AI crawlers are not blocked (AI Crawl Control), so the pages reach
   search engines and AI assistants exactly as GitHub Pages serves them. Rule simulator (Rules > Rule simulator) shows what
@@ -69,11 +81,14 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 
 ## Added 16 Nov 2026
 - Commission calculator page (src/calculator.py, page_calculator in build.py, script at the end of site.js), every language on
-  both sites: the visitor's own orders, average order value, commission % and the share moved to their own channels give the
-  commission per month and per year, what stays with the restaurant, and from how many orders the webshop (79/month) pays for
-  itself. The starting values (300 orders, 25 euro, 30%, 30%) are only a starting point.
-- Referral offer (REFER in calculator.py, on the home page and the pricing page): a client who recommends a restaurant that
-  becomes a client gets their next month free. Agreed with the owner on 16 Nov 2026; change the text there if the terms change.
+  both sites: three numbers in (orders per month through platforms, average order value, platform commission %), out how much
+  the restaurant saves per month and per year with its own webshop (commission minus 79/month), plus the commission it pays
+  now. Below 79/month of commission it shows 0 and from how many orders the webshop pays for itself. The owner had the earlier
+  fourth field ("share you move to your own channels") taken out the same night because it confused people. The starting
+  values (300 orders, 25 euro, 30%) are only a starting point.
+- Referral offer (REFER in calculator.py): a client who recommends a restaurant that becomes a client gets their next month
+  free. Off for now at the owner's request (SHOW_REFERRAL = False in build.py); set it to True to show it again on the home page
+  and the pricing page.
 - Link preview images (og:image): src/og/og-<lang>.jpg, 1200x630, made by `python3 tools/og_images.py` (Playwright + Chrome,
   fonts in tools/fonts). Run it again when the home headline, its facts or the frituur ticket change.
 - Structured data: the home and pricing pages carry a SoftwareApplication with every monthly price as an Offer (software_app).

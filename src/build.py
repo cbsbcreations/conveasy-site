@@ -29,12 +29,15 @@ TARGET = os.environ.get("CONVEASY_TARGET", "be")
 if TARGET == "ai":
     SITE = "https://conveasy.ai"
 ROOT_LANG = "en" if TARGET == "ai" else "nl"   # the language at the root address
-# Since 16 Nov 2026 the two sites split the languages: conveasy.be has Dutch and French (for Belgium), conveasy.ai has every
-# language. Every page lists all its versions on both sites with hreflang (nl-BE and fr-BE point to conveasy.be, x-default
-# to the English page on conveasy.ai), so search engines show each visitor the right site. The English, Turkish and German
-# addresses on conveasy.be forward to conveasy.ai (see live_extras).
+# Both sites have all 8 languages (since 16 Nov 2026): conveasy.be is the site for Belgium, conveasy.ai the international
+# one. Every page lists all its versions on both sites with hreflang: the language with -BE (nl-BE, fr-BE, en-BE ...) points
+# to conveasy.be, the plain language to conveasy.ai, x-default to the English page on conveasy.ai. So search engines show
+# visitors in Belgium conveasy.be and everyone else conveasy.ai, without counting the two as duplicates.
+# The start language at the root address is picked by where the visitor is (Cloudflare Worker, tools/start-language-worker.js).
 SITES = {"be": "https://conveasy.be", "ai": "https://conveasy.ai"}
-SITE_LANGS = {"be": ["nl", "fr"], "ai": ["en", "de", "nl", "fr", "es", "pt", "it", "tr"]}
+SITE_LANGS = {"be": ["nl", "fr", "en", "tr", "de", "es", "pt", "it"], "ai": ["en", "de", "nl", "fr", "es", "pt", "it", "tr"]}
+SHOW_REFERRAL = False   # the referral band (calculator.REFER); off since 16 Nov 2026 at the owner's request, texts kept for later
+GEO_ENDPOINT = "https://conveasy.ai/geo"   # the Worker's answer for conveasy.be's root address: {"lang": "nl" or "fr"}
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -219,7 +222,7 @@ def header(lang, pid, prefix):
 </div></details>
 </div></header>'''
 
-# The footer links the other site: conveasy.be in Dutch or French, conveasy.ai in the same language.
+# The footer links the same page in the same language on the other site.
 OTHER_SITE = {"nl": ("Internationale site", "In België"), "fr": ("Site international", "En Belgique"), "en": ("International site", "In Belgium"),
               "de": ("Internationale Website", "In Belgien"), "tr": ("Uluslararası site", "Belçika'da"), "es": ("Web internacional", "En Bélgica"),
               "pt": ("Site internacional", "Na Bélgica"), "it": ("Sito internazionale", "In Belgio")}
@@ -228,8 +231,7 @@ def other_site(lang, page):
     if pid not in SLUGS: pid = "home"
     if TARGET == "be":
         return f'{e(OTHER_SITE[lang][0])}: <a href="{url_on("ai", lang, pid)}" hreflang="{lang}">conveasy.ai</a>'
-    bl = "fr" if lang == "fr" else "nl"
-    return f'{e(OTHER_SITE[lang][1])}: <a href="{url_on("be", bl, pid)}" hreflang="{bl}-BE">conveasy.be</a>'
+    return f'{e(OTHER_SITE[lang][1])}: <a href="{url_on("be", lang, pid)}" hreflang="{lang}-BE">conveasy.be</a>'
 
 def footer(lang, prefix, page):
     u = UI[lang]
@@ -866,7 +868,8 @@ def page_home(lang, prefix):
     return body, d["faq"], []
 
 def refer_band(lang, prefix):
-    """The referral offer (calculator.REFER): on the home page and the pricing page."""
+    """The referral offer (calculator.REFER): on the home page and the pricing page, when SHOW_REFERRAL is on."""
+    if not SHOW_REFERRAL: return ""
     eb, title, text, btn = REFER[lang]
     return (f'<section class="band refer-band"><div class="wrap"><div class="refer card"><div><span class="eyebrow">{e(eb)}</span>'
             f'<h2>{e(title)}</h2><p>{e(text)}</p></div><div class="btn-row"><a class="btn btn-primary" href="{prefix + path_of(lang, "contact")}">{e(btn)} '
@@ -882,27 +885,30 @@ def _money0(lang, x):
     return n.replace(",", ".") + "\u00a0€"
 
 def page_calculator(lang, prefix):
-    """Commission calculator: the visitor's own numbers in, commission per month and year and the webshop's break-even out.
-    The page shows the result for the starting values; site.js recalculates as the numbers change."""
+    """Commission calculator: orders per month, average order value and platform commission in; out how much the restaurant
+    saves per month and per year with its own webshop (commission minus the webshop's monthly price), plus the commission
+    it pays now. The page shows the result for the starting values; site.js recalculates as the numbers change."""
     d, u = CALC[lang], UI[lang]
     pg = f"{lang}/calculator"
     trail = [(u["home"], "home"), (d["nav"], None)]
-    s = calculator.START
+    s, shop = calculator.START, calculator.WEBSHOP_MONTHLY
     month = s["orders"] * s["avg"] * s["rate"] / 100
+    save = max(month - shop, 0)
     per = s["avg"] * s["rate"] / 100
-    even_n = -(-calculator.WEBSHOP_MONTHLY // per) if per else 0
+    even_n = -(-shop // per) if per else 0
     def field(k, step, mx=""):
         return (f'<div class="field"><label for="c-{k}">{e(d[k])}</label><input id="c-{k}" type="number" inputmode="decimal" min="0"{mx} '
                 f'step="{step}" value="{s[k]}" data-k="{k}"></div>')
     body = f'''<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy">{crumbs_html(lang, prefix, trail)}<h1>{e(d["h1"])}</h1><p class="lead">{e(d["lead"])}</p></div></div></section>
 <section class="band" style="padding-top:0"><div class="wrap">
-<div class="calc" data-calc data-locale="{HTML_LANG[lang]}" data-webshop="{calculator.WEBSHOP_MONTHLY}" data-t-kept="{e(d["kept"])}" data-t-even="{e(d["even"])}">
-<div class="calc-in">{field("orders", "10")}{field("avg", "0.5")}{field("rate", "1", ' max="100"')}{field("share", "5", ' max="100"')}</div>
+<div class="calc" data-calc data-locale="{HTML_LANG[lang]}" data-webshop="{shop}" data-t-even="{e(d["even"])}">
+<div class="calc-in">{field("orders", "10")}{field("avg", "0.5")}{field("rate", "1", ' max="100"')}</div>
 <div class="calc-out" aria-live="polite">
-<div class="calc-n"><small>{e(d["month"])}</small><b data-o="month">{_money0(lang, month)}</b></div>
-<div class="calc-n"><small>{e(d["year"])}</small><b data-o="year">{_money0(lang, month * 12)}</b></div>
-<div class="calc-n calc-keep"><small data-o="kept-label">{e(d["kept"].replace("{p}", str(s["share"])))}</small><b data-o="kept">{_money0(lang, month * s["share"] / 100)}</b></div>
-<p class="calc-even" data-o="even">{e(d["even"].replace("{n}", str(int(even_n))))}</p>
+<div class="calc-n calc-keep"><small>{e(d["save_month"])}</small><b data-o="save">{_money0(lang, save)}</b></div>
+<div class="calc-n"><small>{e(d["save_year"])}</small><b data-o="year">{_money0(lang, save * 12)}</b></div>
+<div class="calc-n calc-now"><small>{e(d["now"])}</small><b data-o="month">{_money0(lang, month)}</b></div>
+<p class="calc-shop">{e(d["shop"])}</p>
+<p class="calc-even" data-o="even"{"" if save <= 0 else " hidden"}>{e(d["even"].replace("{n}", str(int(even_n))))}</p>
 </div></div>
 <p class="note" style="margin-top:16px">{e(d["note"])}</p>
 <p class="note"><a href="{prefix + path_of(lang, "pricing")}">{e(u["see_prices"])} →</a></p>
@@ -1062,7 +1068,7 @@ FB_TAG = f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}
 # The Framer site's addresses. /privacy, /terms and /data-deletion are set in Meta's app for WhatsApp, so they stay real pages
 # (each with that one English document); /about and /contact send visitors on to the new English pages.
 OLD_DOCS = ("privacy", "terms", "data-deletion")
-OLD_MOVED = {"about": SITES["ai"] + "/en/about", "contact": SITES["ai"] + "/en/contact"}
+OLD_MOVED = {"about": SITES["be"] + "/en/about", "contact": SITES["be"] + "/en/contact"}
 
 def doc_html(doc):
     secs = ""
@@ -1106,14 +1112,6 @@ def live_extras(outdir):
               f'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>Conveasy</title><meta name="robots" content="noindex">'
               f'<link rel="canonical" href="{new}"><meta http-equiv="refresh" content="0; url={new}">'
               f'<script>location.replace("{new}" + location.hash)</script></head><body><p><a href="{new}">Conveasy</a></p></body></html>\n')
-    if TARGET == "be":
-        for l in ("en", "tr", "de"):
-            for pid in SLUGS:
-                new = url_on("ai", l, pid)
-                write(os.path.join(outdir, path_of(l, pid)),
-                      f'<!doctype html>\n<html lang="{HTML_LANG[l]}"><head><meta charset="utf-8"><title>Conveasy</title>'
-                      f'<link rel="canonical" href="{new}"><meta http-equiv="refresh" content="0; url={new}">'
-                      f'<script>location.replace("{new}" + location.hash)</script></head><body><p><a href="{new}">conveasy.ai</a></p></body></html>\n')
     # GitHub Pages shows 404.html for any missing address, at any depth, so this one uses addresses from the root of the domain
     t, x = NOT_FOUND[ROOT_LANG]
     t2, x2 = NOT_FOUND["en" if ROOT_LANG == "nl" else "nl"]
@@ -1163,21 +1161,23 @@ def llms():
          "- Works for every kind of restaurant: it uses the restaurant's own menu. Pages for frituren (Belgian fry shops), sushi restaurants, pizzerias, burger restaurants, kebab shops and all other restaurants.",
          "- Table reservations 24/7 through the phone AI and the WhatsApp AI; each reservation (name, date, time, party size) lands in the dashboard. Included in the phone AI and WhatsApp AI price at no extra cost.",
          "- Marketing AI: €69/month. Announcements to customers on all channels, Google review links, automatic emails for a second order and for unfinished orders, prepaid cards, and a digital stamp card in Google Wallet and Apple Wallet with notifications.",
-         f"- Contact: phone {PHONE_DISPLAY}, email {EMAIL}, WhatsApp and demo requests at {url_on('ai', 'en', 'contact')}",
+         f"- Contact: phone {PHONE_DISPLAY}, email {EMAIL}, WhatsApp and demo requests at {url_on(TARGET, 'en', 'contact')}",
          f"- Company: Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, USA. EIN {EIN}.", "",
          "## Products (English)"]
     for p in PRODUCTS:
-        L.append(f"- [{P[p]['en']['name']}]({url_on('ai', 'en', p)}): {P[p]['en']['card']}")
+        L.append(f"- [{P[p]['en']['name']}]({url_on(TARGET, 'en', p)}): {P[p]['en']['card']}")
     L += ["", "## Restaurant types (English)"]
     for s in SECTORS:
-        L.append(f"- [{S[s]['en']['name']}]({url_on('ai', 'en', s)}): {plain(S[s]['en']['lead'])}")
+        L.append(f"- [{S[s]['en']['name']}]({url_on(TARGET, 'en', s)}): {plain(S[s]['en']['lead'])}")
     L += ["", "## Other pages",
-          f"- [Pricing]({url_on('ai', 'en', 'pricing')})", f"- [Commission calculator]({url_on('ai', 'en', 'calculator')}): what platform commission costs a restaurant per month and per year, and from how many orders the restaurant's own webshop (€79/month) pays for itself.",
-          f"- [About]({url_on('ai', 'en', 'about')})", f"- [Contact]({url_on('ai', 'en', 'contact')})",
-          "- Referral: a Conveasy client who recommends a restaurant that becomes a client gets their next month free.", "",
-          "## Other languages"]
-    L += [f"- {LANG_NAMES[l]}: {url_on('ai', l, 'home')}" for l in SITE_LANGS["ai"] if l != "en"]
-    L += [f"- Belgium, in Dutch and French: {url_on('be', 'nl', 'home')} and {url_on('be', 'fr', 'home')}", ""]
+          f"- [Pricing]({url_on(TARGET, 'en', 'pricing')})", f"- [Commission calculator]({url_on(TARGET, 'en', 'calculator')}): how much a restaurant saves per month and per year when its platform orders come in through its own commission-free webshop (€79/month) instead.",
+          f"- [About]({url_on(TARGET, 'en', 'about')})", f"- [Contact]({url_on(TARGET, 'en', 'contact')})"]
+    if SHOW_REFERRAL:
+        L.append("- Referral: a Conveasy client who recommends a restaurant that becomes a client gets their next month free.")
+    L += ["", "## Other languages"]
+    L += [f"- {LANG_NAMES[l]}: {url_on(TARGET, l, 'home')}" for l in SITE_LANGS[TARGET] if l != "en"]
+    other = "ai" if TARGET == "be" else "be"
+    L += [f"- {'International site' if other == 'ai' else 'For restaurants in Belgium'}: {SITES[other]} (same pages, same languages)", ""]
     return "\n".join(L)
 
 def _swap(v, old, new):
@@ -1193,6 +1193,30 @@ def ai_wording():
     for l, (old, new) in wording.items():
         HOME[l] = _swap(HOME[l], old, new)
     S["frituur"]["en"] = _swap(S["frituur"]["en"], "for Belgian fry shops", "for fry shops")
+
+def be_wording():
+    """conveasy.be is for Belgium: the Spanish, Portuguese and Italian texts were first written for conveasy.ai (Europe)."""
+    wording = {"es": ("para restaurantes en Europa", "para restaurantes del Benelux"),
+               "pt": ("para restaurantes na Europa", "para restaurantes do Benelux"),
+               "it": ("per ristoranti in Europa", "per ristoranti del Benelux")}
+    for l, (old, new) in wording.items():
+        HOME[l] = _swap(HOME[l], old, new)
+    for l, (old, new) in {"es": ("para freidurías |", "para freidurías belgas |"),
+                          "pt": ("lojas de batatas fritas |", "lojas de batatas fritas belgas |"),
+                          "it": ("per friggitorie |", "per friggitorie belghe |")}.items():
+        S["frituur"][l] = _swap(S["frituur"][l], old, new)
+
+# The root address of conveasy.be shows the Dutch home page. This script asks the Worker where the visitor is and moves
+# visitors in Wallonia and Brussels (and French-speaking countries) to the French home page; if the Worker does not answer
+# within 1.2 s, the browser's language decides (French or Dutch). The page stays hidden until it is decided, so French
+# visitors do not see the Dutch page flash. Only on the root address of the live conveasy.be.
+BE_ROOT_SCRIPT = ('<style>html.cv-geo body{visibility:hidden}</style><script>(function(){var d=document.documentElement,done=0;'
+  'd.className+=" cv-geo";function show(){if(done)return;done=1;d.className=d.className.replace(" cv-geo","")}'
+  'function pick(){var l=navigator.languages||[navigator.language||""];for(var i=0;i<l.length;i++){var p=String(l[i]).slice(0,2).toLowerCase();if(p=="fr"||p=="nl")return p}return "nl"}'
+  'function go(l){if(done)return;if(l=="fr"){done=1;location.replace("fr/"+location.search+location.hash)}else show()}'
+  'var t=setTimeout(function(){go(pick())},1200);'
+  'try{fetch("' + GEO_ENDPOINT + '",{credentials:"omit",cache:"no-store"}).then(function(r){return r.json()}).then(function(j){clearTimeout(t);go(j&&(j.lang=="fr"||j.lang=="nl")?j.lang:pick())})[\'catch\'](function(){clearTimeout(t);go(pick())})}'
+  'catch(x){clearTimeout(t);go(pick())}})();</script>')
 
 # ---------------- Write ----------------
 def write(path, text):
@@ -1222,7 +1246,10 @@ def build(outdir, preview):
             page = render(l, pid, "../", preview)
             write(os.path.join(outdir, path_of(l, pid)), page)
             hashes[canonical(l, pid)] = hashlib.sha1(re.sub(r"\?v=[0-9a-f]{8}", "", page).encode()).hexdigest()[:16]
-    write(os.path.join(outdir, "index.html"), render(ROOT_LANG, "home", "", preview))
+    root = render(ROOT_LANG, "home", "", preview)
+    if TARGET == "be" and not preview:
+        root = root.replace("</head>", BE_ROOT_SCRIPT + "\n</head>", 1)
+    write(os.path.join(outdir, "index.html"), root)
     write(os.path.join(outdir, "sitemap.xml"), sitemap(None if preview else lastmod_dates(hashes)))
     write(os.path.join(outdir, "robots.txt"), ROBOTS)
     write(os.path.join(outdir, "llms.txt"), llms())
@@ -1254,6 +1281,8 @@ if __name__ == "__main__":
     sectors_more.apply(globals())
     untranslated = lang_es_pt_it.apply(globals(), (extras, sectors_more))
     LANGS[:] = SITE_LANGS[TARGET]                         # the languages this site renders (and shows in its switch)
+    if TARGET == "be":
+        be_wording()
     if TARGET == "ai":
         if untranslated:
             print("es/pt/it: English texts not in lang_es_pt_it.T yet (these pages show them in English):", len(untranslated))
