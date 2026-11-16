@@ -54,7 +54,16 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   cbsbcreations/conveasy-ai; then commit and push there. GitHub Pages serves that repo (main, /docs) on conveasy.ai with HTTPS
   enforced; www.conveasy.ai forwards to conveasy.ai. After any change to the site, publish both.
 - Domain: registered at Cloudflare on 15 Nov 2026 (2 years, auto-renew; WHOIS redacted by Cloudflare). DNS at Cloudflare:
-  A conveasy.ai -> 185.199.108.153, .109.153, .110.153, .111.153; CNAME www -> cbsbcreations.github.io.
+  A conveasy.ai -> 185.199.108.153, .109.153, .110.153, .111.153 (Proxied since 16 Nov 2026, see below); CNAME www ->
+  cbsbcreations.github.io (DNS only).
+- Start language by country (16 Nov 2026): Cloudflare Redirect Rules on conveasy.ai send a visitor who opens the bare address
+  https://conveasy.ai/ to their language with a 302: DE, AT, CH -> /de/; NL -> /nl/; FR, LU -> /fr/; ES -> /es/; PT -> /pt/;
+  IT -> /it/. Everyone else (Belgium included) gets the English root. Only "/" is redirected, so shared links, inner pages and
+  search engine crawlers are not affected. The rules ("Start language by country: ...") are in Cloudflare > conveasy.ai > Rules >
+  Redirect Rules; Free plan allows 10. Country needs the Cloudflare proxy: that is why the four A records are Proxied, with
+  SSL/TLS mode Full. Email Address Obfuscation is off and AI crawlers are not blocked (AI Crawl Control), so the pages reach
+  search engines and AI assistants exactly as GitHub Pages serves them. Rule simulator (Rules > Rule simulator) shows what
+  happens for a given country.
 - Both live demos work on conveasy.ai: the chat demo workflow accepts conveasy.ai and www.conveasy.ai (and es/pt/it), and the voice
   demo uses its own Vapi public key "conveasy.ai website" there (site.js picks the key by address; see the voice demo section).
 
