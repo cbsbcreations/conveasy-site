@@ -71,7 +71,9 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   root page (index.html, the Dutch home) asks https://conveasy.ai/geo where the visitor is and moves Wallonia, Brussels and
   French-speaking countries to /fr/ (BE_ROOT_SCRIPT in build.py); without an answer within 1.2 s the browser language decides.
   Region on Redirect Rules needs Cloudflare's Business plan; Workers get it on the Free plan (100,000 requests a day, and the
-  Worker only runs on those two addresses). The rules ("Start language by country: ...") are in Cloudflare > conveasy.ai > Rules >
+  Worker only runs on those two addresses). The Worker's own workers.dev address and preview URLs are switched off (Worker >
+  Domains). Checked on 16 Nov 2026: from Flanders conveasy.ai/ goes to conveasy.be/nl/ and /geo answers nl; the rule simulator
+  shows Switzerland handled by the Worker and Germany by its redirect rule ("Start language by country: German (DE, AT)"). The rules ("Start language by country: ...") are in Cloudflare > conveasy.ai > Rules >
   Redirect Rules; Free plan allows 10. Country needs the Cloudflare proxy: that is why the four A records are Proxied, with
   SSL/TLS mode Full. Email Address Obfuscation is off and AI crawlers are not blocked (AI Crawl Control), so the pages reach
   search engines and AI assistants exactly as GitHub Pages serves them. Rule simulator (Rules > Rule simulator) shows what
