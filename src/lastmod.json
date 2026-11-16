@@ -1,0 +1,682 @@
+{
+"https://conveasy.ai/de/": [
+"e7b42ccb2463cda1",
+"2026-11-16"
+],
+"https://conveasy.ai/de/alle-restaurants": [
+"63d81d6e98448322",
+"2026-11-16"
+],
+"https://conveasy.ai/de/burger": [
+"f76d2a3c349dc803",
+"2026-11-16"
+],
+"https://conveasy.ai/de/frittenbude": [
+"b884d92007b15f66",
+"2026-11-16"
+],
+"https://conveasy.ai/de/kebab": [
+"affafcd03d58ad17",
+"2026-11-16"
+],
+"https://conveasy.ai/de/kiosk": [
+"2698908b717a47d4",
+"2026-11-16"
+],
+"https://conveasy.ai/de/kontakt": [
+"adc7f99cf4bbdd33",
+"2026-11-16"
+],
+"https://conveasy.ai/de/marketing-ki": [
+"e3e44d22e5329e14",
+"2026-11-16"
+],
+"https://conveasy.ai/de/pizzeria": [
+"89ccac803b9b3ac8",
+"2026-11-16"
+],
+"https://conveasy.ai/de/preise": [
+"f46a7ef26c705467",
+"2026-11-16"
+],
+"https://conveasy.ai/de/provisionsrechner": [
+"da2f9b4c3c0dc79d",
+"2026-11-16"
+],
+"https://conveasy.ai/de/rechtliches": [
+"6bd7d774bb37461b",
+"2026-11-16"
+],
+"https://conveasy.ai/de/sushi": [
+"a9dd6f36f6ded82f",
+"2026-11-16"
+],
+"https://conveasy.ai/de/telefon-ki": [
+"5e1da8aa3492a22c",
+"2026-11-16"
+],
+"https://conveasy.ai/de/ueber-uns": [
+"a43b13f405d3d38f",
+"2026-11-16"
+],
+"https://conveasy.ai/de/webshop": [
+"e546cfea3dd91247",
+"2026-11-16"
+],
+"https://conveasy.ai/de/whatsapp-ki": [
+"61348fdbc9bef678",
+"2026-11-16"
+],
+"https://conveasy.ai/en/": [
+"a115b8feb047798b",
+"2026-11-16"
+],
+"https://conveasy.ai/en/about": [
+"b16eb8ba3c556bc5",
+"2026-11-16"
+],
+"https://conveasy.ai/en/all-restaurants": [
+"e843a2ab2f33e006",
+"2026-11-16"
+],
+"https://conveasy.ai/en/burger": [
+"4c216e72f4850c89",
+"2026-11-16"
+],
+"https://conveasy.ai/en/commission-calculator": [
+"7ee80190ed7003ba",
+"2026-11-16"
+],
+"https://conveasy.ai/en/contact": [
+"8e6885f44bdbd44d",
+"2026-11-16"
+],
+"https://conveasy.ai/en/frituur": [
+"de56c8e59bdd2598",
+"2026-11-16"
+],
+"https://conveasy.ai/en/kebab": [
+"36017b1bde34490e",
+"2026-11-16"
+],
+"https://conveasy.ai/en/kiosk": [
+"3a2287baa771b305",
+"2026-11-16"
+],
+"https://conveasy.ai/en/legal": [
+"5820448c72ac2e0c",
+"2026-11-16"
+],
+"https://conveasy.ai/en/marketing-ai": [
+"ec0095bb6cedabd9",
+"2026-11-16"
+],
+"https://conveasy.ai/en/phone-ai": [
+"1b8165f32f80f7e8",
+"2026-11-16"
+],
+"https://conveasy.ai/en/pizzeria": [
+"1f1cae84e5dfe602",
+"2026-11-16"
+],
+"https://conveasy.ai/en/pricing": [
+"7e065b3187ff52ef",
+"2026-11-16"
+],
+"https://conveasy.ai/en/sushi": [
+"e593241ac3a8b6bc",
+"2026-11-16"
+],
+"https://conveasy.ai/en/webshop": [
+"e37c5f537e6fc702",
+"2026-11-16"
+],
+"https://conveasy.ai/en/whatsapp-ai": [
+"43b54aa375335d6d",
+"2026-11-16"
+],
+"https://conveasy.ai/es/": [
+"37a32b0b678bb055",
+"2026-11-16"
+],
+"https://conveasy.ai/es/calculadora-comisiones": [
+"23f5aee0bac8bc79",
+"2026-11-16"
+],
+"https://conveasy.ai/es/contacto": [
+"c0ec83c435d89dd6",
+"2026-11-16"
+],
+"https://conveasy.ai/es/freidurias": [
+"ca4d35d5da279771",
+"2026-11-16"
+],
+"https://conveasy.ai/es/hamburgueserias": [
+"7dc1620d321d1d5a",
+"2026-11-16"
+],
+"https://conveasy.ai/es/kebab": [
+"f448ba022a9d48b9",
+"2026-11-16"
+],
+"https://conveasy.ai/es/kiosco": [
+"d9cf7de923a1abe4",
+"2026-11-16"
+],
+"https://conveasy.ai/es/legal": [
+"5c86df2c17436b7a",
+"2026-11-16"
+],
+"https://conveasy.ai/es/marketing-ia": [
+"d8cf1cf4bd1bcd52",
+"2026-11-16"
+],
+"https://conveasy.ai/es/pizzerias": [
+"ae59e645673d8c9d",
+"2026-11-16"
+],
+"https://conveasy.ai/es/precios": [
+"2bc32a3f2fba31b1",
+"2026-11-16"
+],
+"https://conveasy.ai/es/sobre-nosotros": [
+"ffec7a428a0c2fdd",
+"2026-11-16"
+],
+"https://conveasy.ai/es/sushi": [
+"51e8f517fbe79ac5",
+"2026-11-16"
+],
+"https://conveasy.ai/es/telefono-ia": [
+"35b822ee4cfe6906",
+"2026-11-16"
+],
+"https://conveasy.ai/es/todos-los-restaurantes": [
+"06e3c84b8a0145a3",
+"2026-11-16"
+],
+"https://conveasy.ai/es/web-de-pedidos": [
+"7d748b2a520cb5e1",
+"2026-11-16"
+],
+"https://conveasy.ai/es/whatsapp-ia": [
+"2e8c8358f9206aec",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/": [
+"dd335b3ef4320591",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/a-propos": [
+"380c5135a0867e5c",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/borne": [
+"31d40eebfe15493e",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/boutique-en-ligne": [
+"b67c344a24bb0252",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/burger": [
+"f0be074e2c00740b",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/calculateur-commission": [
+"d138d52f9f0cb9f4",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/contact": [
+"3328a5630f2bb3fc",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/friterie": [
+"ef3fbb847d872734",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/kebab": [
+"e89f140fb164feda",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/marketing-ia": [
+"da66c9df4aefab81",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/mentions-legales": [
+"f04183d65b926da2",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/pizzeria": [
+"1ce5db734b385c8c",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/sushi": [
+"a1d646a45e9078b5",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/tarifs": [
+"d6e583acb86214da",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/telephone-ia": [
+"7508d4ebd6325a50",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/tous-les-restaurants": [
+"8fdd0a435b5db8fd",
+"2026-11-16"
+],
+"https://conveasy.ai/fr/whatsapp-ia": [
+"9e9183b786068a31",
+"2026-11-16"
+],
+"https://conveasy.ai/it/": [
+"e49084f7a87b5a94",
+"2026-11-16"
+],
+"https://conveasy.ai/it/calcolatore-commissioni": [
+"19ea94d0db6cb1eb",
+"2026-11-16"
+],
+"https://conveasy.ai/it/chi-siamo": [
+"2f72fc265ddd836b",
+"2026-11-16"
+],
+"https://conveasy.ai/it/contatti": [
+"689d0ca1d3e56b43",
+"2026-11-16"
+],
+"https://conveasy.ai/it/friggitorie": [
+"1b241687d37e8468",
+"2026-11-16"
+],
+"https://conveasy.ai/it/hamburgerie": [
+"c95023b4abe553c3",
+"2026-11-16"
+],
+"https://conveasy.ai/it/kebab": [
+"15b06991e894e763",
+"2026-11-16"
+],
+"https://conveasy.ai/it/marketing-ia": [
+"b72fcfa355c9f8c8",
+"2026-11-16"
+],
+"https://conveasy.ai/it/note-legali": [
+"ca5d05ebd3c3c4c8",
+"2026-11-16"
+],
+"https://conveasy.ai/it/pizzerie": [
+"817b74ee023beb4b",
+"2026-11-16"
+],
+"https://conveasy.ai/it/prezzi": [
+"fdeb668e25dd6b89",
+"2026-11-16"
+],
+"https://conveasy.ai/it/shop-online": [
+"db0136e47486ceab",
+"2026-11-16"
+],
+"https://conveasy.ai/it/sushi": [
+"5ac80a0c340b96a5",
+"2026-11-16"
+],
+"https://conveasy.ai/it/telefono-ia": [
+"a5ced7fd1a0d3225",
+"2026-11-16"
+],
+"https://conveasy.ai/it/totem": [
+"1fe4f328ebc8a0f8",
+"2026-11-16"
+],
+"https://conveasy.ai/it/tutti-i-ristoranti": [
+"8c1cc546b951d3ae",
+"2026-11-16"
+],
+"https://conveasy.ai/it/whatsapp-ia": [
+"2e1c0d0daac0631e",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/": [
+"5bc3c7b53924626a",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/alle-restaurants": [
+"05594f1c5b31aa7b",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/burger": [
+"a5dea65435db23e8",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/commissie-calculator": [
+"2153302331a03986",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/contact": [
+"9034ea28808f29ad",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/frituur": [
+"720ae70f3d72434b",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/juridisch": [
+"9b605ef6452588e1",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/kebab": [
+"32ea12c8d93efbb0",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/kiosk": [
+"ebbe5419b1089c0f",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/marketing-ai": [
+"3d7cac85ee908011",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/over-ons": [
+"75954fdc9303373e",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/pizzeria": [
+"19d552d1dbac97f9",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/prijzen": [
+"cbf53f05d9a9f880",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/sushi": [
+"ea71ba67f9cf8b03",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/telefoon-ai": [
+"1ffd2fdd2899d5a9",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/webshop": [
+"c975c860b912a882",
+"2026-11-16"
+],
+"https://conveasy.ai/nl/whatsapp-ai": [
+"a462af4beae2db2a",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/": [
+"f0477a993502240a",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/batatas-fritas": [
+"6aeb697eedb540d9",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/calculadora-comissoes": [
+"9c1a958dc929a9b2",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/contacto": [
+"84b2c64fcb9e6a74",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/hamburguerias": [
+"55562dbc17cceef7",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/kebab": [
+"fd2d1f2a05c75c65",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/legal": [
+"7273d601dffda49f",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/loja-online": [
+"df06956529d6dee4",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/marketing-ia": [
+"597381e876b107b4",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/pizzarias": [
+"8968d7c9e1302693",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/precos": [
+"d5d88fd4e94fed2b",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/quiosque": [
+"57bf1f3aeacf455d",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/sobre-nos": [
+"127d882633ef5fb4",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/sushi": [
+"294c3244ba1df65a",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/telefone-ia": [
+"f4b5666bbce5cf3d",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/todos-os-restaurantes": [
+"cb2157d2ea4f1676",
+"2026-11-16"
+],
+"https://conveasy.ai/pt/whatsapp-ia": [
+"8c08277acdc122b2",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/": [
+"f865904fcb767114",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/burger": [
+"0652caa862c7a390",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/fiyatlar": [
+"db1053c7d9c6cef7",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/frituur": [
+"225ab515faadddcc",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/hakkimizda": [
+"6c98c39572b901d5",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/iletisim": [
+"0142e85d31046d06",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/kebap": [
+"96c844116d0892e9",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/kiosk": [
+"545bb58a95765332",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/komisyon-hesaplayici": [
+"9f60b3ddf04b7da9",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/online-siparis": [
+"89951e7fee4334d7",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/pazarlama-yapay-zeka": [
+"c8cf5c05b178e167",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/pizzeria": [
+"09e171db6ab960eb",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/sushi": [
+"e4961b0cf3eb1318",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/telefon-yapay-zeka": [
+"87229656e2c25671",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/tum-restoranlar": [
+"bb6d647d8b8b2067",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/whatsapp-yapay-zeka": [
+"d8f5a24b281e7c69",
+"2026-11-16"
+],
+"https://conveasy.ai/tr/yasal": [
+"8a2e080d71d178c3",
+"2026-11-16"
+],
+"https://conveasy.be/fr/": [
+"f0fb96da2f507b0c",
+"2026-11-16"
+],
+"https://conveasy.be/fr/a-propos": [
+"51a223d978fb40bf",
+"2026-11-16"
+],
+"https://conveasy.be/fr/borne": [
+"f456ea5e56e43dac",
+"2026-11-16"
+],
+"https://conveasy.be/fr/boutique-en-ligne": [
+"05d5471661107255",
+"2026-11-16"
+],
+"https://conveasy.be/fr/burger": [
+"a68a9e63990f0dc9",
+"2026-11-16"
+],
+"https://conveasy.be/fr/calculateur-commission": [
+"ad07686688eeef37",
+"2026-11-16"
+],
+"https://conveasy.be/fr/contact": [
+"9b281cb7f2e9aae3",
+"2026-11-16"
+],
+"https://conveasy.be/fr/friterie": [
+"6d45678ca119ae0c",
+"2026-11-16"
+],
+"https://conveasy.be/fr/kebab": [
+"9496de2e7fb054bc",
+"2026-11-16"
+],
+"https://conveasy.be/fr/marketing-ia": [
+"6bfc5ad80d08cfdd",
+"2026-11-16"
+],
+"https://conveasy.be/fr/mentions-legales": [
+"8ad999ef67748c2f",
+"2026-11-16"
+],
+"https://conveasy.be/fr/pizzeria": [
+"cb0c2a45d6d1f62c",
+"2026-11-16"
+],
+"https://conveasy.be/fr/sushi": [
+"9b36c8800cc7b975",
+"2026-11-16"
+],
+"https://conveasy.be/fr/tarifs": [
+"ea9c4a11b7378d2d",
+"2026-11-16"
+],
+"https://conveasy.be/fr/telephone-ia": [
+"f0785a276e04e3b1",
+"2026-11-16"
+],
+"https://conveasy.be/fr/tous-les-restaurants": [
+"38301100076a9896",
+"2026-11-16"
+],
+"https://conveasy.be/fr/whatsapp-ia": [
+"678de7305648a08e",
+"2026-11-16"
+],
+"https://conveasy.be/nl/": [
+"104ffa065d723677",
+"2026-11-16"
+],
+"https://conveasy.be/nl/alle-restaurants": [
+"570072e2feb45bcd",
+"2026-11-16"
+],
+"https://conveasy.be/nl/burger": [
+"3a1e095935884ffd",
+"2026-11-16"
+],
+"https://conveasy.be/nl/commissie-calculator": [
+"9fcc74dbd2c520d9",
+"2026-11-16"
+],
+"https://conveasy.be/nl/contact": [
+"472684512e6bce9a",
+"2026-11-16"
+],
+"https://conveasy.be/nl/frituur": [
+"9326f560c8ca193f",
+"2026-11-16"
+],
+"https://conveasy.be/nl/juridisch": [
+"7bbc9603a9c378ff",
+"2026-11-16"
+],
+"https://conveasy.be/nl/kebab": [
+"8756cc49c57a1990",
+"2026-11-16"
+],
+"https://conveasy.be/nl/kiosk": [
+"b305af7d64afc8e1",
+"2026-11-16"
+],
+"https://conveasy.be/nl/marketing-ai": [
+"f5f6bb61dcd19ee9",
+"2026-11-16"
+],
+"https://conveasy.be/nl/over-ons": [
+"c54ddeca86e50829",
+"2026-11-16"
+],
+"https://conveasy.be/nl/pizzeria": [
+"492e66518924caa9",
+"2026-11-16"
+],
+"https://conveasy.be/nl/prijzen": [
+"73361bacda3e0876",
+"2026-11-16"
+],
+"https://conveasy.be/nl/sushi": [
+"1a94b148c754d82e",
+"2026-11-16"
+],
+"https://conveasy.be/nl/telefoon-ai": [
+"0f9e55714414b2d7",
+"2026-11-16"
+],
+"https://conveasy.be/nl/webshop": [
+"c8f409e89824d0bd",
+"2026-11-16"
+],
+"https://conveasy.be/nl/whatsapp-ai": [
+"3ecf7e5da2500729",
+"2026-11-16"
+]
+}

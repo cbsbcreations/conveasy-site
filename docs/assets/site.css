@@ -88,6 +88,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .dd-menu a { padding: 10px 12px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 0.95rem; font-weight: 500; display: grid; transition: background .2s; }
 .dd-menu a small { color: var(--muted); font-size: 0.82rem; font-weight: 400; }
 .dd-menu a:hover { background: rgb(255 255 255 / 0.06); }
+.dd-lang summary { font-size: 0.82rem; letter-spacing: .04em; border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 12px; margin-left: 6px; }
+.dd-lang .dd-menu { left: auto; right: 0; min-width: 180px; }
+.dd-lang .dd-menu a[aria-current="true"] { color: var(--brand); }
+.globe { width: 14px; height: 14px; border: 1.5px solid currentColor; border-radius: 50%; position: relative; opacity: .8; }
+.globe::before { content: ""; position: absolute; inset: -1.5px 3px; border: 1.5px solid currentColor; border-radius: 50%; }
+.globe::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1.5px solid currentColor; }
 .lang { display: flex; gap: 0; font: 500 0.74rem/1 var(--font-body); padding: 3px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--surface); }
 .lang a { color: var(--muted); text-decoration: none; padding: 6px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .04em; transition: color .2s, background .2s; }
 .lang a:hover { color: var(--ink); }
@@ -987,3 +993,19 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 
 /* Contact page: the line for businesses that are not restaurants */
 .other-note { max-width: 62ch; margin: 18px 0 0; padding-left: 14px; border-left: 2px solid var(--accent); color: var(--muted); font-size: .98rem; line-height: 1.55; }
+
+/* Commission calculator (16 Nov 2026) */
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 28px); background: rgb(10 10 12 / .9); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(22px, 3vw, 34px); }
+.calc-in { display: grid; gap: 16px; align-content: start; }
+.calc-out { display: grid; gap: 14px; align-content: start; background: var(--surface); border: 1px solid var(--line-2); border-radius: 12px; padding: clamp(18px, 2.4vw, 26px); }
+.calc-n { display: grid; gap: 4px; }
+.calc-n small { color: var(--muted); font-size: .9rem; }
+.calc-n b { font: 700 clamp(1.7rem, 3.4vw, 2.4rem)/1.1 var(--font-display, inherit); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.calc-keep b { color: var(--brand); }
+.calc-even { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); }
+@media (max-width: 760px) { .calc { grid-template-columns: minmax(0, 1fr); } }
+/* Referral offer */
+.refer { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px 32px; }
+.refer h2 { font-size: clamp(1.4rem, 2.6vw, 2rem); margin: 12px 0 6px; text-wrap: balance; }
+.refer p { color: var(--muted); max-width: 62ch; margin: 0; }
+@media (max-width: 760px) { .refer { grid-template-columns: minmax(0, 1fr); } }

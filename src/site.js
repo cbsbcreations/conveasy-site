@@ -292,3 +292,32 @@ var CHAT_DEMO_ENDPOINT = 'https://api.conveasy.be/webhook/conveasy-site-wa-demo'
     });
   }
 })();
+
+// Commission calculator (page "calculator"): commission per month and per year, what stays with the restaurant when a share of
+// the orders comes in through its own channels, and from how many orders a month the webshop (data-webshop euro) pays for itself.
+document.querySelectorAll('[data-calc]').forEach(function (box) {
+  var loc = box.getAttribute('data-locale') || document.documentElement.lang || 'en';
+  var fmt = null;
+  try { fmt = new Intl.NumberFormat(loc, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }); } catch (err) { fmt = null; }
+  function money(x) { return fmt ? fmt.format(Math.round(x)) : '\u20ac' + Math.round(x); }
+  function num(k) {
+    var el = box.querySelector('[data-k="' + k + '"]');
+    var v = parseFloat(String(el ? el.value : '').replace(',', '.'));
+    return isFinite(v) && v > 0 ? v : 0;
+  }
+  function out(k) { return box.querySelector('[data-o="' + k + '"]'); }
+  var shop = parseFloat(box.getAttribute('data-webshop')) || 79;
+  function run() {
+    var rate = Math.min(num('rate'), 100) / 100, share = Math.min(num('share'), 100) / 100;
+    var month = num('orders') * num('avg') * rate;
+    out('month').textContent = money(month);
+    out('year').textContent = money(month * 12);
+    out('kept').textContent = money(month * share);
+    out('kept-label').textContent = box.getAttribute('data-t-kept').replace('{p}', String(Math.round(share * 100)));
+    var per = num('avg') * rate, even = out('even');
+    if (per > 0) { even.hidden = false; even.textContent = box.getAttribute('data-t-even').replace('{n}', String(Math.ceil(shop / per))); }
+    else { even.hidden = true; }
+  }
+  box.addEventListener('input', run);
+  run();
+});

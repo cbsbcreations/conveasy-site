@@ -36,19 +36,43 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
 - n8n/ : copy of the two Code nodes of the chat demo workflow.
 - PLACEHOLDERS.txt : what still has to be filled in (written by the build).
 
-## conveasy.ai: the international site (15 Nov 2026)
-- Same source and pages, English at the root. `python3 src/build.py` builds conveasy.be (docs/, preview/) and then runs itself
-  again with CONVEASY_TARGET=ai, which builds conveasy.ai into ai/ (not in git). Differences: SITE https://conveasy.ai, the root
-  page and x-default are English, the language switch goes en nl fr tr de, no Meta verification tag (it verifies conveasy.be
-  only), no old Framer addresses; ai/ has its own CNAME (conveasy.ai) and 404 page.
+## conveasy.ai: the international site (15 Nov 2026), languages split (16 Nov 2026)
+- Same source, two sites. `python3 src/build.py` builds conveasy.be (docs/, preview/) and then runs itself again with
+  CONVEASY_TARGET=ai, which builds conveasy.ai into ai/ (not in git).
+- Languages (SITE_LANGS in build.py): conveasy.be has Dutch and French only (for Belgium, Dutch at the root). conveasy.ai has
+  en de nl fr es pt it tr, English at the root; its language switch is a menu (eight do not fit in a row).
+  The English, Turkish and German addresses on conveasy.be forward to the same page on conveasy.ai (small redirect pages written
+  by live_extras), so old links keep working.
+- Every page lists all its versions on both sites with hreflang: nl-BE and fr-BE point to conveasy.be, nl/fr/en/de/es/pt/it/tr
+  to conveasy.ai, x-default to the English page on conveasy.ai. The sitemaps carry the same list. Each site's footer links the
+  other site. On conveasy.ai a few texts say "Europe" instead of "Benelux" (ai_wording in build.py).
+- Spanish, Portuguese (Portugal) and Italian: src/lang_es_pt_it.py, a table from each English text to its three translations,
+  plus slugs and names. When an English text changes, its translation is not found any more: the ai build prints the English
+  texts it is missing, and those pages show them in English until the table has the new text. The legal texts stay in English
+  on those pages (the page says so).
 - Publish: `sh tools/publish-ai.sh /path/to/conveasy-ai` copies ai/ into the docs/ folder of a checkout of the repo
   cbsbcreations/conveasy-ai; then commit and push there. GitHub Pages serves that repo (main, /docs) on conveasy.ai with HTTPS
   enforced; www.conveasy.ai forwards to conveasy.ai. After any change to the site, publish both.
-- Domain: registered at Cloudflare on 15 Nov 2026 (2 years, auto-renew; WHOIS redacted by Cloudflare). DNS at Cloudflare, all
-  "DNS only": A conveasy.ai -> 185.199.108.153, .109.153, .110.153, .111.153; CNAME www -> cbsbcreations.github.io.
-- Live demos: the Vapi key and the chat demo workflow accept only conveasy.be, www.conveasy.be and cbsbcreations.github.io. On
-  conveasy.ai both show their error note until https://conveasy.ai and https://www.conveasy.ai are added (Vapi > API Keys, and
-  the workflow's trigger "Chat In": Allowed Origins and Only Run If).
+- Domain: registered at Cloudflare on 15 Nov 2026 (2 years, auto-renew; WHOIS redacted by Cloudflare). DNS at Cloudflare:
+  A conveasy.ai -> 185.199.108.153, .109.153, .110.153, .111.153; CNAME www -> cbsbcreations.github.io.
+- Both live demos work on conveasy.ai: the chat demo workflow accepts conveasy.ai and www.conveasy.ai (and es/pt/it), and the voice
+  demo uses its own Vapi public key "conveasy.ai website" there (site.js picks the key by address; see the voice demo section).
+
+## Added 16 Nov 2026
+- Commission calculator page (src/calculator.py, page_calculator in build.py, script at the end of site.js), every language on
+  both sites: the visitor's own orders, average order value, commission % and the share moved to their own channels give the
+  commission per month and per year, what stays with the restaurant, and from how many orders the webshop (79/month) pays for
+  itself. The starting values (300 orders, 25 euro, 30%, 30%) are only a starting point.
+- Referral offer (REFER in calculator.py, on the home page and the pricing page): a client who recommends a restaurant that
+  becomes a client gets their next month free. Agreed with the owner on 16 Nov 2026; change the text there if the terms change.
+- Link preview images (og:image): src/og/og-<lang>.jpg, 1200x630, made by `python3 tools/og_images.py` (Playwright + Chrome,
+  fonts in tools/fonts). Run it again when the home headline, its facts or the frituur ticket change.
+- Structured data: the home and pricing pages carry a SoftwareApplication with every monthly price as an Offer (software_app).
+- Sitemap dates: src/lastmod.json keeps a hash and a date per address; a page gets a new <lastmod> only when its HTML changed.
+  Commit lastmod.json with every build.
+- Search engines: both sites are in Google Search Console (conveasy.be as URL-prefix property with the google...html file,
+  conveasy.ai as domain property via a Cloudflare TXT record) and in Bing Webmaster Tools (BingSiteAuth.xml on every site,
+  written by live_extras; do not remove it). Sitemaps are submitted in both.
 
 ## The two live demos (home page, phone AI page, WhatsApp AI page)
 ### WhatsApp chat demo: connected
@@ -59,15 +83,18 @@ photo library, kiosk hardware 1599, voice greeting per page language, both demos
   n8n Cloud (balloz.app.n8n.cloud, id 9eb0PIubSSJ6ovPe) is the fallback and can be switched off once this site calls the new address.
 - The workflow calls Claude Haiku 5.5 directly (credential "Anthropic account"); the menu and rules are in its node "Build Request".
   The menu is a copy of the Vapi assistant "TEST Conveasy" (Mario's Snackbar): change it in both places.
-- It only answers these origins: https://conveasy.be, https://www.conveasy.be, https://cbsbcreations.github.io.
+- It only answers these origins: https://conveasy.be, https://www.conveasy.be, https://conveasy.ai, https://www.conveasy.ai,
+  https://cbsbcreations.github.io. It replies in nl, fr, en, tr, de, es, pt and it.
   A new test address has to be added in the workflow's trigger "Chat In" (Allowed Origins and Only Run If).
 - Limits: 300 characters per message, 20 messages per conversation, 1500 messages per day (top of "Build Request").
 - Cost: about $0.0003 per message (Claude Haiku 5.5). Vapi's chat costs $0.005 per message plus the model, so about 15x more.
 
 ### Voice demo ("Probeer onze AI"): connected
-- src/site.js: `VAPI_PUBLIC_KEY` is the Vapi public key "conveasy.be website" (made 11 Nov 2026). In Vapi it is limited to the origins
-  https://conveasy.be, https://www.conveasy.be and https://cbsbcreations.github.io, to the assistant "TEST Conveasy"
-  (id 7ffc6c16-d943-4f97-98e3-a84351ffd954), and transient assistants are off. A new address has to be added to the key in Vapi > API Keys.
+- src/site.js: `VAPI_PUBLIC_KEY` is a Vapi public key per site. "conveasy.be website" (made 11 Nov 2026) is limited to the origins
+  https://conveasy.be, https://www.conveasy.be and https://cbsbcreations.github.io; "conveasy.ai website" (made 16 Nov 2026) to
+  https://conveasy.ai and https://www.conveasy.ai. Both are limited to the assistant "TEST Conveasy"
+  (id 7ffc6c16-d943-4f97-98e3-a84351ffd954), with transient assistants off. Vapi cannot add an address to an existing key:
+  a new address needs a new key (Vapi > API Keys) and a line in site.js.
 - Never put the account's general public key (works everywhere, with every assistant) or a private key in the site.
 - A call is cut off after 3 minutes (MAX_SECONDS in site.js, sent to Vapi as maxDurationSeconds).
 - The Vapi SDK is loaded from jsDelivr on the first click (@vapi-ai/web 3.0.1).

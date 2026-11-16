@@ -12,6 +12,10 @@ from overrides import OV as OVX, apply as apply_overrides
 import answers
 import extras
 import sectors_more
+import lang_es_pt_it
+import calculator
+from calculator import CALC, REFER
+SLUGS["calculator"] = dict(calculator.CALC_SLUGS)   # the commission calculator page, in every language
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal"))
 import legal_nl, legal_fr, legal_en, legal_tr, legal_de
 LEGAL_DOCS = {"nl": legal_nl, "fr": legal_fr, "en": legal_en, "tr": legal_tr, "de": legal_de}
@@ -24,7 +28,13 @@ LEGAL_DOCS = {"nl": legal_nl, "fr": legal_fr, "en": legal_en, "tr": legal_tr, "d
 TARGET = os.environ.get("CONVEASY_TARGET", "be")
 if TARGET == "ai":
     SITE = "https://conveasy.ai"
-ROOT_LANG = "en" if TARGET == "ai" else "nl"   # the language at the root address and for x-default
+ROOT_LANG = "en" if TARGET == "ai" else "nl"   # the language at the root address
+# Since 16 Nov 2026 the two sites split the languages: conveasy.be has Dutch and French (for Belgium), conveasy.ai has every
+# language. Every page lists all its versions on both sites with hreflang (nl-BE and fr-BE point to conveasy.be, x-default
+# to the English page on conveasy.ai), so search engines show each visitor the right site. The English, Turkish and German
+# addresses on conveasy.be forward to conveasy.ai (see live_extras).
+SITES = {"be": "https://conveasy.be", "ai": "https://conveasy.ai"}
+SITE_LANGS = {"be": ["nl", "fr"], "ai": ["en", "de", "nl", "fr", "es", "pt", "it", "tr"]}
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -60,16 +70,26 @@ def canonical(lang, pid):
     s = SLUGS[pid][lang]
     return f"{SITE}/{lang}/" + ("" if s == "index" else s)
 
+def url_on(site, lang, pid):
+    s = SLUGS[pid][lang]
+    return f"{SITES[site]}/{lang}/" + ("" if s == "index" else s)
+
+def hreflangs(pid):
+    """(hreflang, address) of every version of a page, on both sites. The same list on every version."""
+    out = [(f"{l}-BE", url_on("be", l, pid)) for l in SITE_LANGS["be"]]
+    out += [(l, url_on("ai", l, pid)) for l in SITE_LANGS["ai"]]
+    return out + [("x-default", url_on("ai", "en", pid))]
+
 def name_of(lang, pid):
     if pid in PRODUCTS: return P[pid][lang]["name"]
     if pid in SECTORS: return S[pid][lang]["nav"]
     return {"home": UI[lang]["home"], "pricing": UI[lang]["pricing"], "about": UI[lang]["about"],
-            "contact": UI[lang]["contact"], "legal": UI[lang]["foot_legal"]}[pid]
+            "contact": UI[lang]["contact"], "legal": UI[lang]["foot_legal"], "calculator": CALC[lang]["nav"]}[pid]
 
 def meta_of(lang, pid):
     if pid in PRODUCTS: d = P[pid][lang]
     elif pid in SECTORS: d = S[pid][lang]
-    else: d = {"home": HOME, "pricing": PRICING, "about": ABOUT, "contact": CONTACT, "legal": LEGAL}[pid][lang]
+    else: d = {"home": HOME, "pricing": PRICING, "about": ABOUT, "contact": CONTACT, "legal": LEGAL, "calculator": CALC}[pid][lang]
     return d["title"], d["desc"]
 
 # ---------------- JSON-LD ----------------
@@ -78,9 +98,27 @@ ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": "Conveasy", "lega
        "address": {"@type": "PostalAddress", "streetAddress": "1209 Mountain Road Pl NE STE N", "addressLocality": "Albuquerque",
                    "addressRegion": "NM", "postalCode": "87110", "addressCountry": "US"},
        "description": "AI ordering software for restaurants: phone AI and WhatsApp AI for orders and 24/7 table reservations, commission-free webshop with QR ordering, self-order kiosk and Marketing AI with a digital stamp card in Google and Apple Wallet.",
-       "areaServed": ["BE", "NL", "LU"],
+       "areaServed": ["BE", "NL", "LU", "DE", "CH", "FR", "ES", "PT", "IT"],
        "contactPoint": {"@type": "ContactPoint", "telephone": PHONE_TEL, "contactType": "sales",
                         "availableLanguage": ["nl", "fr", "en", "tr", "de"]}}
+
+def software_app(lang):
+    """Conveasy as a SoftwareApplication with every monthly price as an Offer (home and pricing pages), so search engines and AI
+    assistants read the prices as data. One-time setup fees are in each offer's description."""
+    pr = PRICING[lang]
+    def offer(name, price, note):
+        return {"@type": "Offer", "name": name, "price": price, "priceCurrency": "EUR", "url": canonical(lang, "pricing"), "description": note,
+                "priceSpecification": {"@type": "UnitPriceSpecification", "price": price, "priceCurrency": "EUR", "billingDuration": "P1M"}}
+    offers = [offer(f'{P["phone"][lang]["name"]} {n} ({mins})', price, pr["setup"]) for n, price, mins, _ in pr["tiers"]]
+    offers += [offer(P[k][lang]["name"], MONTHLY[k], pr["setup_other"]) for k in ("whatsapp", "webshop")]
+    for k, price in (("kiosk", pr["kiosk_price"]), ("marketing", pr["mkt_price"])):
+        if str(price).isdigit(): offers.append(offer(P[k][lang]["name"], str(price), pr["setup_other"] if k == "kiosk" else ""))
+    for o in offers:
+        if not o["description"]: del o["description"]
+    return {"@type": "SoftwareApplication", "@id": SITE + "/#app", "name": "Conveasy", "url": canonical(lang, "home"),
+            "applicationCategory": "BusinessApplication", "applicationSubCategory": "Restaurant ordering software", "operatingSystem": "Web",
+            "description": meta_of(lang, "home")[1], "inLanguage": HTML_LANG[lang], "publisher": {"@id": SITE + "/#org"},
+            "featureList": [P[k][lang]["name"] for k in PRODUCTS], "offers": offers}
 
 def jsonld(lang, pid, faqs, crumbs):
     title, desc = meta_of(lang, pid)
@@ -106,6 +144,8 @@ def jsonld(lang, pid, faqs, crumbs):
                        "priceSpecification": {"@type": "UnitPriceSpecification", "price": m, "priceCurrency": "EUR", "billingDuration": "P1M"}}]
         if offers: prod["offers"] = offers
         graph.append(prod)
+    if pid in ("home", "pricing"):
+        graph.append(software_app(lang))
     good = [(q, a) for q, a in faqs if "{{PH:" not in a]
     if good:
         graph.append({"@type": "FAQPage", "mainEntity": [
@@ -124,8 +164,7 @@ def asset_fingerprint(name):
 
 def head(lang, pid, prefix, faqs, crumbs, main):
     title, desc = meta_of(lang, pid)
-    alts = "".join(f'<link rel="alternate" hreflang="{l}" href="{canonical(l, pid)}">' for l in LANGS)
-    alts += f'<link rel="alternate" hreflang="x-default" href="{canonical(ROOT_LANG, pid)}">'
+    alts = "".join(f'<link rel="alternate" hreflang="{h}" href="{u}">' for h, u in hreflangs(pid))
     parts = [f"<title>{e(title)}</title>"]
     if main:
         parts.append('<meta name="claude:viewport-fit-sides" content="cover">')
@@ -135,6 +174,8 @@ def head(lang, pid, prefix, faqs, crumbs, main):
               f'<meta property="og:title" content="{e(title)}">', f'<meta property="og:description" content="{e(desc)}">',
               f'<meta property="og:url" content="{canonical(lang, pid)}">', f'<meta property="og:locale" content="{OG_LOCALE[lang]}">',
               '<meta name="twitter:card" content="summary_large_image">',
+              f'<meta property="og:image" content="{SITE}/assets/og/og-{lang}.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">',
+              f'<meta property="og:image:alt" content="{e(title)}"><meta name="twitter:image" content="{SITE}/assets/og/og-{lang}.jpg">',
               '<meta name="theme-color" content="#000000">',
               FB_TAG,
               f'<link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{prefix}assets/apple-touch-icon.png">',
@@ -151,6 +192,11 @@ def header(lang, pid, prefix):
     prod_links = "".join(f'<a href="{h(p)}"{cur(p)}>{e(P[p][lang]["name"])}<small>{e(P[p][lang]["sub"])}</small></a>' for p in PRODUCTS)
     sec_links = "".join(f'<a href="{h(s)}"{cur(s)}>{e(S[s][lang]["name"])}</a>' for s in SECTORS)
     langs = "".join(f'<a href="{prefix + path_of(l, pid)}" hreflang="{l}" lang="{l}" title="{LANG_NAMES[l]}"{" aria-current=\"true\"" if l == lang else ""}>{l}</a>' for l in LANGS)
+    if len(LANGS) > 3:   # conveasy.ai: eight languages fit better in a menu than in a row
+        items = "".join(f'<a href="{prefix + path_of(l, pid)}" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == lang else ""}>{e(LANG_NAMES[l])}</a>' for l in LANGS)
+        lang_nav = f'<details class="dd dd-lang"><summary aria-label="Language: {e(LANG_NAMES[lang])}"><span class="globe" aria-hidden="true"></span>{lang.upper()}</summary><div class="dd-menu">{items}</div></details>'
+    else:
+        lang_nav = f'<div class="lang" aria-label="Language">{langs}</div>'
     mob_prod = "".join(f'<a href="{h(p)}">{e(P[p][lang]["name"])}</a>' for p in PRODUCTS)
     mob_sec = "".join(f'<a href="{h(s)}">{e(S[s][lang]["name"])}</a>' for s in SECTORS)
     return f'''<header class="site-header"><div class="wrap">
@@ -161,7 +207,7 @@ def header(lang, pid, prefix):
 <a href="{h("pricing")}"{cur("pricing")}>{e(u["pricing"])}</a>
 <a href="{h("about")}"{cur("about")}>{e(u["about"])}</a>
 <a href="{h("contact")}"{cur("contact")}>{e(u["contact"])}</a>
-<div class="lang" aria-label="Language">{langs}</div>
+{lang_nav}
 </nav>
 <a class="btn btn-primary btn-head" href="{h("contact")}">{e(u["demo"])}</a>
 <details class="mobile-menu"><summary>{e(u["menu"])}</summary><div class="mobile-panel">
@@ -173,6 +219,18 @@ def header(lang, pid, prefix):
 </div></details>
 </div></header>'''
 
+# The footer links the other site: conveasy.be in Dutch or French, conveasy.ai in the same language.
+OTHER_SITE = {"nl": ("Internationale site", "In België"), "fr": ("Site international", "En Belgique"), "en": ("International site", "In Belgium"),
+              "de": ("Internationale Website", "In Belgien"), "tr": ("Uluslararası site", "Belçika'da"), "es": ("Web internacional", "En Bélgica"),
+              "pt": ("Site internacional", "Na Bélgica"), "it": ("Sito internazionale", "In Belgio")}
+def other_site(lang, page):
+    pid = page.split("/")[-1]
+    if pid not in SLUGS: pid = "home"
+    if TARGET == "be":
+        return f'{e(OTHER_SITE[lang][0])}: <a href="{url_on("ai", lang, pid)}" hreflang="{lang}">conveasy.ai</a>'
+    bl = "fr" if lang == "fr" else "nl"
+    return f'{e(OTHER_SITE[lang][1])}: <a href="{url_on("be", bl, pid)}" hreflang="{bl}-BE">conveasy.be</a>'
+
 def footer(lang, prefix, page):
     u = UI[lang]
     h = lambda p: prefix + path_of(lang, p)
@@ -183,9 +241,9 @@ def footer(lang, prefix, page):
 <div style="display:grid;gap:12px;align-content:start"><a class="logo" href="{h("home")}">{LOGO_MARK}Conveasy</a><p>{e(u["foot_tag"])}</p><p>{e(PHONE_LABEL[lang])} <a href="tel:{PHONE_TEL}">{e(PHONE_DISPLAY)}</a></p></div>
 <div><h4>{e(u["products"])}</h4><ul>{prods}</ul></div>
 <div><h4>{e(u["sectors"])}</h4><ul>{secs}</ul></div>
-<div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
+<div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("calculator")}">{e(CALC[lang]["nav"])}</a></li><li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
 </div>
-<div class="foot-bottom"><span>{ph(u["foot_company"], lang, page)}</span><span>{e(u["foot_rights"])}</span></div>
+<div class="foot-bottom"><span>{ph(u["foot_company"], lang, page)}</span><span>{other_site(lang, page)} · {e(u["foot_rights"])}</span></div>
 </div></footer>'''
 
 def ticket_i(lang, items, channel, when):
@@ -261,7 +319,7 @@ def kiosk_i(lang):
             ("fries", ["Friet", "Frites", "Fries", "Patates", "Pommes"], "4,50"),
             ("drink", ["Drankje", "Boisson", "Drink", "İçecek", "Getränk"], "2,50")]
     items = "".join(f'<div class="ks-item ks-{k}">{icons[k]}<span class="ks-n"><b>{roll(w)}</b><small>€{pr}</small></span><u>+</u></div>' for k, w, pr in rows)
-    return f'''<div class="kscene" style="--ks-i: {["nl", "fr", "en", "tr", "de"].index(lang)}" role="img" aria-label="{e(UI[lang]["example"])}: kiosk">
+    return f'''<div class="kscene" style="--ks-i: {["nl", "fr", "en", "tr", "de"].index(lang) if lang in ("nl", "fr", "en", "tr", "de") else 2}" role="img" aria-label="{e(UI[lang]["example"])}: kiosk">
 <div class="ks-kiosk"><div class="ks-frame"><div class="ks-screen">
 <div class="ks-view ks-lang"><span class="ks-hello"><span>{hello}</span></span><div class="ks-chips">{chips}</div></div>
 <div class="ks-view ks-menu"><div class="ks-top">{roll(["Menu", "Carte", "Menu", "Menü", "Speisekarte"])}<span class="ks-cart"><span><em>0</em><em>1</em><em>2</em></span></span></div>{items}<div class="ks-go">{roll(["Bestellen", "Commander", "Order", "Sipariş ver", "Bestellen"])}</div></div>
@@ -484,7 +542,7 @@ def cta_band(lang, prefix):
 
 def how_band(lang):
     u = UI[lang]
-    sw = {"nl": "Stap", "fr": "Étape", "en": "Step", "tr": "Adım", "de": "Schritt"}[lang]
+    sw = {"nl": "Stap", "fr": "Étape", "en": "Step", "tr": "Adım", "de": "Schritt"}.get(lang) or lang_es_pt_it.META[lang]["STEP"]
     steps = "".join(f'<li><span class="step-n">{sw} {i}</span><h3>{e(t)}</h3><p class="note">{e(d)}</p></li>' for i, (t, d) in enumerate(u["steps"], 1))
     return f'''<section class="band"><div class="wrap"><div class="section-head"><span class="eyebrow">{e(u["how_eyebrow"])}</span><h2>{e(u["how_title"])}</h2></div><ol class="steps">{steps}</ol></div></section>'''
 
@@ -804,8 +862,53 @@ def page_home(lang, prefix):
 <div class="section-head" style="margin:0;grid-column:span 2;max-width:none"><span class="eyebrow">{e(d["story_eyebrow"])}</span><h2>{e(d["story_title"])}</h2><p class="lead">{e(d["story_text"])}</p><p><a href="{prefix + path_of(lang, "about")}">{e(d["story_link"])} →</a></p></div>
 <div class="card"><span class="eyebrow" style="margin:0">{e(d["price_eyebrow"])}</span><h3>{e(d["price_title"])}</h3><p>{e(d["price_text"])}</p><a class="more" href="{prefix + path_of(lang, "pricing")}">{e(u["see_prices"])} →</a></div>
 </div></section>'''
-    body += faq_band(lang, d["faq"], pg) + cta_band(lang, prefix)
+    body += refer_band(lang, prefix) + faq_band(lang, d["faq"], pg) + cta_band(lang, prefix)
     return body, d["faq"], []
+
+def refer_band(lang, prefix):
+    """The referral offer (calculator.REFER): on the home page and the pricing page."""
+    eb, title, text, btn = REFER[lang]
+    return (f'<section class="band refer-band"><div class="wrap"><div class="refer card"><div><span class="eyebrow">{e(eb)}</span>'
+            f'<h2>{e(title)}</h2><p>{e(text)}</p></div><div class="btn-row"><a class="btn btn-primary" href="{prefix + path_of(lang, "contact")}">{e(btn)} '
+            f'<span class="arr" aria-hidden="true">→</span></a></div></div></div></section>')
+
+def _money0(lang, x):
+    """A whole euro amount the way the page language writes it (site.js rewrites it with the browser's own formatting)."""
+    n = f"{round(x):,}"
+    if lang in ("en",): return "€" + n
+    if lang in ("nl", "tr"): return "€" + n.replace(",", ".")
+    if lang == "fr": return n.replace(",", "\u202f") + "\u00a0€"
+    if lang in ("es", "pt") and x < 10000: return n.replace(",", "") + "\u00a0€"
+    return n.replace(",", ".") + "\u00a0€"
+
+def page_calculator(lang, prefix):
+    """Commission calculator: the visitor's own numbers in, commission per month and year and the webshop's break-even out.
+    The page shows the result for the starting values; site.js recalculates as the numbers change."""
+    d, u = CALC[lang], UI[lang]
+    pg = f"{lang}/calculator"
+    trail = [(u["home"], "home"), (d["nav"], None)]
+    s = calculator.START
+    month = s["orders"] * s["avg"] * s["rate"] / 100
+    per = s["avg"] * s["rate"] / 100
+    even_n = -(-calculator.WEBSHOP_MONTHLY // per) if per else 0
+    def field(k, step, mx=""):
+        return (f'<div class="field"><label for="c-{k}">{e(d[k])}</label><input id="c-{k}" type="number" inputmode="decimal" min="0"{mx} '
+                f'step="{step}" value="{s[k]}" data-k="{k}"></div>')
+    body = f'''<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy">{crumbs_html(lang, prefix, trail)}<h1>{e(d["h1"])}</h1><p class="lead">{e(d["lead"])}</p></div></div></section>
+<section class="band" style="padding-top:0"><div class="wrap">
+<div class="calc" data-calc data-locale="{HTML_LANG[lang]}" data-webshop="{calculator.WEBSHOP_MONTHLY}" data-t-kept="{e(d["kept"])}" data-t-even="{e(d["even"])}">
+<div class="calc-in">{field("orders", "10")}{field("avg", "0.5")}{field("rate", "1", ' max="100"')}{field("share", "5", ' max="100"')}</div>
+<div class="calc-out" aria-live="polite">
+<div class="calc-n"><small>{e(d["month"])}</small><b data-o="month">{_money0(lang, month)}</b></div>
+<div class="calc-n"><small>{e(d["year"])}</small><b data-o="year">{_money0(lang, month * 12)}</b></div>
+<div class="calc-n calc-keep"><small data-o="kept-label">{e(d["kept"].replace("{p}", str(s["share"])))}</small><b data-o="kept">{_money0(lang, month * s["share"] / 100)}</b></div>
+<p class="calc-even" data-o="even">{e(d["even"].replace("{n}", str(int(even_n))))}</p>
+</div></div>
+<p class="note" style="margin-top:16px">{e(d["note"])}</p>
+<p class="note"><a href="{prefix + path_of(lang, "pricing")}">{e(u["see_prices"])} →</a></p>
+</div></section>'''
+    body += faq_band(lang, d["faq"], pg) + cta_band(lang, prefix)
+    return body, d["faq"], [(u["home"], canonical(lang, "home")), (d["nav"], canonical(lang, "calculator"))]
 
 # Online payment methods, shown on the webshop and QR page
 PAY = {
@@ -877,9 +980,9 @@ def page_pricing(lang, prefix):
 <div class="price-group"><h2>{e(d["phone_h"])}</h2><p class="note">{e(d["phone_note"])}</p><div class="price-grid">{phone_tiers(lang, pg)}</div></div>
 <div class="price-group"><h2>{e(d["text_h"])}</h2><div class="price-grid">{price_card(P["whatsapp"][lang]["name"], "99", u["per_month"], d["year"], d["wa_feats"], lang, pg, note=d["setup_other"])}{price_card(P["webshop"][lang]["name"], "79", u["per_month"], d["year"], d["web_feats"], lang, pg, note=d["setup_other"])}</div></div>
 <div class="price-group"><h2>{e(d["more_h"])}</h2><div class="price-grid">{price_card(P["kiosk"][lang]["name"], d["kiosk_price"], u["per_month"], d["kiosk_sub"], d["kiosk_feats"], lang, pg, note=d["setup_other"])}{price_card(P["marketing"][lang]["name"], d["mkt_price"], u["per_month"], "", d["mkt_feats"], lang, pg)}</div></div>
-<div class="card" style="max-width:820px"><p><strong>{e(d["combo"])}</strong></p><p>{ph(d["trial"], lang, pg)}</p><p>{ph(d["hardware"], lang, pg)}</p><p><a class="more" href="{prefix + path_of(lang, "contact")}">{e(u["demo"])} →</a></p></div>
+<div class="card" style="max-width:820px"><p><strong>{e(d["combo"])}</strong></p><p>{ph(d["trial"], lang, pg)}</p><p>{ph(d["hardware"], lang, pg)}</p><p><a class="more" href="{prefix + path_of(lang, "contact")}">{e(u["demo"])} →</a> &nbsp; <a class="more" href="{prefix + path_of(lang, "calculator")}">{e(CALC[lang]["nav"])} →</a></p></div>
 </div></section>'''
-    body += faq_band(lang, d["faq"], pg) + cta_band(lang, prefix)
+    body += refer_band(lang, prefix) + faq_band(lang, d["faq"], pg) + cta_band(lang, prefix)
     return body, d["faq"], [(u["home"], canonical(lang, "home")), (u["pricing"], canonical(lang, "pricing"))]
 
 def page_about(lang, prefix):
@@ -929,15 +1032,17 @@ def page_legal(lang, prefix):
             inner = "".join(f"<p>{e(x)}</p>" if isinstance(x, str) else "<ul>" + "".join(f"<li>{e(i)}</li>" for i in x) + "</ul>" for x in parts)
             secs += f'<h3 style="font-size:1.05rem;margin-top:1.4em">{e(head)}</h3>{inner}'
         docs += f'<h2 id="{doc["id"]}" style="font-size:1.5rem;margin-top:2em;scroll-margin-top:96px">{e(doc["title"])}</h2><p style="opacity:.7">{e(doc["updated"])}</p><p>{e(doc["intro"])}</p>{secs}'
+    note = f'<p class="note">{e(lang_es_pt_it.META[lang]["LEGAL_NOTE"])}</p>' if lang in lang_es_pt_it.META else ""
     body = f"""<section class="hero"><div class="wrap" style="grid-template-columns:minmax(0,1fr)"><div class="hero-copy"><h1>{e(d["h1"])}</h1></div></div></section>
-<section class="band" style="padding-top:0"><div class="wrap"><div class="prose">{company}<ul>{toc}</ul>{docs}</div></div></section>"""
+<section class="band" style="padding-top:0"><div class="wrap"><div class="prose">{company}{note}<div{' lang="en"' if note else ""}><ul>{toc}</ul>{docs}</div></div></div></section>"""
     return body, [], []
 
 def render(lang, pid, prefix, preview, main=False):
     if pid == "home": body, faqs, crumbs = page_home(lang, prefix)
     elif pid in PRODUCTS: body, faqs, crumbs = page_product(lang, pid, prefix)
     elif pid in SECTORS: body, faqs, crumbs = page_sector(lang, pid, prefix)
-    else: body, faqs, crumbs = {"pricing": page_pricing, "about": page_about, "contact": page_contact, "legal": page_legal}[pid](lang, prefix)
+    else: body, faqs, crumbs = {"pricing": page_pricing, "about": page_about, "contact": page_contact, "legal": page_legal,
+                                "calculator": page_calculator}[pid](lang, prefix)
     bar = f'<div class="preview-bar"><div class="wrap">{e(UI[lang]["preview"])}</div></div>' if preview else ""
     inner = f'{bar}{header(lang, pid, prefix)}<main>{body}</main>{footer(lang, prefix, f"{lang}/{pid}")}<script src="{prefix}assets/site.js{ASSET_Q["js"]}"></script>'
     hd = head(lang, pid, prefix, faqs, crumbs, main)
@@ -957,7 +1062,7 @@ FB_TAG = f'<meta name="facebook-domain-verification" content="{FB_DOMAIN_VERIFY}
 # The Framer site's addresses. /privacy, /terms and /data-deletion are set in Meta's app for WhatsApp, so they stay real pages
 # (each with that one English document); /about and /contact send visitors on to the new English pages.
 OLD_DOCS = ("privacy", "terms", "data-deletion")
-OLD_MOVED = {"about": "en/about.html", "contact": "en/contact.html"}
+OLD_MOVED = {"about": SITES["ai"] + "/en/about", "contact": SITES["ai"] + "/en/contact"}
 
 def doc_html(doc):
     secs = ""
@@ -999,8 +1104,16 @@ def live_extras(outdir):
     for old, new in (OLD_MOVED.items() if TARGET == "be" else []):
         write(os.path.join(outdir, old + ".html"),
               f'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>Conveasy</title><meta name="robots" content="noindex">'
-              f'<link rel="canonical" href="{SITE}/{new[:-5]}"><meta http-equiv="refresh" content="0; url={new}">'
+              f'<link rel="canonical" href="{new}"><meta http-equiv="refresh" content="0; url={new}">'
               f'<script>location.replace("{new}" + location.hash)</script></head><body><p><a href="{new}">Conveasy</a></p></body></html>\n')
+    if TARGET == "be":
+        for l in ("en", "tr", "de"):
+            for pid in SLUGS:
+                new = url_on("ai", l, pid)
+                write(os.path.join(outdir, path_of(l, pid)),
+                      f'<!doctype html>\n<html lang="{HTML_LANG[l]}"><head><meta charset="utf-8"><title>Conveasy</title>'
+                      f'<link rel="canonical" href="{new}"><meta http-equiv="refresh" content="0; url={new}">'
+                      f'<script>location.replace("{new}" + location.hash)</script></head><body><p><a href="{new}">conveasy.ai</a></p></body></html>\n')
     # GitHub Pages shows 404.html for any missing address, at any depth, so this one uses addresses from the root of the domain
     t, x = NOT_FOUND[ROOT_LANG]
     t2, x2 = NOT_FOUND["en" if ROOT_LANG == "nl" else "nl"]
@@ -1010,20 +1123,35 @@ def live_extras(outdir):
     write(os.path.join(outdir, "404.html"), shell(ROOT_LANG, "/", f"{t} | Conveasy", x, "", body, '<meta name="robots" content="noindex">'))
 
 # ---------------- SEO files ----------------
-def sitemap():
+LASTMOD_FILE = os.path.join(HERE, "lastmod.json")
+def lastmod_dates(hashes):
+    """{address: date of the last change}. A page gets today's date when its HTML changed since the last build (asset versions
+    ignored); otherwise it keeps its date. Both sites share src/lastmod.json, so commit it with the build."""
+    import datetime
+    try:
+        with open(LASTMOD_FILE, encoding="utf-8") as f: known = json.load(f)
+    except (OSError, ValueError):
+        known = {}
+    today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    for url, h in hashes.items():
+        if known.get(url, [None])[0] != h: known[url] = [h, today]
+    with open(LASTMOD_FILE, "w", encoding="utf-8") as f: json.dump(dict(sorted(known.items())), f, indent=0, ensure_ascii=False)
+    return {u: known[u][1] for u in hashes}
+
+def sitemap(lastmod=None):
     rows = []
     for pid in SLUGS:
+        alts = "".join(f'<xhtml:link rel="alternate" hreflang="{h}" href="{u}"/>' for h, u in hreflangs(pid))
         for l in LANGS:
-            alts = "".join(f'<xhtml:link rel="alternate" hreflang="{a}" href="{canonical(a, pid)}"/>' for a in LANGS)
-            alts += f'<xhtml:link rel="alternate" hreflang="x-default" href="{canonical(ROOT_LANG, pid)}"/>'
-            rows.append(f"<url><loc>{canonical(l, pid)}</loc>{alts}</url>")
+            lm = f"<lastmod>{lastmod[canonical(l, pid)]}</lastmod>" if lastmod and canonical(l, pid) in lastmod else ""
+            rows.append(f"<url><loc>{canonical(l, pid)}</loc>{lm}{alts}</url>")
     return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n"
 
 ROBOTS = f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n"
 
 def llms():
     L = ["# Conveasy", "",
-         "> Conveasy is AI ordering software for restaurants in Belgium and the Benelux. An AI takes orders and table reservations by phone and on WhatsApp, 24/7 and in 60+ languages. Restaurants also get a commission-free webshop with QR ordering, a self-order kiosk (card and online payments only) and Marketing AI, which includes a digital stamp card in Google Wallet and Apple Wallet. All orders and reservations land in one dashboard, on the kitchen screen and on the kitchen printer.", "",
+         f"> Conveasy is AI ordering software for restaurants {'in Europe' if TARGET == 'ai' else 'in Belgium and the Benelux'}. An AI takes orders and table reservations by phone and on WhatsApp, 24/7 and in 60+ languages. Restaurants also get a commission-free webshop with QR ordering, a self-order kiosk (card and online payments only) and Marketing AI, which includes a digital stamp card in Google Wallet and Apple Wallet. All orders and reservations land in one dashboard, on the kitchen screen and on the kitchen printer.", "",
          "Key facts:",
          "- Phone AI: €249/month (500 minutes), €449/month (1,000 minutes), €799/month (2,000 minutes). Handles 50+ calls at the same time.",
          "- Phone AI also: recognises returning callers (name, address, last order), checks the delivery address against the street list and delivery zones, transfers to staff when the caller asks, takes add-ons in the same call, answers outside opening hours to say when the restaurant opens again, and sends callers who hung up without ordering a WhatsApp message to order after all.",
@@ -1035,18 +1163,36 @@ def llms():
          "- Works for every kind of restaurant: it uses the restaurant's own menu. Pages for frituren (Belgian fry shops), sushi restaurants, pizzerias, burger restaurants, kebab shops and all other restaurants.",
          "- Table reservations 24/7 through the phone AI and the WhatsApp AI; each reservation (name, date, time, party size) lands in the dashboard. Included in the phone AI and WhatsApp AI price at no extra cost.",
          "- Marketing AI: €69/month. Announcements to customers on all channels, Google review links, automatic emails for a second order and for unfinished orders, prepaid cards, and a digital stamp card in Google Wallet and Apple Wallet with notifications.",
-         f"- Contact: phone {PHONE_DISPLAY}, email {EMAIL}, WhatsApp and demo requests at {SITE}/en/contact",
+         f"- Contact: phone {PHONE_DISPLAY}, email {EMAIL}, WhatsApp and demo requests at {url_on('ai', 'en', 'contact')}",
          f"- Company: Balloz Solutions LLC, 1209 Mountain Road Pl NE STE N, Albuquerque, NM 87110, USA. EIN {EIN}.", "",
          "## Products (English)"]
     for p in PRODUCTS:
-        L.append(f"- [{P[p]['en']['name']}]({canonical('en', p)}): {P[p]['en']['card']}")
+        L.append(f"- [{P[p]['en']['name']}]({url_on('ai', 'en', p)}): {P[p]['en']['card']}")
     L += ["", "## Restaurant types (English)"]
     for s in SECTORS:
-        L.append(f"- [{S[s]['en']['name']}]({canonical('en', s)}): {plain(S[s]['en']['lead'])}")
+        L.append(f"- [{S[s]['en']['name']}]({url_on('ai', 'en', s)}): {plain(S[s]['en']['lead'])}")
     L += ["", "## Other pages",
-          f"- [Pricing]({canonical('en', 'pricing')})", f"- [About]({canonical('en', 'about')})", f"- [Contact]({canonical('en', 'contact')})", "",
-          "## Other languages", f"- Nederlands: {canonical('nl', 'home')}", f"- Français: {canonical('fr', 'home')}", f"- Türkçe: {canonical('tr', 'home')}", f"- Deutsch: {canonical('de', 'home')}", ""]
+          f"- [Pricing]({url_on('ai', 'en', 'pricing')})", f"- [Commission calculator]({url_on('ai', 'en', 'calculator')}): what platform commission costs a restaurant per month and per year, and from how many orders the restaurant's own webshop (€79/month) pays for itself.",
+          f"- [About]({url_on('ai', 'en', 'about')})", f"- [Contact]({url_on('ai', 'en', 'contact')})",
+          "- Referral: a Conveasy client who recommends a restaurant that becomes a client gets their next month free.", "",
+          "## Other languages"]
+    L += [f"- {LANG_NAMES[l]}: {url_on('ai', l, 'home')}" for l in SITE_LANGS["ai"] if l != "en"]
+    L += [f"- Belgium, in Dutch and French: {url_on('be', 'nl', 'home')} and {url_on('be', 'fr', 'home')}", ""]
     return "\n".join(L)
+
+def _swap(v, old, new):
+    if isinstance(v, str): return v.replace(old, new)
+    if isinstance(v, tuple): return tuple(_swap(x, old, new) for x in v)
+    if isinstance(v, list): return [_swap(x, old, new) for x in v]
+    if isinstance(v, dict): return {k: _swap(x, old, new) for k, x in v.items()}
+    return v
+def ai_wording():
+    """conveasy.ai is for restaurants all over Europe, conveasy.be for Belgium: on the international site these texts say Europe."""
+    wording = {"nl": ("in de Benelux", "in Europa"), "fr": ("du Benelux", "en Europe"), "en": ("in the Benelux", "in Europe"),
+               "de": ("in den Beneluxländern", "in Europa"), "tr": ("Benelüks'teki", "Avrupa'daki")}
+    for l, (old, new) in wording.items():
+        HOME[l] = _swap(HOME[l], old, new)
+    S["frituur"]["en"] = _swap(S["frituur"]["en"], "for Belgian fry shops", "for fry shops")
 
 # ---------------- Write ----------------
 def write(path, text):
@@ -1063,13 +1209,21 @@ def build(outdir, preview):
         shutil.copy(os.path.join(HERE, icon), os.path.join(outdir, "assets", icon))
     # Only for the real site: the claude.ai preview serves its files by plain path and always gets them fresh.
     ASSET_Q.update(css="" if preview else "?v=" + asset_fingerprint("site.css"), js="" if preview else "?v=" + asset_fingerprint("site.js"))
+    os.makedirs(os.path.join(outdir, "assets", "og"), exist_ok=True)   # link preview images, made by tools/og_images.py
+    for l in LANGS:
+        src = os.path.join(HERE, "og", f"og-{l}.jpg")
+        if os.path.exists(src): shutil.copy(src, os.path.join(outdir, "assets", "og", f"og-{l}.jpg"))
+        else: print("missing link preview image src/og/og-%s.jpg: run python3 tools/og_images.py" % l)
     if os.path.isdir(SHOT_DIR) and any(shot_file(x) for x in SHOT_FN):
         shutil.copytree(SHOT_DIR, os.path.join(outdir, "assets", "shots"))
+    hashes = {}
     for l in LANGS:
         for pid in SLUGS:
-            write(os.path.join(outdir, path_of(l, pid)), render(l, pid, "../", preview))
+            page = render(l, pid, "../", preview)
+            write(os.path.join(outdir, path_of(l, pid)), page)
+            hashes[canonical(l, pid)] = hashlib.sha1(re.sub(r"\?v=[0-9a-f]{8}", "", page).encode()).hexdigest()[:16]
     write(os.path.join(outdir, "index.html"), render(ROOT_LANG, "home", "", preview))
-    write(os.path.join(outdir, "sitemap.xml"), sitemap())
+    write(os.path.join(outdir, "sitemap.xml"), sitemap(None if preview else lastmod_dates(hashes)))
     write(os.path.join(outdir, "robots.txt"), ROBOTS)
     write(os.path.join(outdir, "llms.txt"), llms())
     if preview:
@@ -1098,8 +1252,14 @@ if __name__ == "__main__":
     apply_overrides(globals())
     answers.apply(globals())
     sectors_more.apply(globals())
+    untranslated = lang_es_pt_it.apply(globals(), (extras, sectors_more))
+    LANGS[:] = SITE_LANGS[TARGET]                         # the languages this site renders (and shows in its switch)
     if TARGET == "ai":
-        LANGS.sort(key=lambda l: l != "en")             # English first in the language switch: en, nl, fr, tr, de
+        if untranslated:
+            print("es/pt/it: English texts not in lang_es_pt_it.T yet (these pages show them in English):", len(untranslated))
+            for x in untranslated: print("  -", x[:110])
+        ai_wording()
+        HTML_LANG.update(nl="nl", fr="fr"); OG_LOCALE.update(nl="nl_NL", fr="fr_FR")   # nl-BE and fr-BE are conveasy.be
         out = os.path.join(ROOT, "ai")
         build(out, False)
         write(os.path.join(out, ".nojekyll"), "")
