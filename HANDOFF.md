@@ -7,6 +7,12 @@ logo mark from the Framer site, favicon, WhatsApp profile pictures; earlier: pho
 page's top row, "En verder" lists, webshop animation, "50+ calls at once", Marketing AI and kiosk animations, payment methods,
 photo library, kiosk hardware 1599, voice greeting per page language, both demos connected, test address on GitHub Pages).
 
+## Privacy: no personal names in this repo
+- The repository is public. Do not write the owner's name (or any other personal name) in files, comments or commit messages;
+  write "the owner". On 17 Nov 2026 the whole history was rewritten (git filter-repo --sensitive-data-removal) to take the
+  owner's name out, and force-pushed. Anyone with a copy from before that must delete it and clone again; pulling into an
+  old copy and pushing would bring the old history back.
+
 ## Folders
 - src/ : source. build.py builds the site from content.py, lang_de.py, lang_tr.py, overrides.py, answers.py, extras.py, sectors_more.py,
   legal/, site.css, site.js, favicon.svg and apple-touch-icon.png.
