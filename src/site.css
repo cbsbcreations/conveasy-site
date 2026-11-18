@@ -1011,3 +1011,24 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
 .refer h2 { font-size: clamp(1.4rem, 2.6vw, 2rem); margin: 12px 0 6px; text-wrap: balance; }
 .refer p { color: var(--muted); max-width: 62ch; margin: 0; }
 @media (max-width: 760px) { .refer { grid-template-columns: minmax(0, 1fr); } }
+
+/* Restaurants that take orders with Conveasy (restaurants.py): the hub cards and each restaurant's page */
+.rest-addr { color: var(--muted); font-size: 1.05rem; margin-top: -8px; }
+.rest-muted { color: var(--muted); }
+.rest-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.rest-chip { font: 500 .82rem/1 var(--font-body); color: var(--ink); border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 11px; background: rgb(255 255 255 / .04); }
+.rest-facts { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr); margin: 0; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: rgb(10 10 12 / .85); }
+.rest-facts > div { display: contents; }
+.rest-facts dt, .rest-facts dd { margin: 0; padding: 15px 22px; border-bottom: 1px solid var(--line); }
+.rest-facts dt { color: var(--muted); }
+.rest-facts dd { color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+.rest-facts dd a { color: var(--brand); }
+.rest-facts > div:last-child dt, .rest-facts > div:last-child dd { border-bottom: 0; }
+.rest-checked { color: var(--muted); font-size: .9rem; margin-top: 14px; }
+.rest-all { margin-top: 22px; text-align: center; }
+.rest-all a { color: var(--brand); }
+@media (max-width: 640px) {
+  .rest-facts { grid-template-columns: minmax(0, 1fr); }
+  .rest-facts dt { padding-bottom: 0; border-bottom: 0; font-size: .9rem; }
+  .rest-facts dd { padding-top: 4px; }
+}

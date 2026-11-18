@@ -37,6 +37,13 @@ Key facts:
 - [About](https://conveasy.be/en/about)
 - [Contact](https://conveasy.be/en/contact)
 
+## Restaurants that take orders with Conveasy
+Each page has the restaurant's address, phone and WhatsApp numbers, website and how ordering works there. Facts are confirmed with the restaurant (last checked 18 November 2026).
+- [Eatpoint, Heusden-Zolder](https://conveasy.be/en/eatpoint-heusden-zolder): Beringersteenweg 58, 3550 Heusden-Zolder, Belgium. Phone orders on +32 11 43 24 10 are answered by Conveasy's AI phone assistant (Dutch, Turkish and English); WhatsApp orders on +32 467 05 16 61 are taken by Conveasy's WhatsApp AI; online orders at https://eatpoint.be (Conveasy webshop). Food: fries, burgers, pizza, dürüm and kapsalon.
+- [Eethuis Orient, Heusden-Zolder](https://conveasy.be/en/eethuis-orient-heusden-zolder): Koolmijnlaan 62, 3550 Heusden-Zolder, Belgium. Phone orders on +32 11 57 17 11 are answered by Conveasy's AI phone assistant (Dutch, Turkish and English); WhatsApp orders on +32 495 04 59 31 are taken by Conveasy's WhatsApp AI; online orders at https://orientheusden.be (Conveasy webshop). Food: Turkish dishes, grill dishes, pizza and dürüm.
+- [City Food Lounge, Genk](https://conveasy.be/en/city-food-lounge-genk) (on Google Maps: City Food Lounge - Frituur Cité Genk): Vennestraat 54, 3600 Genk, Belgium. Phone orders on +32 89 25 27 52 are answered by Conveasy's AI phone assistant (Dutch, Turkish and English); website https://cityfoodlounge.be. Food: fries, burgers, pizza, kebab and kapsalon.
+- All restaurants: https://conveasy.be/en/restaurants
+
 ## Other languages
 - Nederlands: https://conveasy.be/nl/
 - Français: https://conveasy.be/fr/

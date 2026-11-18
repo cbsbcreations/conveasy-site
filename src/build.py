@@ -16,6 +16,8 @@ import lang_es_pt_it
 import calculator
 from calculator import CALC, REFER
 SLUGS["calculator"] = dict(calculator.CALC_SLUGS)   # the commission calculator page, in every language
+import restaurants
+SLUGS.update(restaurants.slugs())   # the restaurants that take orders with Conveasy: a hub page and one page each (restaurants.py)
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal"))
 import legal_nl, legal_fr, legal_en, legal_tr, legal_de
 LEGAL_DOCS = {"nl": legal_nl, "fr": legal_fr, "en": legal_en, "tr": legal_tr, "de": legal_de}
@@ -84,12 +86,14 @@ def hreflangs(pid):
     return out + [("x-default", url_on("ai", "en", pid))]
 
 def name_of(lang, pid):
+    if pid in restaurants.PIDS: return restaurants.name(lang, pid)
     if pid in PRODUCTS: return P[pid][lang]["name"]
     if pid in SECTORS: return S[pid][lang]["nav"]
     return {"home": UI[lang]["home"], "pricing": UI[lang]["pricing"], "about": UI[lang]["about"],
             "contact": UI[lang]["contact"], "legal": UI[lang]["foot_legal"], "calculator": CALC[lang]["nav"]}[pid]
 
 def meta_of(lang, pid):
+    if pid in restaurants.PIDS: return restaurants.meta(lang, pid)
     if pid in PRODUCTS: d = P[pid][lang]
     elif pid in SECTORS: d = S[pid][lang]
     else: d = {"home": HOME, "pricing": PRICING, "about": ABOUT, "contact": CONTACT, "legal": LEGAL, "calculator": CALC}[pid][lang]
@@ -149,6 +153,7 @@ def jsonld(lang, pid, faqs, crumbs):
         graph.append(prod)
     if pid in ("home", "pricing"):
         graph.append(software_app(lang))
+    restaurants.extend_ld(globals(), lang, pid, graph)
     good = [(q, a) for q, a in faqs if "{{PH:" not in a]
     if good:
         graph.append({"@type": "FAQPage", "mainEntity": [
@@ -243,7 +248,7 @@ def footer(lang, prefix, page):
 <div style="display:grid;gap:12px;align-content:start"><a class="logo" href="{h("home")}">{LOGO_MARK}Conveasy</a><p>{e(u["foot_tag"])}</p><p>{e(PHONE_LABEL[lang])} <a href="tel:{PHONE_TEL}">{e(PHONE_DISPLAY)}</a></p></div>
 <div><h4>{e(u["products"])}</h4><ul>{prods}</ul></div>
 <div><h4>{e(u["sectors"])}</h4><ul>{secs}</ul></div>
-<div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("calculator")}">{e(CALC[lang]["nav"])}</a></li><li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
+<div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("calculator")}">{e(CALC[lang]["nav"])}</a></li>{restaurants.nav(globals(), lang, prefix)}<li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
 </div>
 <div class="foot-bottom"><span>{ph(u["foot_company"], lang, page)}</span><span>{other_site(lang, page)} · {e(u["foot_rights"])}</span></div>
 </div></footer>'''
@@ -1047,6 +1052,7 @@ def render(lang, pid, prefix, preview, main=False):
     if pid == "home": body, faqs, crumbs = page_home(lang, prefix)
     elif pid in PRODUCTS: body, faqs, crumbs = page_product(lang, pid, prefix)
     elif pid in SECTORS: body, faqs, crumbs = page_sector(lang, pid, prefix)
+    elif pid in restaurants.PIDS: body, faqs, crumbs = restaurants.page(globals(), lang, pid, prefix)
     else: body, faqs, crumbs = {"pricing": page_pricing, "about": page_about, "contact": page_contact, "legal": page_legal,
                                 "calculator": page_calculator}[pid](lang, prefix)
     bar = f'<div class="preview-bar"><div class="wrap">{e(UI[lang]["preview"])}</div></div>' if preview else ""
@@ -1174,6 +1180,7 @@ def llms():
           f"- [About]({url_on(TARGET, 'en', 'about')})", f"- [Contact]({url_on(TARGET, 'en', 'contact')})"]
     if SHOW_REFERRAL:
         L.append("- Referral: a Conveasy client who recommends a restaurant that becomes a client gets their next month free.")
+    L += restaurants.llms_lines(globals())
     L += ["", "## Other languages"]
     L += [f"- {LANG_NAMES[l]}: {url_on(TARGET, l, 'home')}" for l in SITE_LANGS[TARGET] if l != "en"]
     other = "ai" if TARGET == "be" else "be"
