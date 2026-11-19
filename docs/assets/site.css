@@ -1032,3 +1032,34 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
   .rest-facts dt { padding-bottom: 0; border-bottom: 0; font-size: .9rem; }
   .rest-facts dd { padding-top: 4px; }
 }
+
+/* Voice AI in Belgium: main page, comparison and question pages (belgium.py) */
+.hero .wrap[style] h1.be-h1 { max-width: 24ch; font-size: clamp(2.2rem, 5vw, 3.6rem); }
+.be-prose { max-width: 860px; }
+.be-prose ul, .be-prose ol { display: grid; gap: 8px; padding-left: 1.2em; margin: 0; }
+.be-prose a { color: var(--brand); }
+.cmp-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: rgb(10 10 12 / .85); }
+.cmp { width: 100%; min-width: 640px; border-collapse: collapse; font-size: .95rem; }
+.cmp th, .cmp td { text-align: left; vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.cmp thead th { color: var(--muted); font-weight: 500; font-size: .85rem; letter-spacing: .02em; }
+.cmp tbody th { color: var(--ink); font-weight: 600; }
+.cmp td { color: var(--muted); }
+.cmp tr:last-child th, .cmp tr:last-child td { border-bottom: 0; }
+.cmp tr.us th, .cmp tr.us td { color: var(--ink); background: rgb(255 255 255 / .04); }
+.prov-list { display: grid; gap: 12px; }
+.prov { border: 1px solid var(--line); border-radius: var(--r); padding: 18px 20px; background: rgb(10 10 12 / .85); display: grid; gap: 6px; }
+.prov.us { border-color: var(--brand); }
+.prov h3 { font-size: 1.1rem; }
+.prov p { margin: 0; }
+.prov .prov-src { font-size: .85rem; }
+.qa-list { list-style: none; padding-left: 0 !important; }
+.qa-list a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; }
+@media (max-width: 640px) {   /* the comparison table as one card per row on phones */
+  .cmp { min-width: 0; }
+  .cmp thead { display: none; }
+  .cmp, .cmp tbody, .cmp tr, .cmp th, .cmp td { display: block; width: 100%; }
+  .cmp tr { border-bottom: 1px solid var(--line); padding: 10px 0; }
+  .cmp tr:last-child { border-bottom: 0; }
+  .cmp th, .cmp td { border-bottom: 0; padding: 5px 16px; }
+  .cmp td::before { content: attr(data-label); display: block; font-size: .78rem; opacity: .75; margin-bottom: 2px; }
+}

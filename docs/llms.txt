@@ -37,6 +37,18 @@ Key facts:
 - [About](https://conveasy.be/en/about)
 - [Contact](https://conveasy.be/en/contact)
 
+## Voice AI for restaurants in Belgium (English pages)
+- [Voice AI for restaurants in Belgium](https://conveasy.be/en/voice-ai-restaurants-belgium): what Conveasy's phone AI does, how it differs from AI receptionists, reservation assistants and build-it-yourself platforms, prices. Conveasy is made by Balloz Solutions LLC (USA) for restaurants in Belgium.
+- [AI phone assistants for restaurants in Belgium, compared](https://conveasy.be/en/ai-phone-assistants-restaurants-belgium-compared): order-taking AI (Conveasy, fonio.ai), reservation assistants (Zenchef Call AI, HorecaHub.ai), phone systems with AI (CloudTalk, Dstny) and platforms (Retell AI, Famulor, Jotform), with what each suits; facts about others from their own websites, checked 19 November 2026.
+- [Which AI takes phone orders for a Belgian frituur?](https://conveasy.be/en/ai-phone-orders-frituur): Conveasy's phone AI is made for it. It takes the complete frituur order by phone, with your own menu and prices, and sends it to the kitchen.
+- [How much does an AI phone assistant cost for a restaurant in Belgium?](https://conveasy.be/en/ai-phone-assistant-cost-restaurant): At Conveasy the phone AI costs €249 a month for 500 minutes, €449 for 1,000 minutes or €799 for 2,000 minutes, plus a one-time setup fee of €299.
+- [Do I need a POS to use an AI phone assistant?](https://conveasy.be/en/ai-phone-without-pos): Not with Conveasy. The phone AI works separately from your till: every order goes to the kitchen printer and the kitchen screen, without a POS integration.
+- [Can an AI answer the phone in Dutch, French and Turkish?](https://conveasy.be/en/ai-phone-dutch-french-turkish): Yes. Conveasy's phone AI speaks the caller's language: Dutch, French, English, Turkish and 60+ other languages.
+- [What happens when many customers call a restaurant at the same time?](https://conveasy.be/en/many-calls-at-once-restaurant): With Conveasy every caller is answered straight away: the phone AI handles 50+ calls at the same time.
+- [Can an AI take restaurant orders on WhatsApp?](https://conveasy.be/en/whatsapp-orders-ai-restaurant): Yes. Conveasy's WhatsApp AI takes orders in the chat on the restaurant's own WhatsApp number and sends them to the kitchen.
+- [How fast can an AI phone assistant be set up in a restaurant?](https://conveasy.be/en/ai-phone-setup-time-restaurant): With Conveasy a restaurant is live within 10 days at most, and keeps its own phone number.
+- [Can an AI take table reservations by phone?](https://conveasy.be/en/ai-table-reservations-restaurant): Yes. Conveasy's phone AI and WhatsApp AI take table reservations 24/7, at no extra cost.
+
 ## Restaurants that take orders with Conveasy
 Each page has the restaurant's address, phone and WhatsApp numbers, website and how ordering works there. Facts are confirmed with the restaurant (last checked 18 November 2026).
 - [Eatpoint, Heusden-Zolder](https://conveasy.be/en/eatpoint-heusden-zolder): Beringersteenweg 58, 3550 Heusden-Zolder, Belgium. Phone orders on +32 11 43 24 10 are answered by Conveasy's AI phone assistant (Dutch, Turkish and English); WhatsApp orders on +32 467 05 16 61 are taken by Conveasy's WhatsApp AI; online orders at https://eatpoint.be (Conveasy webshop). Food: fries, burgers, pizza, dürüm and kapsalon.

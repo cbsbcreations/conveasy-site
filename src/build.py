@@ -18,6 +18,12 @@ from calculator import CALC, REFER
 SLUGS["calculator"] = dict(calculator.CALC_SLUGS)   # the commission calculator page, in every language
 import restaurants
 SLUGS.update(restaurants.slugs())   # the restaurants that take orders with Conveasy: a hub page and one page each (restaurants.py)
+import belgium
+SLUGS.update(belgium.slugs())       # voice AI for restaurants in Belgium: main page, comparison, question pages (belgium.py)
+# Pages that exist in only some languages (pid -> languages); every other page exists in every language of the site.
+PAGE_LANGS = dict(belgium.PAGE_LANGS)
+def has_lang(lang, pid):
+    return pid not in PAGE_LANGS or lang in PAGE_LANGS[pid]
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "legal"))
 import legal_nl, legal_fr, legal_en, legal_tr, legal_de
 LEGAL_DOCS = {"nl": legal_nl, "fr": legal_fr, "en": legal_en, "tr": legal_tr, "de": legal_de}
@@ -81,12 +87,14 @@ def url_on(site, lang, pid):
 
 def hreflangs(pid):
     """(hreflang, address) of every version of a page, on both sites. The same list on every version."""
-    out = [(f"{l}-BE", url_on("be", l, pid)) for l in SITE_LANGS["be"]]
-    out += [(l, url_on("ai", l, pid)) for l in SITE_LANGS["ai"]]
-    return out + [("x-default", url_on("ai", "en", pid))]
+    out = [(f"{l}-BE", url_on("be", l, pid)) for l in SITE_LANGS["be"] if has_lang(l, pid)]
+    out += [(l, url_on("ai", l, pid)) for l in SITE_LANGS["ai"] if has_lang(l, pid)]
+    xd = "en" if has_lang("en", pid) else next(l for l in SITE_LANGS["ai"] if has_lang(l, pid))
+    return out + [("x-default", url_on("ai", xd, pid))]
 
 def name_of(lang, pid):
     if pid in restaurants.PIDS: return restaurants.name(lang, pid)
+    if pid in belgium.PIDS: return belgium.name(lang, pid)
     if pid in PRODUCTS: return P[pid][lang]["name"]
     if pid in SECTORS: return S[pid][lang]["nav"]
     return {"home": UI[lang]["home"], "pricing": UI[lang]["pricing"], "about": UI[lang]["about"],
@@ -94,6 +102,7 @@ def name_of(lang, pid):
 
 def meta_of(lang, pid):
     if pid in restaurants.PIDS: return restaurants.meta(lang, pid)
+    if pid in belgium.PIDS: return belgium.meta(lang, pid)
     if pid in PRODUCTS: d = P[pid][lang]
     elif pid in SECTORS: d = S[pid][lang]
     else: d = {"home": HOME, "pricing": PRICING, "about": ABOUT, "contact": CONTACT, "legal": LEGAL, "calculator": CALC}[pid][lang]
@@ -107,7 +116,10 @@ ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": "Conveasy", "lega
        "description": "AI ordering software for restaurants: phone AI and WhatsApp AI for orders and 24/7 table reservations, commission-free webshop with QR ordering, self-order kiosk and Marketing AI with a digital stamp card in Google and Apple Wallet.",
        "areaServed": ["BE", "NL", "LU", "DE", "CH", "FR", "ES", "PT", "IT"],
        "contactPoint": {"@type": "ContactPoint", "telephone": PHONE_TEL, "contactType": "sales",
-                        "availableLanguage": ["nl", "fr", "en", "tr", "de"]}}
+                        "availableLanguage": ["nl", "fr", "en", "tr", "de"]},
+       "sameAs": [SITES["ai" if TARGET == "be" else "be"] + "/",
+                  "https://www.g2.com/products/conveasy/reviews", "https://www.capterra.com/p/10290451/Conveasy/",
+                  "https://www.getapp.com/all-software/a/conveasy/", "https://www.softwareadvice.com/product/797771-Conveasy/"]}
 
 def software_app(lang):
     """Conveasy as a SoftwareApplication with every monthly price as an Offer (home and pricing pages), so search engines and AI
@@ -154,6 +166,7 @@ def jsonld(lang, pid, faqs, crumbs):
     if pid in ("home", "pricing"):
         graph.append(software_app(lang))
     restaurants.extend_ld(globals(), lang, pid, graph)
+    belgium.extend_ld(globals(), lang, pid, graph)
     good = [(q, a) for q, a in faqs if "{{PH:" not in a]
     if good:
         graph.append({"@type": "FAQPage", "mainEntity": [
@@ -199,9 +212,10 @@ def header(lang, pid, prefix):
     cur = lambda p: ' aria-current="page"' if p == pid else ""
     prod_links = "".join(f'<a href="{h(p)}"{cur(p)}>{e(P[p][lang]["name"])}<small>{e(P[p][lang]["sub"])}</small></a>' for p in PRODUCTS)
     sec_links = "".join(f'<a href="{h(s)}"{cur(s)}>{e(S[s][lang]["name"])}</a>' for s in SECTORS)
-    langs = "".join(f'<a href="{prefix + path_of(l, pid)}" hreflang="{l}" lang="{l}" title="{LANG_NAMES[l]}"{" aria-current=\"true\"" if l == lang else ""}>{l}</a>' for l in LANGS)
+    lp = lambda l: prefix + path_of(l, pid if has_lang(l, pid) else "home")   # a page missing in a language: that language's home page
+    langs = "".join(f'<a href="{lp(l)}" hreflang="{l}" lang="{l}" title="{LANG_NAMES[l]}"{" aria-current=\"true\"" if l == lang else ""}>{l}</a>' for l in LANGS)
     if len(LANGS) > 3:   # conveasy.ai: eight languages fit better in a menu than in a row
-        items = "".join(f'<a href="{prefix + path_of(l, pid)}" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == lang else ""}>{e(LANG_NAMES[l])}</a>' for l in LANGS)
+        items = "".join(f'<a href="{lp(l)}" hreflang="{l}" lang="{l}"{" aria-current=\"true\"" if l == lang else ""}>{e(LANG_NAMES[l])}</a>' for l in LANGS)
         lang_nav = f'<details class="dd dd-lang"><summary aria-label="Language: {e(LANG_NAMES[lang])}"><span class="globe" aria-hidden="true"></span>{lang.upper()}</summary><div class="dd-menu">{items}</div></details>'
     else:
         lang_nav = f'<div class="lang" aria-label="Language">{langs}</div>'
@@ -233,7 +247,7 @@ OTHER_SITE = {"nl": ("Internationale site", "In België"), "fr": ("Site internat
               "pt": ("Site internacional", "Na Bélgica"), "it": ("Sito internazionale", "In Belgio")}
 def other_site(lang, page):
     pid = page.split("/")[-1]
-    if pid not in SLUGS: pid = "home"
+    if pid not in SLUGS or not has_lang(lang, pid): pid = "home"
     if TARGET == "be":
         return f'{e(OTHER_SITE[lang][0])}: <a href="{url_on("ai", lang, pid)}" hreflang="{lang}">conveasy.ai</a>'
     return f'{e(OTHER_SITE[lang][1])}: <a href="{url_on("be", lang, pid)}" hreflang="{lang}-BE">conveasy.be</a>'
@@ -248,7 +262,7 @@ def footer(lang, prefix, page):
 <div style="display:grid;gap:12px;align-content:start"><a class="logo" href="{h("home")}">{LOGO_MARK}Conveasy</a><p>{e(u["foot_tag"])}</p><p>{e(PHONE_LABEL[lang])} <a href="tel:{PHONE_TEL}">{e(PHONE_DISPLAY)}</a></p></div>
 <div><h4>{e(u["products"])}</h4><ul>{prods}</ul></div>
 <div><h4>{e(u["sectors"])}</h4><ul>{secs}</ul></div>
-<div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("calculator")}">{e(CALC[lang]["nav"])}</a></li>{restaurants.nav(globals(), lang, prefix)}<li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
+<div><h4>Conveasy</h4><ul><li><a href="{h("pricing")}">{e(u["pricing"])}</a></li><li><a href="{h("calculator")}">{e(CALC[lang]["nav"])}</a></li>{belgium.nav(globals(), lang, prefix)}{restaurants.nav(globals(), lang, prefix)}<li><a href="{h("about")}">{e(u["about"])}</a></li><li><a href="{h("contact")}">{e(u["contact"])}</a></li><li><a href="{h("legal")}">{e(u["foot_legal"])}</a></li><li><a href="{APP_URL}" rel="noopener">{e(u["foot_app"])}</a></li></ul></div>
 </div>
 <div class="foot-bottom"><span>{ph(u["foot_company"], lang, page)}</span><span>{other_site(lang, page)} · {e(u["foot_rights"])}</span></div>
 </div></footer>'''
@@ -1053,6 +1067,7 @@ def render(lang, pid, prefix, preview, main=False):
     elif pid in PRODUCTS: body, faqs, crumbs = page_product(lang, pid, prefix)
     elif pid in SECTORS: body, faqs, crumbs = page_sector(lang, pid, prefix)
     elif pid in restaurants.PIDS: body, faqs, crumbs = restaurants.page(globals(), lang, pid, prefix)
+    elif pid in belgium.PIDS: body, faqs, crumbs = belgium.page(globals(), lang, pid, prefix)
     else: body, faqs, crumbs = {"pricing": page_pricing, "about": page_about, "contact": page_contact, "legal": page_legal,
                                 "calculator": page_calculator}[pid](lang, prefix)
     bar = f'<div class="preview-bar"><div class="wrap">{e(UI[lang]["preview"])}</div></div>' if preview else ""
@@ -1147,6 +1162,7 @@ def sitemap(lastmod=None):
     for pid in SLUGS:
         alts = "".join(f'<xhtml:link rel="alternate" hreflang="{h}" href="{u}"/>' for h, u in hreflangs(pid))
         for l in LANGS:
+            if not has_lang(l, pid): continue
             lm = f"<lastmod>{lastmod[canonical(l, pid)]}</lastmod>" if lastmod and canonical(l, pid) in lastmod else ""
             rows.append(f"<url><loc>{canonical(l, pid)}</loc>{lm}{alts}</url>")
     return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n"
@@ -1180,6 +1196,7 @@ def llms():
           f"- [About]({url_on(TARGET, 'en', 'about')})", f"- [Contact]({url_on(TARGET, 'en', 'contact')})"]
     if SHOW_REFERRAL:
         L.append("- Referral: a Conveasy client who recommends a restaurant that becomes a client gets their next month free.")
+    L += belgium.llms_lines(globals())
     L += restaurants.llms_lines(globals())
     L += ["", "## Other languages"]
     L += [f"- {LANG_NAMES[l]}: {url_on(TARGET, l, 'home')}" for l in SITE_LANGS[TARGET] if l != "en"]
@@ -1250,6 +1267,7 @@ def build(outdir, preview):
     hashes = {}
     for l in LANGS:
         for pid in SLUGS:
+            if not has_lang(l, pid): continue
             page = render(l, pid, "../", preview)
             write(os.path.join(outdir, path_of(l, pid)), page)
             hashes[canonical(l, pid)] = hashlib.sha1(re.sub(r"\?v=[0-9a-f]{8}", "", page).encode()).hexdigest()[:16]
